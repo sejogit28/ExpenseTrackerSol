@@ -1,0 +1,58 @@
+﻿@page "/admin/dashboard"
+@attribute [Authorize(Roles = "Administrator")]
+@inject IJSRuntime JsRuntime
+@inject IAdminScreenUseCases AdminScreenUseCases
+<h3>Admin Dashboard Component</h3>
+
+@if (allUsers != null)
+{
+    foreach (var user in allUsers)
+    {
+        <div class="card ">
+            <div class="card-header">
+                UserId: @user.Id
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">User Name: @user.UserName</h5>
+
+            </div>
+            <div class="card-footer text-muted">
+                <button role="button" class="btn btn-outline-danger" @onclick="() => DeleteUser(user.Id, user.UserName)">Delete</button>
+            </div>
+        </div>
+    }
+}
+else
+{
+        <h2>
+            Fetching User List...
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+            </div>
+        </h2>
+}
+
+
+@code {
+
+    IList<IdentityUser> allUsers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allUsers = await AdminScreenUseCases.ViewAllUsers();
+
+    }
+
+    async Task DeleteUser(string deletedUserId, string deletedUserName)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to delete the user: {deletedUserName}? This can't be undone.....");
+
+        if (confirmed)
+        {
+            await AdminScreenUseCases.DeleteSingleUser(deletedUserId);
+            allUsers = await AdminScreenUseCases.ViewAllUsers();
+        }
+
+    }
+}

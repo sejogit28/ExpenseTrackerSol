@@ -1,0 +1,59 @@
+﻿@page "/expenses"
+
+@inject IExpensesScreenUseCases ExpensesScreenUseCases
+
+    <div class="row justify-content-center">
+        <h3>A full list of all expenses<i class="bi bi-list-ul"></i></h3>
+    </div>
+    @if (allExpenses != null)
+    {
+
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Expense Id</th>
+                    <th scope="col">User Id</th>
+                    <th scope="col">Expense Type</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Date Spent</th>
+                    <th scope="col">Date Submitted</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var expenses in allExpenses)
+                {
+                    <tr>
+                        <th scope="row">@expenses.ExpenseId</th>
+                        <th scope="row">@expenses.UserId</th>
+                        <th scope="row">@expenses.ExpenseTypes</th>
+                        <th scope="row">@expenses.Amount</th>
+                        <th scope="row">@expenses.Notes</th>
+                        <th scope="row"><NavLink href="@($"/expenses/bymonth/{expenses.MonthYear}")">@expenses.DateSpent.ToShortDateString()</NavLink></th>
+                        <th scope="row">@expenses.DateSubmitted.ToShortDateString()</th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h2>
+            Fetching Info...
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+            </div>
+        </h2>
+    }
+
+
+
+    @code
+{
+        IEnumerable<Expenses> allExpenses;
+
+        protected override async Task OnInitializedAsync()
+        {
+            allExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
+        }
+    }

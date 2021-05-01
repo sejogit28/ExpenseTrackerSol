@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerApi", "ExpenseTrackerApi\ExpenseTrackerApi.csproj", "{1239715E-FAB0-4B37-A111-1A6EFE304298}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerModels", "ExpenseTracker.Models\ExpenseTrackerModels.csproj", "{5094AB1C-7F25-404B-B2EE-84CC66553A74}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataStoreEF", "DataStoreEF\DataStoreEF.csproj", "{DEAF3635-DFC8-4EAA-BA9B-827794643F13}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerRepository", "ExpenseTrackerRepository\ExpenseTrackerRepository.csproj", "{E159C388-136F-4827-9685-3E4CAD3BD23E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackRepositoryIncomeTestingConsole", "ExpenseTrackerRepositoryTestingConsole\ExpTrackRepositoryIncomeTestingConsole.csproj", "{2970FF21-6257-435F-A7D9-B3EBA9AE6C1E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackerAppApplicationLogic", "ExpTrackerAppApplicationLogic\ExpTrackerAppApplicationLogic.csproj", "{3E211D78-297A-48A3-9CAE-730056B88A6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackRepositoryExpenseTestingConsole", "ExpTrackRepositoryExpenseTestingConsole\ExpTrackRepositoryExpenseTestingConsole.csproj", "{97194CDD-CE5F-4742-8E66-2404CBED7DDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackerWASMClient", "ExpTrackerWASMClient\ExpTrackerWASMClient.csproj", "{7B537CB8-D27B-4C39-B0A4-BAD4962A8FEC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailService\EmailService.csproj", "{64D84DF3-8B18-4F15-97CB-0FAA894DC368}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTrackerRepositoryUserProfileTestingConsole", "ExpenseTrackerRepositoryAuthTestingConsole\ExpenseTrackerRepositoryUserProfileTestingConsole.csproj", "{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1239715E-FAB0-4B37-A111-1A6EFE304298}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1239715E-FAB0-4B37-A111-1A6EFE304298}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1239715E-FAB0-4B37-A111-1A6EFE304298}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1239715E-FAB0-4B37-A111-1A6EFE304298}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5094AB1C-7F25-404B-B2EE-84CC66553A74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5094AB1C-7F25-404B-B2EE-84CC66553A74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5094AB1C-7F25-404B-B2EE-84CC66553A74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5094AB1C-7F25-404B-B2EE-84CC66553A74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEAF3635-DFC8-4EAA-BA9B-827794643F13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEAF3635-DFC8-4EAA-BA9B-827794643F13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEAF3635-DFC8-4EAA-BA9B-827794643F13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEAF3635-DFC8-4EAA-BA9B-827794643F13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E159C388-136F-4827-9685-3E4CAD3BD23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E159C388-136F-4827-9685-3E4CAD3BD23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E159C388-136F-4827-9685-3E4CAD3BD23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E159C388-136F-4827-9685-3E4CAD3BD23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2970FF21-6257-435F-A7D9-B3EBA9AE6C1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2970FF21-6257-435F-A7D9-B3EBA9AE6C1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2970FF21-6257-435F-A7D9-B3EBA9AE6C1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2970FF21-6257-435F-A7D9-B3EBA9AE6C1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E211D78-297A-48A3-9CAE-730056B88A6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E211D78-297A-48A3-9CAE-730056B88A6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E211D78-297A-48A3-9CAE-730056B88A6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E211D78-297A-48A3-9CAE-730056B88A6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97194CDD-CE5F-4742-8E66-2404CBED7DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97194CDD-CE5F-4742-8E66-2404CBED7DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97194CDD-CE5F-4742-8E66-2404CBED7DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97194CDD-CE5F-4742-8E66-2404CBED7DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B537CB8-D27B-4C39-B0A4-BAD4962A8FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B537CB8-D27B-4C39-B0A4-BAD4962A8FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B537CB8-D27B-4C39-B0A4-BAD4962A8FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B537CB8-D27B-4C39-B0A4-BAD4962A8FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D155F4E-A9D3-4D45-A967-345DD47070DF}
+	EndGlobalSection
+EndGlobal

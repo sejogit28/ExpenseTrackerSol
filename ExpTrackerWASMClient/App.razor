@@ -1,0 +1,18 @@
+@inject NavigationManager navMan
+
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="@true">
+    <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+            <NotAuthorized>
+                @if (true) { navMan.NavigateTo("login"); }
+            </NotAuthorized>
+        </AuthorizeRouteView>
+    </Found>
+    <NotFound>
+        <CascadingAuthenticationState>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <h1 class="text-center">Sorry, there's nothing at this address.</h1>
+            </LayoutView>
+        </CascadingAuthenticationState>
+    </NotFound>
+</Router>

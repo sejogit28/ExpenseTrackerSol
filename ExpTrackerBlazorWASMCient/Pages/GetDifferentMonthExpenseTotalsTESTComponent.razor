@@ -1,0 +1,36 @@
+﻿@page "/test"
+
+<h3>GetDifferentMonthExpenseTotalsComponent</h3>
+
+@foreach (var stringDate in months)
+{
+    //if(stringDate == DateTime.Now.AddMonths)
+    <h4>@stringDate</h4>
+}
+<br/>
+<br/>
+
+@foreach (DateTime day in EachMonth(new DateTime(2018, 1, 1), DateTime.Now))
+{
+    <h4>@day.ToString("yyyy-MM")</h4>
+}
+
+
+@code {
+
+    static DateTime startDate = new DateTime(2018, 1, 1);
+    IEnumerable<string> months = Enumerable.Range(1, 5)
+                           .Select(startDate.AddMonths)
+                       .Select(m => m.ToString("yyyy-MM"))
+                       .ToList();
+
+    //static DateTime startdateTest = new DateTime.(2018, 1, 1);
+
+    private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
+            yield return day;
+    }
+
+
+}

@@ -1,0 +1,106 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Expense Tracker</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass">
+    <ul class="nav flex-column">
+        <AuthorizeView>
+            <NotAuthorized>
+                <li class="nav-item px-3"  @onclick="ToggleNavMenu">
+                    <NavLink style="color: black" class="nav-link" href="/login">
+                        <span class="oi oi-account-login" aria-hidden="true"></span> Login
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+            <Authorized>
+                <li class="nav-item px-3" @onclick="ToggleNavMenu">
+                    <NavLink style="color: black" class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="ToggleNavMenu">
+                    <NavLink style="color: black" class="nav-link" href="/expenses">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> All Expenses
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3" @onclick="ToggleNavMenu">
+                    <NavLink style="color: black" class="nav-link" href="/incomes">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
+                    </NavLink>
+                </li>
+                
+                <li class="nav-item dropdown px-3 ">
+                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses By Month
+                    </NavLink>
+                    <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now))
+                        {
+
+                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
+                            </NavLink>
+
+                        }
+                    </ul>
+                </li>
+                <li class="nav-item dropdown px-3 ">
+                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span>  Incomes By Month
+                    </NavLink>
+                    <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now))
+                        {
+                            <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black" href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                                <span class="oi oi-list-rich" aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
+                            </NavLink>
+                        }
+                    </ul>
+                </li>
+                <li class="nav-item dropdown px-3 ">
+                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                        <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Comparison Charts
+                    </NavLink>
+                    <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now))
+                        {
+                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/IncExpComparisonChart/{yearMonth.ToString("yyyy-MM")}")">
+                                <span class="oi  oi-pie-chart " aria-hidden="true"></span> Budget Chart for: @yearMonth.ToString("yyyy-MM")
+                            </NavLink>
+                        }
+                    </ul>
+                </li>
+
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" style="color: black" @onclick="()=> { AuthRepository.Logout(); }">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+    </ul>
+</div>
+
+@code {
+
+    [Inject]
+    public IAuthRepository AuthRepository { get; set; }
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+  
+    private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
+            yield return day;
+    }
+}

@@ -1,0 +1,302 @@
+﻿@page "/incomesbymonth/{targetMonth}"
+@page "/incomesbymonth/"
+@inject IJSRuntime JsRuntime
+@inject IIncomesScreenUseCases IncomesScreenUseCases
+
+
+<div class="row justify-content-center">
+    <h2>Monthly Incomes for @targetMonth</h2>
+    <NavLink class="nav-link" href="@($"/incomesbymonth/comparisonchart/{targetMonth}")">
+        <span class="iconify icon:oi:bar-chart icon-inline:false"></span> Visualize
+    </NavLink>
+</div>
+
+
+
+@if (incomesbyMonth != null)
+{
+
+    <table class="table table-responsive table-striped table-hover md shadow">
+        <thead>
+            <tr>
+                <th scope="col">Income Id</th>
+                <th scope="col">User</th>
+                <th scope="col">Income Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Date Paid</th>
+                <th scope="col">Date Submitted</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var income in incomesbyMonth)
+            {
+                if (income.UserId == currentUser)
+                {
+                    <tr>
+                        <th scope="row">@income.IncomeId</th>
+                        <th scope="row">@income.UserId</th>
+                        <th scope="row">@income.IncomeTypes</th>
+                        <th scope="row">@income.Amount</th>
+                        <th scope="row">@income.Notes</th>
+                        <th scope="row">@income.DatePaid.ToShortDateString()</th>
+                        <th scope="row">@income.DateSubmitted.ToShortDateString()</th>
+                        <th scope="row">
+                            <div class="btn-group" role="group" aria-label="Income Action Options">
+                                <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">
+                                    Edit
+                                </button>
+
+                                <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => deleteIncome(income.IncomeId)">
+                                    Delete
+                                </button>
+                            </div>
+
+                        </th>
+                    </tr>
+
+
+
+                }
+            }
+        </tbody>
+    </table>
+
+
+    <div class="card shadow my-4" style="width: 22rem;">
+        <div class="card-header">
+            <h2>Total Incomes for this month:</h2>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <h4>
+                    @Math.Round((Double)totalMonthlyIncome, 2)$
+                </h4>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <h2>
+        Fetching Info...
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+        </div>
+    </h2>
+}
+<AlertComponent @ref="alertComponent"></AlertComponent>
+@if (income != null)
+{
+    <EditForm Model="income" OnValidSubmit="editOrAddNewIncomeSubmit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <div class="container shadow-lg pb-3 mb-4">
+            <div class="row">
+
+                <InputNumber hidden readonly class="form-control" id="IncomeId" @bind-Value="income.IncomeId"></InputNumber>
+                <InputText hidden readonly class="form-control" id="UserId" @bind-Value="income.UserId"></InputText>
+                <InputText hidden class="form-control" id="MonthYear" @bind-Value="income.MonthYear"></InputText>
+                <InputDate hidden class="form-control" id="DateSubmitted" @bind-Value="income.DateSubmitted" rows=3></InputDate>
+
+
+                <div class="col-auto">
+                    <label for="IncomeTypes" class="col-form-label">Income Type</label>
+                    <InputSelect class="form-control" id="IncomeTypes" @bind-Value="income.IncomeTypes">
+                        @foreach (var value in Enum.GetValues(typeof(Incomes.IncomeCategoriesList)))
+                            {
+                            <option>
+                                @value
+                            </option>
+                            }
+                    </InputSelect>
+                </div>
+
+                <div class="col-auto">
+                    <label for="Amount" class="col-form-label">Amount</label>
+                    <InputNumber class="form-control" id="Amount" @bind-Value="income.Amount"></InputNumber>
+                </div>
+
+                <div class="col-xs-auto col-sm-4">
+                    <label for="Notes" class="col-form-label">Notes</label>
+                    <InputTextArea class="form-control" id="Notes" @bind-Value="income.Notes" rows=3></InputTextArea>
+                </div>
+
+                <div class="col-auto">
+                    <label for="DatePaid" class="col-form-label">Date Paid</label>
+                    <InputDate class="form-control" id="DatePaid" @bind-Value="income.DatePaid" rows=3></InputDate>
+                </div>
+
+            </div>
+
+            <br />
+
+
+
+
+            @if (income.IncomeId == 0)
+            {
+                @*Putting "type=button" on these buttons made to submit the form values makes it so they dont
+                    submit the form values anymore. THEORY: Putting that doesn't mesh well with the way the
+                    EditForm Component works*@
+
+                <button class="btn btn-outline-info">
+                    Submit A New income
+                </button>
+
+            }
+            else
+            {
+                <button class="btn btn-outline-info">
+                    Submit Edited Values For Income #@income.IncomeId
+                </button>
+
+                <button class="btn btn-outline-secondary" type="button" @onclick="() =>{ makeFreshIncome(); }">
+                    Create A New Income Instead(Clear Form)
+                </button>
+
+            }
+
+
+
+
+        </div>
+    </EditForm>
+
+}
+
+
+
+@code {
+
+    Incomes income;
+    AlertComponent alertComponent;
+
+    //Needs to match the route params but that match doesn't need to be case sensitive
+    [Parameter]
+    public string targetMonth { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+
+    IEnumerable<Incomes> incomesbyMonth;
+
+    public double? totalMonthlyIncome;
+    public string currentUser;
+
+    public void makeFreshIncome()
+    {
+        income = new Incomes
+        {
+            DatePaid = DateTime.Now,
+            DateSubmitted = DateTime.Now,
+            UserId = income.UserId,
+            MonthYear = "placeholder"
+        };
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
+        targetMonth = targetMonth ?? DateTime.Now.ToString("yyyy-MM");
+
+        var authState = await AuthState;
+        var user = authState.User;
+
+        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+
+        income = new Incomes
+        {
+            DatePaid = DateTime.Now,
+            DateSubmitted = DateTime.Now,
+            UserId = currentUser,
+            MonthYear = "placeholder"
+        };
+
+        await refreshValues();
+
+        makeFreshIncome();
+
+    }
+
+    async Task deleteIncome(int deletedIncomeId)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to delete Income #{deletedIncomeId}? This can't be undone.....");
+
+        if (confirmed)
+        {
+            await IncomesScreenUseCases.DeleteIncome(deletedIncomeId);
+
+            await refreshValues();
+        }
+    }
+
+
+    /*Populates the form with an incomes values and uses the retrieved incomes primary key to tell the form to edit
+    the retrieved income instead of creating a new income*/
+
+    async Task getEditableIncome(int IncomeId)
+    {
+        income = await IncomesScreenUseCases.GetSingleIncome(IncomeId);
+    }
+
+    async Task editOrAddNewIncomeSubmit()
+    {
+
+        if (income.IncomeId! > 0)
+        {
+            if (income.DatePaid.ToString("yyyy-MM") != targetMonth)
+            {
+                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show();
+            }
+            else
+            {
+                await IncomesScreenUseCases.EditIncome(income);
+
+                makeFreshIncome();
+
+                await refreshValues();
+            }
+        }
+
+        else
+        {
+
+
+            if (income.DatePaid.ToString("yyyy-MM") != targetMonth)
+            {
+                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show();
+            }
+            else
+            {
+                await IncomesScreenUseCases.CreateNewIncome(income);
+
+                makeFreshIncome();
+
+                await refreshValues();
+            }
+        }
+
+    }
+
+    async Task refreshValues()
+    {
+        incomesbyMonth = await IncomesScreenUseCases.ViewIncomesByMonth(targetMonth);
+
+        totalMonthlyIncome = 0;
+
+        foreach (var incomeAmount in incomesbyMonth)
+        {
+            if (currentUser == incomeAmount.UserId)
+            {
+                totalMonthlyIncome += incomeAmount.Amount;
+            }
+        }
+    }
+
+}

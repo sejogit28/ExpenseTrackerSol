@@ -1,0 +1,69 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="">Expense Tracker</a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/expenses">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> All Expenses
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/incomes">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
+            </NavLink>
+        </li>
+        <li class="nav-item dropdown px-3 ">
+            <a class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Expenses By Month
+            </a>
+            <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now))
+                {
+                    <NavLink class="dropdown-item" style="color: black" href="@($"/expenses/bymonth/{yearMonth.ToString("yyyy-MM")}")">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
+                    </NavLink>
+                }
+            </ul>
+        </li>
+        <li class="nav-item dropdown px-3 ">
+            <a class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Incomes By Month
+            </a>
+            <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now))
+                {
+                    <NavLink class="dropdown-item" style="color: black" href="@($"/incomes/bymonth/{yearMonth.ToString("yyyy-MM")}")">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
+                    </NavLink>
+                }
+            </ul>
+        </li>
+    </ul>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
+            yield return day;
+    }
+}

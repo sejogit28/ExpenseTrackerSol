@@ -1,0 +1,43 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using ExpenseTrackerModels
+@using ExpTrackerAppApplicationLogic
+@using ExpenseTrackerRepository
+
+
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@using Microsoft.AspNetCore.Identity
+
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using ExpTrackerWASMClient
+@using ExpTrackerWASMClient.Shared
+
+@using System.Drawing
+@using System.Collections.Generic
+@using System.Globalization
+@using System.Security.Claims
+@using System.Threading;
+
+@using Radzen
+@using Radzen.Blazor
+
+@using ChartJs.Blazor
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Common.Axes
+@using ChartJs.Blazor.Common.Axes.Ticks
+@using ChartJs.Blazor.Common.Enums
+@using ChartJs.Blazor.Common.Handlers
+@using ChartJs.Blazor.Common.Time
+@using ChartJs.Blazor.Util
+@using ChartJs.Blazor.Interop
+@*Everytype of chart that you wan to use must be imported first for this to work*@
+@using ChartJs.Blazor.PieChart
+
+

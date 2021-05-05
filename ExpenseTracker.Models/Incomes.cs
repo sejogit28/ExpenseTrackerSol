@@ -39,5 +39,8 @@ namespace ExpenseTrackerModels
             Repaid,
             Other
         }
+
+        public int? GroupsGroupsId { get; set; }
+        public Groups Groups { get; set; }
     }
 }

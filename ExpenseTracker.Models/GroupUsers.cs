@@ -8,7 +8,7 @@ namespace ExpenseTrackerModels
 {
     public class GroupUsers
     {
-        public int GroupsGroupId { get; set; }
+        public int GroupsGroupsId { get; set; }
         public Groups Groups { get; set; }
         public string ExpenseTrackerUserId { get; set; }
         public ExpenseTrackerUser ExpenseTrackerUser { get; set; }

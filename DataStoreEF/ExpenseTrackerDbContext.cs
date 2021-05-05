@@ -21,6 +21,7 @@ namespace DataStoreEF
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<Incomes> Incomes { get; set; }
         public DbSet<Groups> Groups { get; set; }
+        public DbSet<GroupUsers> GroupUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,7 +30,7 @@ namespace DataStoreEF
             builder.ApplyConfiguration(new RoleConfiguration());
 
             builder.Entity<GroupUsers>()
-            .HasKey(o => new { o.ExpenseTrackerUserId, o.GroupsGroupId });
+            .HasKey(o => new { o.ExpenseTrackerUserId, o.GroupsGroupsId });
         }
     }
 }

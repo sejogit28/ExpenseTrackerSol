@@ -47,5 +47,8 @@ namespace ExpenseTrackerModels
             Fun
         }
 
+        public int? GroupsGroupsId { get; set; }
+        public Groups Groups { get; set; }
+
     }
 }

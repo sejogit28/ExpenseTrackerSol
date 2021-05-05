@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataStoreEF
 {
-    public class ExpenseTrackerDbContext : IdentityDbContext<IdentityUser>
+    public class ExpenseTrackerDbContext : IdentityDbContext<ExpenseTrackerUser>
     {
         public ExpenseTrackerDbContext(DbContextOptions<ExpenseTrackerDbContext> options)
             : base(options)
@@ -17,6 +17,7 @@ namespace DataStoreEF
 
         }
 
+        public DbSet<ExpenseTrackerUser> ExpenseTrackerUser { get; set; }
         public DbSet<Expenses> Expenses { get; set; }
         public DbSet<Incomes> Incomes { get; set; }
         public DbSet<Groups> Groups { get; set; }
@@ -26,6 +27,9 @@ namespace DataStoreEF
             base.OnModelCreating(builder);
 
             builder.ApplyConfiguration(new RoleConfiguration());
+
+            builder.Entity<GroupUsers>()
+            .HasKey(o => new { o.ExpenseTrackerUserId, o.GroupsGroupId });
         }
     }
 }

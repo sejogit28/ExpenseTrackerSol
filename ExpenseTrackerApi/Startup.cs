@@ -39,7 +39,7 @@ namespace ExpenseTrackerApi
             services.AddDbContext<ExpenseTrackerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ExpenseTrackerUser, IdentityRole>()
                 .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
 
             var jwtSettings = Configuration.GetSection("JwtSettings");
@@ -101,7 +101,7 @@ namespace ExpenseTrackerApi
 
             app.UseCors();
             /*Usually a name would have to be provided for the above method but because you specified 
-             * "AddDefaultPolicy" no name is needed*/
+             "AddDefaultPolicy" no name is needed*/
 
             app.UseAuthentication();
             app.UseAuthorization();

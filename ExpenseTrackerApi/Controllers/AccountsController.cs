@@ -29,12 +29,12 @@ namespace ExpenseTrackerApi.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ExpenseTrackerUser> _userManager;
         private readonly IConfigurationSection _jwtSettings;
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
         private readonly ExpenseTrackerDbContext _datExpBase;
-        public AccountsController(UserManager<IdentityUser> userManager, IConfiguration configuration, IEmailSender emailSender, ExpenseTrackerDbContext etDB)
+        public AccountsController(UserManager<ExpenseTrackerUser> userManager, IConfiguration configuration, IEmailSender emailSender, ExpenseTrackerDbContext etDB)
         {
             _datExpBase = etDB;
             _userManager = userManager;
@@ -129,7 +129,7 @@ namespace ExpenseTrackerApi.Controllers
         {
             if (userRegistration == null || !ModelState.IsValid)
                 return BadRequest();
-            var user = new IdentityUser { UserName = userRegistration.Email, Email = userRegistration.Email };
+            var user = new ExpenseTrackerUser { UserName = userRegistration.Email, Email = userRegistration.Email };
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
             if (!result.Succeeded)
@@ -151,7 +151,7 @@ namespace ExpenseTrackerApi.Controllers
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
-        private async Task<List<Claim>> GetClaims(IdentityUser user)
+        private async Task<List<Claim>> GetClaims(ExpenseTrackerUser user)
         {
             var claims = new List<Claim>
             {

@@ -1,4 +1,5 @@
-﻿using ExpenseTrackerModels.AuthModels;
+﻿using ExpenseTrackerModels;
+using ExpenseTrackerModels.AuthModels;
 using ExpenseTrackerRepository;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -19,13 +20,13 @@ namespace ExpTrackerAppApplicationLogic
             this.userProfileRepository = userProfileRepository;
         }
 
-        public async Task<IList<IdentityUser>> ViewAllUsers()
+        public async Task<IList<ExpenseTrackerUser>> ViewAllUsers()
         {
             var usersList = await userProfileRepository.GetAllUsers();
             return usersList;
         }
 
-        public async Task<IdentityUser> ViewSingleUser(string singleUserId)
+        public async Task<ExpenseTrackerUser> ViewSingleUser(string singleUserId)
         {
             return await userProfileRepository.GetSingleUser(singleUserId);
         }

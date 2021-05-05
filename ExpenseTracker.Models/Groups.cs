@@ -13,5 +13,7 @@ namespace ExpenseTrackerModels
         public string GroupName { get; set; }
         [Required]
         public DateTime DateCreated { get; set; }
+
+        public IList<GroupUsers> GroupUsers {get; set;}
     }
 }

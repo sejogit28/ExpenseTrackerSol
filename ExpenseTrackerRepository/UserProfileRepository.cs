@@ -1,4 +1,5 @@
-﻿using ExpenseTrackerModels.AuthModels;
+﻿using ExpenseTrackerModels;
+using ExpenseTrackerModels.AuthModels;
 using ExpenseTrackerRepository.ApiRouteFetcher;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
@@ -15,20 +16,20 @@ namespace ExpenseTrackerRepository
             this.webApiExecuter = webApiExecuter;
         }
 
-        public async Task<IList<IdentityUser>> GetAllUsers()
+        public async Task<IList<ExpenseTrackerUser>> GetAllUsers()
         {
-            var usersList = await webApiExecuter.InvokeGet<IList<IdentityUser>>("api/accounts/allUsers");
+            var usersList = await webApiExecuter.InvokeGet<IList<ExpenseTrackerUser>>("api/accounts/allUsers");
             return usersList;
         }
 
-        public async Task<IdentityUser> GetSingleUser(string singleUserId)
+        public async Task<ExpenseTrackerUser> GetSingleUser(string singleUserId)
         {
-            return await webApiExecuter.InvokeGet<IdentityUser>($"api/accounts/getSingleUser/{singleUserId}");
+            return await webApiExecuter.InvokeGet<ExpenseTrackerUser>($"api/accounts/getSingleUser/{singleUserId}");
         }
 
         public async Task DeleteSingleUser(string deletedUserId)
         {
-            await webApiExecuter.InvokeDelete<IdentityUser>($"api/accounts/deleteSingleUser/{deletedUserId}");
+            await webApiExecuter.InvokeDelete<ExpenseTrackerUser>($"api/accounts/deleteSingleUser/{deletedUserId}");
         }
 
         public async Task UpdateUserPassword(ChangePassword changePassword, string updatedUserName)

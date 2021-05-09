@@ -9,12 +9,14 @@ namespace ExpenseTrackerModels
     {
         [Key]
         public int GroupsId { get; set; }
+
         [Required]
         [MaxLength(80)]
         public string GroupName { get; set; }
+
         [Required]
         public DateTime DateCreated { get; set; }
-        [MaxLength(25)]
+
         public string ExpenseTrackerUserId { get; set; }
         public ExpenseTrackerUser ExpenseTrackerUser { get; set; }
 

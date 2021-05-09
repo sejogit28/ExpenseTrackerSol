@@ -11,7 +11,7 @@ namespace ExpenseTrackerModels
         [Key]
         public int IncomeId { get; set; }
         [Required]
-        [MaxLength(50)]
+        [MaxLength(75)]
         public string UserId { get; set; }
         //public string GroupId { get; set; }
 

@@ -11,7 +11,7 @@ namespace ExpenseTrackerModels
     {
         public int GroupsGroupsId { get; set; }
         public Groups Groups { get; set; }
-        [MaxLength(25)]
+
         public string ExpenseTrackerUserId { get; set; }
         public ExpenseTrackerUser ExpenseTrackerUser { get; set; }
     }

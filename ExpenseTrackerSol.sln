@@ -21,7 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackerWASMClient", "Exp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailService\EmailService.csproj", "{64D84DF3-8B18-4F15-97CB-0FAA894DC368}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpenseTrackerRepositoryUserProfileTestingConsole", "ExpenseTrackerRepositoryAuthTestingConsole\ExpenseTrackerRepositoryUserProfileTestingConsole.csproj", "{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerRepositoryUserProfileTestingConsole", "ExpenseTrackerRepositoryAuthTestingConsole\ExpenseTrackerRepositoryUserProfileTestingConsole.csproj", "{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpTrackRepositoryGroupsTestingConsole", "ExpTrackRepositoryGroupsTestingConsole\ExpTrackRepositoryGroupsTestingConsole.csproj", "{2F012864-3658-4E6D-94F5-DA16ABC08329}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F012864-3658-4E6D-94F5-DA16ABC08329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F012864-3658-4E6D-94F5-DA16ABC08329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F012864-3658-4E6D-94F5-DA16ABC08329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F012864-3658-4E6D-94F5-DA16ABC08329}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

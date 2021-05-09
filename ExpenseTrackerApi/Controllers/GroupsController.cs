@@ -182,7 +182,7 @@ namespace ExpenseTrackerApi.Controllers
                     $"this email.");
 
                 _emailSender.SendEmail(message);
-                return Ok();
+                return Ok(possible);
             }
         }
 
@@ -217,6 +217,22 @@ namespace ExpenseTrackerApi.Controllers
             }
         }
 
+        [HttpGet("listofgroupmembernames/{groupId:int}")]
+        public async Task<IActionResult> listOfGroupMemberNames(int groupId)
+        {
+            IList<string> GroupUserNames = new List<string>();
+
+            var listofGroupUsers = await _datExpBase.GroupUsers
+                .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
+            foreach (var user in listofGroupUsers)
+            {
+                var userObj = await _datExpBase.ExpenseTrackerUser.FindAsync(user.ExpenseTrackerUserId);
+                GroupUserNames.Add(userObj.UserName);
+            }
+            /*It doesn't appear that you can return a linq query without getting a 500 error about
+             * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
+            return Ok(GroupUserNames);
+        }
 
         [HttpDelete("deletememberfromgroup/{groupId:int}/{deletedMemberName}")]
         public async Task<IActionResult> deleteGroupMember(int groupId, string deletedMemberName) 
@@ -238,21 +254,6 @@ namespace ExpenseTrackerApi.Controllers
             
         }
 
-        [HttpGet("listofgroupmembernames/{groupId:int}")]
-        public async Task<IActionResult> listOfGroupMemberNames(int groupId) 
-        {
-            IList<string> GroupUserNames = new List<string>();
-
-            var listofGroupUsers = await _datExpBase.GroupUsers
-                .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
-            foreach(var user in listofGroupUsers) 
-            {
-                var userObj = await _datExpBase.ExpenseTrackerUser.FindAsync(user.ExpenseTrackerUserId);
-                GroupUserNames.Add(userObj.UserName);
-            }
-            /*It doesn't appear that you can return a linq query without getting a 500 error about
-             * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
-            return Ok(GroupUserNames);
-        }
+      
     }
 }

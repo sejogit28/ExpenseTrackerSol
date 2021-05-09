@@ -63,33 +63,35 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(newgroup);
         }
 
-        [HttpPost("addmembertogroup/{newGroupId:int}/{potentialMemberName}")]
+        [HttpGet("addmembertogroup/{newGroupId:int}/{potentialMemberName}")]
         public async Task<IActionResult> addGroupCreatorToNewGroup(int newGroupId, string potentialMemberName) 
         {
-            var groupCreator = await _userManager.FindByNameAsync(potentialMemberName);
-            if(groupCreator == null) 
+            var potentialMember = await _userManager.FindByNameAsync(potentialMemberName);
+            if(potentialMember == null) 
             {
                 return NotFound($"{potentialMemberName} could not be found");
             }
+
             var newGroup = await _datExpBase.Groups.FindAsync(newGroupId);
             if (newGroup == null)
             {
                 return NotFound($"Group could not be found");
             }
+
             //The Identity Users Id had to be put first for some reason....
-            var groupCheck = await _datExpBase.GroupUsers.FindAsync(groupCreator.Id, newGroupId);
+            var groupCheck = await _datExpBase.GroupUsers.FindAsync(potentialMember.Id, newGroupId);
             if (groupCheck != null)
                 return StatusCode(StatusCodes.Status500InternalServerError);
             else
             {
-                var newGroupInitialMember = new GroupUsers
+                var newGroupMember = new GroupUsers
                 {
-                    ExpenseTrackerUserId = groupCreator.Id,
+                    ExpenseTrackerUserId = potentialMember.Id,
                     GroupsGroupsId = newGroupId
                 };
-                await _datExpBase.GroupUsers.AddAsync(newGroupInitialMember);
+                await _datExpBase.GroupUsers.AddAsync(newGroupMember);
                 await _datExpBase.SaveChangesAsync();
-                return Ok(newGroupInitialMember);
+                return Ok();
             }
            
            
@@ -214,6 +216,8 @@ namespace ExpenseTrackerApi.Controllers
                 return Ok($"New Member: {possible.InviteeEmail} has been added to group: {currentGroup.GroupName}");
             }
         }
+
+
         [HttpDelete("deletememberfromgroup/{groupId:int}/{deletedMemberName}")]
         public async Task<IActionResult> deleteGroupMember(int groupId, string deletedMemberName) 
         {
@@ -232,6 +236,23 @@ namespace ExpenseTrackerApi.Controllers
                 return Ok();
             }
             
+        }
+
+        [HttpGet("listofgroupmembernames/{groupId:int}")]
+        public async Task<IActionResult> listOfGroupMemberNames(int groupId) 
+        {
+            IList<string> GroupUserNames = new List<string>();
+
+            var listofGroupUsers = await _datExpBase.GroupUsers
+                .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
+            foreach(var user in listofGroupUsers) 
+            {
+                var userObj = await _datExpBase.ExpenseTrackerUser.FindAsync(user.ExpenseTrackerUserId);
+                GroupUserNames.Add(userObj.UserName);
+            }
+            /*It doesn't appear that you can return a linq query without getting a 500 error about
+             * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
+            return Ok(GroupUserNames);
         }
     }
 }

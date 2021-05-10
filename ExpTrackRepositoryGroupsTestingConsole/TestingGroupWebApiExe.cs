@@ -10,12 +10,24 @@ using System.Threading.Tasks;
 HttpClient httpClient = new();
 IWebApiExecuter apiExecuter = new WebApiExecuter("https://localhost:5001", httpClient);
 
-/*Console.WriteLine("///////////////");
+Console.WriteLine("///////////////");
 Console.WriteLine("Reading All Names of All Groups");
 await getGroupsTest();
 Console.ReadLine();
 
+//Console.WriteLine("///////////////");
+//Console.WriteLine("Creating A New Group");
+//await createGroupTest();
+//Console.ReadLine();
+
+
 Console.WriteLine("///////////////");
+Console.WriteLine("Reading All Names of All Groups Once Again");
+await getGroupsTest();
+Console.ReadLine();
+
+
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Reading A Groups Various Detail");
 var singleGroup = await getSingleGroupTest(9);
 Console.WriteLine(singleGroup.GroupsId);
@@ -71,10 +83,20 @@ Console.WriteLine("Reading A Single Groups Member Names Once Again");
 await getListOfGroupMemberNamesTest(8);
 Console.ReadLine();*/
 
-Console.WriteLine("///////////////");
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Sending an email to a potential Group member");
 await sendGroupInviteTest();
 Console.ReadLine();
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Confirming group invite as the invitee");
+await inviteeConfirmTest();
+Console.ReadLine();
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Confirming the invitation as the inviter and then adding the invitee to the group");
+await inviterConfirmTest();
+Console.ReadLine();*/
 
 async Task getGroupsTest()
 {
@@ -85,6 +107,18 @@ async Task getGroupsTest()
         Console.WriteLine($"Group Names: {group.GroupName}");
     }
 
+}
+
+async Task createGroupTest() 
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+    var newlyCreatedGroup = new Groups
+    {
+        GroupName = "Test Group 3",
+        DateCreated = DateTime.Now,
+        ExpenseTrackerUserId = "65052034-ea64-4ee1-92cd-75d07f61297a"
+    };
+    await groupsRepository.createGroup(newlyCreatedGroup, "sejogoo@gmail.com");
 }
 
 async Task<Groups> getSingleGroupTest(int singleGroupId) 
@@ -150,5 +184,36 @@ async Task sendGroupInviteTest()
         GroupId = 8
     };
     await groupsRepository.sendGroupInvite(initialInvite);
+
+}
+
+async Task inviteeConfirmTest()
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+    var inviteeConfirmation = new PossibleMemberConfirm
+    {
+        InviteeEmail = "sejoTestEmail1828@mailinator.com",
+        InviterEmail = "sejogoo@gmail.com",
+        Password = "D8f8ndM@il",
+        ConfirmPassword = "D8f8ndM@il",
+        GroupId = 8
+    };
+    await groupsRepository.inviteeConfirm(inviteeConfirmation);
+
+}
+
+async Task inviterConfirmTest()
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+
+    var inviterConfirmation = new PossibleMemberConfirm
+    {
+        InviteeEmail = "sejoTestEmail1828@mailinator.com",
+        InviterEmail = "sejogoo@gmail.com",
+        Password = "D8f8nd@Exp",
+        ConfirmPassword = "D8f8nd@Exp",
+        GroupId = 8
+    };
+    await groupsRepository.inviterConfirm(inviterConfirmation);
 
 }

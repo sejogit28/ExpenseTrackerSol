@@ -18,7 +18,7 @@ namespace ExpenseTrackerRepository
             this.webApiExecuter = webApiExecuter;
         }
 
-        public async Task<IEnumerable<Groups>> getGroups()
+        public async Task<IEnumerable<Groups>> listOfGroups()
         {
             //TESTED
             return await webApiExecuter.InvokeGet<IEnumerable<Groups>>("api/Groups/groupslist");

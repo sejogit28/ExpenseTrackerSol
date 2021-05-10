@@ -10,7 +10,7 @@ namespace ExpenseTrackerRepository
         Task addGroupMember(AddNewMemberToGroup addNew);
         Task createGroup(Groups newGroup, string groupCreatorUserName);
         Task deleteGroup(int deletedGroupId);
-        Task<IEnumerable<Groups>> getGroups();
+        Task<IEnumerable<Groups>> listOfGroups();
         Task<Groups> getSingleGroup(int singleGroupId);
         Task inviteeConfirm(PossibleMemberConfirm possibleInvitee);
         Task inviterConfirm(PossibleMemberConfirm possibleInviter);

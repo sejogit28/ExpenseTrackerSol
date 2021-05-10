@@ -196,18 +196,35 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> inviterConfirm([FromBody] PossibleMemberConfirm possible)
         {
             var invitingMember = await _userManager.FindByNameAsync(possible.InviterEmail);
-            if (invitingMember == null)
-                return NotFound($"This member: {possible.InviterEmail} could not be found");
-            if (!await _userManager.CheckPasswordAsync(invitingMember, possible.Password))
-                return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
-
             var invitedMember = await _userManager.FindByNameAsync(possible.InviteeEmail);
-            if (invitedMember == null)
-                return NotFound($"{invitedMember.Email} could not be found");
-
             var currentGroup = await _datExpBase.Groups.FindAsync(possible.GroupId);
-            if (currentGroup == null)
+            var currentGroupCheck = await _datExpBase.GroupUsers.FindAsync(invitedMember.Id, possible.GroupId);
+
+            if (invitingMember == null)
+            {
+                return NotFound($"This member: {possible.InviterEmail} could not be found");
+            }
+                
+            else if (!await _userManager.CheckPasswordAsync(invitingMember, possible.Password))
+            {
+                return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+            }
+                        
+            else if (invitedMember == null)
+            {
+                return NotFound($"{invitedMember.Email} could not be found");
+            }
+                          
+            else if (currentGroup == null)
+            {
                 return NotFound("This group could not be found");
+            }
+
+            else if(currentGroupCheck != null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+                
             else
             {
                 var newMemberAddition = new GroupUsers
@@ -219,7 +236,7 @@ namespace ExpenseTrackerApi.Controllers
 
                 await _datExpBase.GroupUsers.AddAsync(newMemberAddition);
                 await _datExpBase.SaveChangesAsync();
-                return Ok($"New Member: {possible.InviteeEmail} has been added to group: {currentGroup.GroupName}");
+                return Ok(newMemberAddition);
             }
         }
 

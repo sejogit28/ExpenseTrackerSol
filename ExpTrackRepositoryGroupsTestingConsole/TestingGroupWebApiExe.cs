@@ -10,10 +10,31 @@ using System.Threading.Tasks;
 HttpClient httpClient = new();
 IWebApiExecuter apiExecuter = new WebApiExecuter("https://localhost:5001", httpClient);
 
-Console.WriteLine("///////////////");
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Reading All Names of All Groups");
 await getGroupsTest();
 Console.ReadLine();
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Reading A Groups Various Detail");
+var singleGroup = await getSingleGroupTest(9);
+Console.WriteLine(singleGroup.GroupsId);
+Console.WriteLine(singleGroup.GroupName);
+Console.WriteLine(singleGroup.DateCreated);
+Console.ReadLine();
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Updating A Single Groups Name");
+await updateGroupTest(singleGroup);
+Console.ReadLine();
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Reading A Groups Various Detail Once Again");
+Console.WriteLine(singleGroup.GroupsId);
+Console.WriteLine(singleGroup.GroupName);
+Console.WriteLine(singleGroup.DateCreated);
+Console.ReadLine();*/
+
 
 /*Console.WriteLine("///////////////");
 Console.WriteLine("Deleting A Single Group");
@@ -25,20 +46,12 @@ Console.WriteLine("Reading All Names of All Groups Once Again");
 await getGroupsTest();
 Console.ReadLine();*/
 
-Console.WriteLine("///////////////");
-Console.WriteLine("Reading A Groups Various Detail");
-var singleGroup = await getSingleGroupTest(8);
-Console.WriteLine(singleGroup.GroupsId);
-Console.WriteLine(singleGroup.GroupName);
-Console.WriteLine(singleGroup.DateCreated);
-Console.ReadLine();
-
-Console.WriteLine("///////////////");
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Reading A Single Groups Member Names");
 await getListOfGroupMemberNamesTest(8);
-Console.ReadLine();
+Console.ReadLine();*/
 
-Console.WriteLine("///////////////");
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Adding a New Member to a Group");
 await addMemberToGroupTest();
 Console.ReadLine();
@@ -46,7 +59,7 @@ Console.ReadLine();
 Console.WriteLine("///////////////");
 Console.WriteLine("Reading A Single Groups Member Names Once Again");
 await getListOfGroupMemberNamesTest(8);
-Console.ReadLine();
+Console.ReadLine();*/
 
 /*Console.WriteLine("///////////////");
 Console.WriteLine("Deleting a Member from a group");
@@ -57,6 +70,11 @@ Console.WriteLine("///////////////");
 Console.WriteLine("Reading A Single Groups Member Names Once Again");
 await getListOfGroupMemberNamesTest(8);
 Console.ReadLine();*/
+
+Console.WriteLine("///////////////");
+Console.WriteLine("Sending an email to a potential Group member");
+await sendGroupInviteTest();
+Console.ReadLine();
 
 async Task getGroupsTest()
 {
@@ -107,4 +125,30 @@ async Task addMemberToGroupTest()
     };
 
     await groupsRepository.addGroupMember(newlyAddedMember);
+}
+
+async Task updateGroupTest(Groups group) 
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+
+    group.GroupsId = group.GroupsId;
+    group.GroupName = "Updated Group Test 2";
+    group.DateCreated = group.DateCreated;
+    group.ExpenseTrackerUserId = group.ExpenseTrackerUserId;
+
+    await groupsRepository.updateGroup(group);
+
+}
+
+async Task sendGroupInviteTest() 
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+    var initialInvite = new PossibleMemberInvite
+    {
+        InviteeEmail = "sejoTestEmail1828@mailinator.com",
+        InviterEmail = "sejogoo@gmail.com",
+        GroupId = 8
+    };
+    await groupsRepository.sendGroupInvite(initialInvite);
+
 }

@@ -140,27 +140,27 @@ namespace ExpenseTrackerApi.Controllers
             return NoContent();
          }
 
-        [HttpGet("sendgroupinvitation/{groupId:int}/{groupMemberEmail}/{invitedUserEmail}")]
-        public async Task<IActionResult> sendGroupInvite(int groupId, string groupMemberEmail, string invitedUserEmail) 
+        [HttpPost("sendgroupinvitation/initialInviteEmail")]
+        public async Task<IActionResult> sendGroupInvite([FromBody] PossibleMemberInvite invite) 
         {
-            var groupMember = await _userManager.FindByNameAsync(groupMemberEmail);
-            var invitedUser =  await _userManager.FindByNameAsync(invitedUserEmail);
+            var groupMember = await _userManager.FindByNameAsync(invite.InviterEmail);
+            var invitedUser =  await _userManager.FindByNameAsync(invite.InviteeEmail);
             var groupMemberId = groupMember.Id;
             if (invitedUser == null) 
             {
-                return NotFound($"{invitedUserEmail} could not be found. If {invitedUserEmail} has already" +
+                return NotFound($"{invite.InviteeEmail} could not be found. If {invite.InviteeEmail} has already" +
                     $" created an account, please check spelling and try again. If they have not created " +
                     $"an account, have them register first");
             }
             else 
             {
-                var message = new EmailMessage(new string[] {$"{invitedUserEmail}"}, 
+                var message = new EmailMessage(new string[] {$"{invite.InviteeEmail}"}, 
                     "Invited to join a group for expenseTrack.com", $"Hello!! You've been invited to join" +
                     $" a group by {groupMember}. Please follow the link to be added in:" +
-                    $" https://localhost:44382/inviteeconfirm/{groupId}/{groupMemberId}");
+                    $" https://localhost:44382/inviteeconfirm/{invite.GroupId}/{groupMemberId}");
 
                    _emailSender.SendEmail(message);
-                    return Ok();
+                    return Ok(message);
             }
             
         }

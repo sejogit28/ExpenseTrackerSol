@@ -16,7 +16,7 @@ namespace ExpenseTrackerRepository
         Task inviterConfirm(PossibleMemberConfirm possibleInviter);
         Task<List<string>> listofGroupMemberNames(int currentGroupId);
         Task removeMemberFromGroup(int shrinkingGroupId, string userName);
-        Task sendGroupInvite(int groupId, string userName, string inviteeEmail);
+        Task sendGroupInvite(PossibleMemberInvite initialInvite);
         Task updateGroup(Groups updatedGroup);
     }
 }

@@ -20,42 +20,50 @@ namespace ExpenseTrackerRepository
 
         public async Task<IEnumerable<Groups>> getGroups()
         {
+            //TESTED
             return await webApiExecuter.InvokeGet<IEnumerable<Groups>>("api/Groups/groupslist");
         }
 
         public async Task<Groups> getSingleGroup(int singleGroupId)
         {
+            //TESTED
             return await webApiExecuter.InvokeGet<Groups>($"api/Groups/{singleGroupId}");
         }
 
         public async Task createGroup(Groups newGroup, string groupCreatorUserName)
         {
+            //TESTED
             await webApiExecuter.InvokePost($"api/Groups/creategroup/{groupCreatorUserName}", newGroup);
         }
 
         public async Task deleteGroup(int deletedGroupId)
         {
+            //TESTED
             await webApiExecuter.InvokeDelete<Groups>($"api/Groups/deletesinglegroup/{deletedGroupId}");
         }
 
         public async Task updateGroup(Groups updatedGroup)
         {
+            //TESTED
             await webApiExecuter.InvokePut($"api/Groups/updategroup/{updatedGroup.GroupsId}", updatedGroup);
         }
 
         public async Task<List<string>> listofGroupMemberNames(int currentGroupId)
         {
+            //TESTED
+
             return await webApiExecuter.InvokeGet<List<string>>($"api/Groups/listofgroupmembernames/{currentGroupId}");
         }
 
         public async Task addGroupMember(AddNewMemberToGroup addNew)
         {
+            //TESTED
             await webApiExecuter.InvokePost("api/Groups/addnewmembertogroup", addNew);
         }
 
-        public async Task sendGroupInvite(int groupId, string userName, string inviteeEmail)
+        public async Task sendGroupInvite(PossibleMemberInvite initialInvite)
         {
-            await webApiExecuter.InvokeGet<GroupUsers>($"api/Groups/sendgroupinvitation/{groupId}/{userName}/{inviteeEmail}");
+            await webApiExecuter.InvokePost($"api/Groups/sendgroupinvitation/initialInviteEmail", initialInvite);
         }
 
         public async Task inviteeConfirm(PossibleMemberConfirm possibleInvitee)
@@ -70,6 +78,7 @@ namespace ExpenseTrackerRepository
 
         public async Task removeMemberFromGroup(int shrinkingGroupId, string userName)
         {
+            //TESTED
             await webApiExecuter.InvokeDelete<GroupUsers>($"api/Groups/deletememberfromgroup/{shrinkingGroupId}/{userName}");
         }
     }

@@ -69,11 +69,9 @@ namespace ExpenseTrackerApi
 
             services.AddScoped<IEmailSender, EmailSender>();
 
-            services.AddControllers();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExpenseTrackerApi", Version = "v1" });
-            //});
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+ );
 
             services.AddCors(option =>
             {

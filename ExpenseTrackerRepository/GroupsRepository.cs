@@ -48,9 +48,9 @@ namespace ExpenseTrackerRepository
             return await webApiExecuter.InvokeGet<List<string>>($"api/Groups/listofgroupmembernames/{currentGroupId}");
         }
 
-        public async Task addGroupMember(int growingGroupId, string newGroupMemberName)
+        public async Task addGroupMember(AddNewMemberToGroup addNew)
         {
-            await webApiExecuter.InvokeGet<GroupUsers>($"api/Groups/addmembertogroup/{growingGroupId}/{newGroupMemberName}");
+            await webApiExecuter.InvokePost("api/Groups/addnewmembertogroup", addNew);
         }
 
         public async Task sendGroupInvite(int groupId, string userName, string inviteeEmail)

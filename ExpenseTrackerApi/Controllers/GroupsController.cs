@@ -63,35 +63,41 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(newgroup);
         }
 
-        [HttpGet("addmembertogroup/{newGroupId:int}/{potentialMemberName}")]
-        public async Task<IActionResult> addGroupCreatorToNewGroup(int newGroupId, string potentialMemberName) 
+        [HttpPost("addnewmembertogroup")]
+        public async Task<IActionResult> addGroupCreatorToNewGroup([FromBody] AddNewMemberToGroup addNew) 
         {
-            var potentialMember = await _userManager.FindByNameAsync(potentialMemberName);
-            if(potentialMember == null) 
+            var potentialMember = await _userManager.FindByNameAsync(addNew.NewMemberUserName);
+            var newGroup = await _datExpBase.Groups.FindAsync(addNew.GroupId);
+            //The Identity Users Id had to be put first for some reason....
+
+            var groupCheck = await _datExpBase.GroupUsers.FindAsync(potentialMember.Id, addNew.GroupId);
+
+            if (potentialMember == null) 
             {
-                return NotFound($"{potentialMemberName} could not be found");
+                return NotFound($"{addNew.NewMemberUserName} could not be found");
             }
 
-            var newGroup = await _datExpBase.Groups.FindAsync(newGroupId);
-            if (newGroup == null)
+            else if (newGroup == null)
             {
                 return NotFound($"Group could not be found");
             }
 
-            //The Identity Users Id had to be put first for some reason....
-            var groupCheck = await _datExpBase.GroupUsers.FindAsync(potentialMember.Id, newGroupId);
-            if (groupCheck != null)
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            else
+            
+            else if (groupCheck == null)
             {
                 var newGroupMember = new GroupUsers
                 {
                     ExpenseTrackerUserId = potentialMember.Id,
-                    GroupsGroupsId = newGroupId
+                    GroupsGroupsId = addNew.GroupId
                 };
                 await _datExpBase.GroupUsers.AddAsync(newGroupMember);
                 await _datExpBase.SaveChangesAsync();
-                return Ok();
+                return Ok(newGroupMember);
+            }
+                
+            else
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
            
            

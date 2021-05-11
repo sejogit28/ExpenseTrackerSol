@@ -10,7 +10,7 @@ namespace ExpenseTrackerRepository
     {
         Task DeleteSingleUser(string deletedUserId);
         Task<IList<ExpenseTrackerUser>> GetAllUsers();
-        Task<ExpenseTrackerUser> GetSingleUser(string singleUserId);
+        Task<ExpenseTrackerUser> GetSingleUser(string singleUserName);
         Task UpdateUserPassword(ChangePassword changePassword, string updatedUserId);
     }
 }

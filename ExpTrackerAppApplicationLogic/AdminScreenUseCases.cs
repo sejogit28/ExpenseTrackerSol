@@ -26,9 +26,9 @@ namespace ExpTrackerAppApplicationLogic
             return usersList;
         }
 
-        public async Task<ExpenseTrackerUser> ViewSingleUser(string singleUserId)
+        public async Task<ExpenseTrackerUser> ViewSingleUser(string singleUserName)
         {
-            return await userProfileRepository.GetSingleUser(singleUserId);
+            return await userProfileRepository.GetSingleUser(singleUserName);
         }
 
         public async Task DeleteSingleUser(string deletedUserId)

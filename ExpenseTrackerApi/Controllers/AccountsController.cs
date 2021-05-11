@@ -46,15 +46,15 @@ namespace ExpenseTrackerApi.Controllers
         [HttpGet("allUsers")]
         public IActionResult GetAllIdentityUsers() 
         {
-            var usersQueryList =  _userManager.Users;
-            var usersList = usersQueryList.ToList();
+            var usersQueryable =  _userManager.Users;
+            var usersList = usersQueryable.ToList();
             return Ok(usersList);
         }
 
-        [HttpGet("getSingleUser/{singleUserId}")]
-        public async Task<IActionResult> GetIdentityUser(string singleUserId)
+        [HttpGet("getSingleUser/{singleUserName}")]
+        public async Task<IActionResult> GetIdentityUser(string singleUserName)
         {
-            var singleUser = await _userManager.FindByIdAsync(singleUserId);
+            var singleUser = await _userManager.FindByNameAsync(singleUserName);
             if (singleUser == null) 
             {
                 return NotFound();

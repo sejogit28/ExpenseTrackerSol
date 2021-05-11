@@ -1,0 +1,24 @@
+﻿
+<h3>Confirm your invitation</h3>
+
+<EditForm>
+
+</EditForm>
+
+@code {
+
+    PossibleMemberConfirm possibleMemberModel;
+
+    public string currentUser;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+    }
+}

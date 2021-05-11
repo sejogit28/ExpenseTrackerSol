@@ -22,9 +22,9 @@ namespace ExpenseTrackerRepository
             return usersList;
         }
 
-        public async Task<ExpenseTrackerUser> GetSingleUser(string singleUserId)
+        public async Task<ExpenseTrackerUser> GetSingleUser(string singleUserName)
         {
-            return await webApiExecuter.InvokeGet<ExpenseTrackerUser>($"api/accounts/getSingleUser/{singleUserId}");
+            return await webApiExecuter.InvokeGet<ExpenseTrackerUser>($"api/accounts/getSingleUser/{singleUserName}");
         }
 
         public async Task DeleteSingleUser(string deletedUserId)

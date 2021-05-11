@@ -11,6 +11,6 @@ namespace ExpTrackerAppApplicationLogic
         Task DeleteSingleUser(string deletedUserId);
         Task UpdateUserPassword(ChangePassword changePassword, string updatedUserId);
         Task<IList<ExpenseTrackerUser>> ViewAllUsers();
-        Task<ExpenseTrackerUser> ViewSingleUser(string singleUserId);
+        Task<ExpenseTrackerUser> ViewSingleUser(string singleUserName);
     }
 }

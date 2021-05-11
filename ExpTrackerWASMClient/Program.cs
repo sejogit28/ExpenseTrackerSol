@@ -30,11 +30,13 @@ namespace ExpTrackerWASMClient
             builder.Services.AddTransient<IIncomesScreenUseCases, IncomesScreenUseCases>();
             builder.Services.AddTransient<IExpensesScreenUseCases, ExpensesScreenUseCases>();
             builder.Services.AddTransient<IAdminScreenUseCases, AdminScreenUseCases>();
+            builder.Services.AddTransient<IGroupsScreenUseCases, GroupsScreenUseCases>();
             //"Transient' means that everytime you need it, a new instance will be created
 
             builder.Services.AddTransient<IIncomesRepository, IncomesRepository>();
             builder.Services.AddTransient<IExpensesRepository, ExpensesRepository>();
             builder.Services.AddTransient<IUserProfileRepository, UserProfileRepository>();
+            builder.Services.AddTransient<IGroupsRepository, GroupsRepository>();
 
             builder.Services.AddScoped<DialogService>();
             builder.Services.AddScoped<NotificationService>();

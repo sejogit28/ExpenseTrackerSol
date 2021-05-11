@@ -35,6 +35,23 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(groupList);
         }
 
+        [HttpGet("groupslistbyuser/{userName}")]
+        public async Task<IActionResult> getGroupsByUser(string userName) 
+        {
+            var currentUser = await _userManager.FindByNameAsync(userName);
+            if(currentUser == null) 
+            {
+                return NotFound($"The user with the name {userName} could not be found");
+            }
+            else 
+            {
+                var listOfUsersGroupsHopefully = await _datExpBase.GroupUsers
+                    .Include(g => g.Groups).ThenInclude(gu => gu.GroupUsers)
+                    .Where(u => u.ExpenseTrackerUserId == currentUser.Id).ToListAsync();
+                return Ok(listOfUsersGroupsHopefully);
+            }
+        }
+
         [HttpGet("{singlegroupid:int}")]
         public async Task<IActionResult> getSingleGroup(int singlegroupid)
         {
@@ -67,17 +84,18 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> addGroupCreatorToNewGroup([FromBody] AddNewMemberToGroup addNew) 
         {
             var potentialMember = await _userManager.FindByNameAsync(addNew.NewMemberUserName);
+            if (potentialMember == null)
+            {
+                return NotFound($"{addNew.NewMemberUserName} could not be found");
+            }
             var newGroup = await _datExpBase.Groups.FindAsync(addNew.GroupId);
             //The Identity Users Id had to be put first for some reason....
 
             var groupCheck = await _datExpBase.GroupUsers.FindAsync(potentialMember.Id, addNew.GroupId);
 
-            if (potentialMember == null) 
-            {
-                return NotFound($"{addNew.NewMemberUserName} could not be found");
-            }
+            
 
-            else if (newGroup == null)
+            if (newGroup == null)
             {
                 return NotFound($"Group could not be found");
             }

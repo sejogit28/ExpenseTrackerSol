@@ -18,5 +18,6 @@ namespace ExpenseTrackerRepository
         Task removeMemberFromGroup(int shrinkingGroupId, string userName);
         Task sendGroupInvite(PossibleMemberInvite initialInvite);
         Task updateGroup(Groups updatedGroup);
+        Task<List<GroupUsers>> listOfGroupsByUser(string userName);
     }
 }

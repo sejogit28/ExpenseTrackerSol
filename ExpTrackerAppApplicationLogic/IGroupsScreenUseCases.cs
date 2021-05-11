@@ -17,6 +17,7 @@ namespace ExpTrackerAppApplicationLogic
         Task UpdateGroupName(Groups updatedGroup);
         Task<IList<string>> ViewAllGroupMemberNames(int currentGroupId);
         Task<IList<Groups>> ViewAllGroups();
+        Task<List<GroupUsers>> ViewAllGroupsByUser(string userName);
         Task<Groups> ViewSingleGroup(int singleGroupId);
     }
 }

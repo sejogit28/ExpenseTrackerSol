@@ -26,6 +26,11 @@ namespace ExpTrackerAppApplicationLogic
             return groupList;
         }
 
+        public async Task<List<GroupUsers>> ViewAllGroupsByUser(string userName)
+        {
+            return await _groupRepository.listOfGroupsByUser(userName);
+        }
+
         public async Task<Groups> ViewSingleGroup(int singleGroupId)
         {
             return await _groupRepository.getSingleGroup(singleGroupId);

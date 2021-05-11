@@ -24,6 +24,12 @@ namespace ExpenseTrackerRepository
             return await webApiExecuter.InvokeGet<IEnumerable<Groups>>("api/Groups/groupslist");
         }
 
+        public async Task<List<GroupUsers>> listOfGroupsByUser(string userName) 
+        {
+            //TESTED
+            return await webApiExecuter.InvokeGet<List<GroupUsers>>($"api/Groups/groupslistbyuser/{userName}");
+        }
+
         public async Task<Groups> getSingleGroup(int singleGroupId)
         {
             //TESTED

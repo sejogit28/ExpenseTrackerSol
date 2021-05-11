@@ -10,10 +10,15 @@ using System.Threading.Tasks;
 HttpClient httpClient = new();
 IWebApiExecuter apiExecuter = new WebApiExecuter("https://localhost:5001", httpClient);
 
-Console.WriteLine("///////////////");
-Console.WriteLine("Reading All Names of All Groups");
-await getGroupsTest();
-Console.ReadLine();
+//Console.WriteLine("///////////////");
+//Console.WriteLine("Reading All Names of All Groups");
+//await getGroupsTest();
+//Console.ReadLine();
+
+//Console.WriteLine("///////////////");
+//Console.WriteLine("Reading All Names of the groups that a specific is in");
+//await getGroupsByUserTest("sejogoo@gmail.com");
+//Console.ReadLine();
 
 //Console.WriteLine("///////////////");
 //Console.WriteLine("Creating A New Group");
@@ -21,10 +26,10 @@ Console.ReadLine();
 //Console.ReadLine();
 
 
-Console.WriteLine("///////////////");
-Console.WriteLine("Reading All Names of All Groups Once Again");
-await getGroupsTest();
-Console.ReadLine();
+//Console.WriteLine("///////////////");
+//Console.WriteLine("Reading All Names of All Groups Once Again");
+//await getGroupsTest();
+//Console.ReadLine();
 
 
 /*Console.WriteLine("///////////////");
@@ -101,10 +106,21 @@ Console.ReadLine();*/
 async Task getGroupsTest()
 {
     GroupsRepository groupsRepository = new(apiExecuter);
-    var groupsList = await groupsRepository.getGroups();
+    var groupsList = await groupsRepository.listOfGroups();
     foreach (var group in groupsList)
     {
         Console.WriteLine($"Group Names: {group.GroupName}");
+    }
+
+}
+
+async Task getGroupsByUserTest(string userName)
+{
+    GroupsRepository groupsRepository = new(apiExecuter);
+    var groupsList = await groupsRepository.listOfGroupsByUser(userName);
+    foreach (var group in groupsList)
+    {
+        Console.WriteLine($"Group Names: {group.Groups.GroupName}");
     }
 
 }

@@ -1,5 +1,4 @@
 ﻿@page "/incomes"
-
 @inject IIncomesScreenUseCases IncomesScreenUseCases
 
     <div class="row justify-content-center">
@@ -12,12 +11,12 @@
                 Filter By Income Type
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" @onclick="() => { unFilterIncomes();  }">All</a>
+                <a class="dropdown-item" @onclick="async () => { await unFilterIncomes();  }">All</a>
                 <div class="dropdown-divider"></div>
                 @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
                 @foreach (var value in Enum.GetValues(typeof(Incomes.IncomeCategoriesList)))
                 {
-                    <a class="dropdown-item" @onclick="() => { filterIncomes(value.ToString()); }">@value.ToString()</a>
+                    <a class="dropdown-item" @onclick="async() => { await filterIncomes(value.ToString()); }">@value.ToString()</a>
                 }
             </div>
         </div>
@@ -43,7 +42,7 @@
             <tbody>
                 @foreach (var income in filteredIncomes)
                 {
-                    if (currentUser == income.UserId)
+                    if (currentUser == income.UserId && income.GroupsGroupsId == null)
                     {
                         <tr>
                             <th scope="row">@income.IncomeId</th>

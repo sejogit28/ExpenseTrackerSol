@@ -1,10 +1,19 @@
-﻿@page "/IncExpComparisonChart/{targetMonth}"
+﻿@page "/GroupIncExpComparisonChart/{groupId:int}/{targetMonth}"
+@page "/GroupIncExpComparisonChart/{groupId:int}/"
 @inject IExpensesScreenUseCases ExpensesScreenUseCases
 @inject IIncomesScreenUseCases IncomesScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject NavigationManager NavManager
 
-<div class="row justify-content-center">
-    <h2>Budget Comparison for @targetMonth</h2>
-</div>
+
+
+
+@if (currentGroup != null)
+{
+    <div class="row justify-content-center">
+        <h2>@currentGroup.GroupName's Budget Comparison for @targetMonth</h2>
+    </div>
+}
 
 @*What follows(the 'if' statement) is VERY IMPORTANT due to the async nature of the way you're getting the data.*@
 @if (totalMonthlyExpenses != 0 && totalMonthlyIncome != 0)
@@ -28,14 +37,14 @@
 
     <div class="card shadow" style="width: 18rem;">
         <div class="card-header">
-            <h2>Remaining Income for @targetMonth:</h2>
+            <h2>@currentGroup.GroupName's Remaining Income for @targetMonth:</h2>
         </div>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
                 <h4>
                     @whatsLeft$
                 </h4>
-            </li>        
+            </li>
         </ul>
     </div>
 }
@@ -49,6 +58,7 @@ else
 
 @code {
 
+    public string currentUser;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
@@ -56,7 +66,11 @@ else
     [Parameter]
     public string targetMonth { get; set; }
 
-    public string currentUser;
+    [Parameter]
+    public int groupId { get; set; }
+
+    Groups currentGroup;
+    IList<string> currentGroupMembers;
 
     IEnumerable<Incomes> incomesbyMonth;
 
@@ -66,9 +80,8 @@ else
 
     public float totalMonthlyExpenses;
 
+
     public float whatsLeft;
-
-
 
     public class DataItem
     {
@@ -79,12 +92,14 @@ else
     DataItem[] IncExpComparisonChartData;
     protected override async Task OnParametersSetAsync()
     {
+        targetMonth = targetMonth ?? DateTime.Now.ToString("yyyy-MM");
+        currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
+        currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
 
         var authState = await AuthState;
         currentUser = authState.User.FindFirst(ClaimTypes.Name).Value;
 
-        //currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
+        groupSecurity();
 
 
         incomesbyMonth = await IncomesScreenUseCases.ViewIncomesByMonth(targetMonth);
@@ -97,7 +112,7 @@ else
 
         foreach (var income in incomesbyMonth)
         {
-            if (currentUser == income.UserId)
+            if (groupId == income.GroupsGroupsId)
             {
                 totalMonthlyIncome += income.Amount;
             }
@@ -105,7 +120,7 @@ else
 
         foreach (var expense in expensesbyMonth)
         {
-            if (currentUser == expense.UserId)
+            if (groupId == expense.GroupsGroupsId)
             {
                 totalMonthlyExpenses += expense.Amount;
             }
@@ -132,7 +147,13 @@ else
 
     }
 
-
+    public void groupSecurity(/*string currentUserName*/)
+    {
+        if (!currentGroupMembers.Contains(currentUser))
+        {
+            NavManager.NavigateTo("/userProfilePage");
+        }
+    }
 
 
 }

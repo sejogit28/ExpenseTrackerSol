@@ -12,12 +12,12 @@
                 Filter By Expense Type
             </button>
             <div class="dropdown-menu">
-                <a class="dropdown-item" @onclick="() => { unFilterExpenses();  }">All</a>
+                <a class="dropdown-item" @onclick="async() => { await unFilterExpenses();  }">All</a>
                 <div class="dropdown-divider"></div>
                 @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
                 @foreach (var value in Enum.GetValues(typeof(Expenses.ExpenseCategoriesList)))
                 {
-                    <a class="dropdown-item" @onclick="() => { filterExpenses(value.ToString()); }">@value.ToString()</a>
+                    <a class="dropdown-item" @onclick="async() => { await filterExpenses(value.ToString()); }">@value.ToString()</a>
 
                 }
             </div>
@@ -44,7 +44,7 @@
             <tbody>
                 @foreach (var expenses in filteredExpenses)
                 {
-                    if (currentUser == expenses.UserId)
+                    if (currentUser == expenses.UserId && expenses.GroupsGroupsId == null)
                     {
                     <tr>
                         <th scope="row">@expenses.ExpenseId</th>

@@ -1,0 +1,198 @@
+﻿@page "/groupincomesbymonth/comparisonchart/{groupId:int}/{targetMonth}"
+@inject IIncomesScreenUseCases IncomesScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject NavigationManager NavManager
+
+@if (currentGroup != null)
+{
+    <div class="row justify-content-center">
+        <h2>@currentGroup.GroupName's Monthly Incomes Comparison for @targetMonth</h2>
+    </div>
+}
+
+    @if (totalMonthlyIncomes != 0)
+    {
+        @if (incomeChartData.All(x => x.IncomeAmount == 0))
+        {
+            <div class="justify-content-center">
+                <h1>Please Input Values to View Table</h1>
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-12 col-sm-12 p-4">
+                    <RadzenChart>
+                        <RadzenBarSeries Data="@incomeChartData" LineType="LineType.Dashed" CategoryProperty="IncomeTypeLabel" Title="Income" ValueProperty="IncomeAmount" />
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                            <RadzenAxisTitle Text="Revenue in USD" />
+                        </RadzenValueAxis>
+                        <RadzenBarOptions Radius="5" />
+                    </RadzenChart>
+                </div>
+            </div>
+        }
+
+    }
+
+    else
+    {
+        <h2>
+            Fetching Info...
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+            </div>
+        </h2>
+    }
+
+
+
+    @code
+{
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    [Parameter]
+    public int groupId { get; set; }
+
+    public string currentUser;
+
+    //10 enum categories
+    [Parameter]
+    public string targetMonth { get; set; }
+
+    IEnumerable<Incomes> incomesbyMonth;
+
+    Groups currentGroup;
+    IList<string> currentGroupMembers;
+
+    public float totalMonthlyIncomes;
+
+
+    static float TaxReturn;
+    static float Job;
+    static float Borrowed;
+    static float PaidBack;
+    static float Other;
+
+
+
+
+    public class DataItem
+    {
+        public string IncomeTypeLabel { get; set; }
+        public float IncomeAmount { get; set; }
+    }
+
+    DataItem[] incomeChartData;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+
+        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
+        currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
+
+        groupSecurity();
+
+
+        TaxReturn = 0;
+        Job = 0;
+        Borrowed = 0;
+        PaidBack = 0;
+        Other = 0;
+
+
+        incomesbyMonth = await IncomesScreenUseCases.ViewIncomesByMonth(targetMonth);
+
+
+        foreach (var income in incomesbyMonth)
+        {
+            if (groupId == income.GroupsGroupsId)
+            {
+                totalMonthlyIncomes += income.Amount;
+
+                if (income.IncomeTypes.ToString() == "Taxes")
+
+                {
+                    TaxReturn += income.Amount;
+                }
+
+                if (income.IncomeTypes.ToString() == "Job")
+
+                {
+                    Job += income.Amount;
+                }
+
+                if (income.IncomeTypes.ToString() == "Borrowed")
+
+                {
+                    Borrowed += income.Amount;
+                }
+
+                if (income.IncomeTypes.ToString() == "Repaid")
+
+                {
+                    PaidBack += income.Amount;
+                }
+
+                if (income.IncomeTypes.ToString() == "Other")
+
+                {
+                    Other += income.Amount;
+                }
+            }
+
+        }
+
+        DataItem[] incomeChartDataContents = {
+
+            new DataItem
+            {
+                IncomeTypeLabel = "Job",
+                IncomeAmount = Job
+            },
+            new DataItem
+            {
+                IncomeTypeLabel = "Paid Back",
+                IncomeAmount = PaidBack
+            },
+            new DataItem
+            {
+                IncomeTypeLabel = "Borrowed",
+                IncomeAmount = Borrowed
+            },
+            new DataItem
+            {
+                IncomeTypeLabel = "Tax Return",
+                IncomeAmount = TaxReturn
+            },
+            new DataItem
+            {
+                IncomeTypeLabel = "Other",
+                IncomeAmount = Other
+            }};
+
+        incomeChartData = incomeChartDataContents;
+
+
+    }
+
+    public void groupSecurity()
+    {
+        if (!currentGroupMembers.Contains(currentUser))
+        {
+            NavManager.NavigateTo("/userProfilePage");
+        }
+    }
+
+    }
+
+
+
+
+

@@ -1,5 +1,6 @@
 ﻿@page "/userProfilePage"
-@inject IAdminScreenUseCases AdminScreenUseCases 
+@inject IAdminScreenUseCases AdminScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
 
 @if (currentIdentityUser != null)
 {
@@ -7,17 +8,23 @@
         <h3>Hello @currentIdentityUser.UserName, welcome to your profile page!</h3>
     </div>
 
+    <br />
+    <br />
+
     <div class="row">
         <details>
-            <summary>User Info(Click to reveal)</summary>
-                <ol>
-                    <li>Your Id: @currentIdentityUser.Id</li>
-                    <li>Your Email: @currentIdentityUser.Email</li>
-                    <li>The date you signed up: @currentIdentityUser.DateAdded</li>
-                    <li>Your username: @currentIdentityUser.UserName</li>
-                </ol>
+            <summary>User Info(Click here to reveal)</summary>
+            <ol>
+                <li>Your Id: @currentIdentityUser.Id</li>
+                <li>Your Email: @currentIdentityUser.Email</li>
+                <li>The date you signed up: @currentIdentityUser.DateAdded</li>
+                <li>Your username: @currentIdentityUser.UserName</li>
+            </ol>
         </details>
     </div>
+
+    <br />
+    <br />
 
     <div class="row">
         <div class="card" style="width: 18rem;">
@@ -25,14 +32,20 @@
                 Your Group(s):
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">An item</li>
-                <li class="list-group-item">A second item</li>
-                <li class="list-group-item">A third item</li>
+                @if (userGroupList != null)
+                {
+                    foreach (var group in userGroupList)
+                    {
+                        <li class="list-group-item">@group.Groups.GroupName</li>
+                    }
+                }
+
+
             </ul>
         </div>
     </div>
 }
-else 
+else
 {
     <div class="row justify-content-center">
         <div class="spinner-grow text-info" role="status">
@@ -53,7 +66,8 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
-    
+    List<GroupUsers> userGroupList;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,6 +76,9 @@ else
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
 
         currentIdentityUser = await AdminScreenUseCases.ViewSingleUser(currentUser);
+
+        userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
+
     }
 }
 

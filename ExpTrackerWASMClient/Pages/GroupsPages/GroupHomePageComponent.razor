@@ -1,0 +1,69 @@
+﻿@page "/grouphomepage/{groupId:int}"
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject NavigationManager NavManager
+
+@if (currentGroup != null)
+{
+    <div class="row justify-content-center">
+        <h3>@currentGroup.GroupName's Home Page</h3>
+    </div>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                @currentGroup.GroupName's members
+            </div>
+            <ul class="list-group list-group-flush">
+                @if (currentGroupMembers != null)
+                {
+                    foreach (var groupMember in currentGroupMembers)
+                    {
+                        <li class="list-group-item">@groupMember</li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row justify-content-center">
+        <h3>Fetching Any Available Info</h3>
+    </div>
+
+}
+
+
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    [Parameter]
+    public int groupId { get; set; }
+
+    Groups currentGroup;
+    IList<string> currentGroupMembers;
+    public string currentUser;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
+        currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
+
+        var authState = await AuthState;
+        currentUser = authState.User.FindFirst(ClaimTypes.Name).Value;
+
+        groupSecurity();
+
+    }
+
+    public void groupSecurity()
+    {
+        if (!currentGroupMembers.Contains(currentUser))
+        {
+            NavManager.NavigateTo("/userProfilePage");
+        }
+    }
+
+}

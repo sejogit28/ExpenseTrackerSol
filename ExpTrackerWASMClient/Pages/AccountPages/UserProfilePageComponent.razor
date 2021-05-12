@@ -36,7 +36,7 @@
                 {
                     foreach (var group in userGroupList)
                     {
-                        <li class="list-group-item">@group.Groups.GroupName</li>
+                        <li class="list-group-item"> <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">@group.Groups.GroupName</NavLink> </li>
                     }
                 }
 

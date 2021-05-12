@@ -58,7 +58,6 @@ else
 
 @code {
 
-    public string currentUser;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
@@ -71,6 +70,8 @@ else
 
     Groups currentGroup;
     IList<string> currentGroupMembers;
+    public string currentUser;
+
 
     IEnumerable<Incomes> incomesbyMonth;
 

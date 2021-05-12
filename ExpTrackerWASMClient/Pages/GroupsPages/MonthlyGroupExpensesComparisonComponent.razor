@@ -1,0 +1,283 @@
+﻿@page "/groupexpensesbymonth/comparisonchart/{groupId:int}/{targetMonth}"
+@inject IExpensesScreenUseCases ExpensesScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject NavigationManager NavManager
+
+@if (currentGroup != null)
+{
+    <div class="row justify-content-center">
+        <h2>@currentGroup.GroupName's Monthly Expenses Comparison for @targetMonth</h2>
+    </div>
+}
+
+    @if (totalMonthlyExpenses != 0)
+    {
+        @if (expenseChartData.All(x => x.ExpenseAmount == 0))
+        {
+            <div class="justify-content-center">
+                <h1>Please Input Values to View Table</h1>
+            </div>
+        }
+        else
+        {
+            <div class="row justify-content-center">
+                <div class="col-md-12 col-sm-12 p-4">
+                    <RadzenChart>
+                        <RadzenBarSeries Data="@expenseChartData" LineType="LineType.Dashed" CategoryProperty="ExpenseTypeLabel" Title="Expenses" ValueProperty="ExpenseAmount" />
+                        <RadzenValueAxis>
+                            <RadzenGridLines Visible="true" />
+                            <RadzenAxisTitle Text="Revenue in USD" />
+                        </RadzenValueAxis>
+                        <RadzenBarOptions Radius="5" />
+                    </RadzenChart>
+                </div>
+            </div>
+        }
+
+    }
+
+    else
+    {
+        <h2>
+            Fetching Info...
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+
+            </div>
+        </h2>
+    }
+
+
+
+    @code
+{
+
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthState { get; set; }
+
+
+        [Parameter]
+        public int groupId { get; set; }
+
+public string currentUser;
+
+
+    [Parameter]
+    public string targetMonth { get; set; }
+
+    IEnumerable<Expenses> expensesbyMonth;
+
+    Groups currentGroup;
+    IList<string> currentGroupMembers;
+
+    public float totalMonthlyExpenses;
+
+    static float RentersInsurance;
+    static float Electric;
+    static float Phone;
+    static float Internet;
+    static float Gas;
+    static float Parking;
+    static float ZoeyExpenses;
+    static float Subscription;
+    static float Groceries;
+    static float Fun;
+
+
+
+
+    public class DataItem
+    {
+        public string ExpenseTypeLabel { get; set; }
+        public float ExpenseAmount { get; set; }
+    }
+
+    DataItem[] expenseChartData;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+
+        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
+        currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
+
+        groupSecurity();
+
+        RentersInsurance = 0;
+        Electric = 0;
+        Phone = 0;
+        Internet = 0;
+        Gas = 0;
+        Parking = 0;
+        ZoeyExpenses = 0;
+        Subscription = 0;
+        Groceries = 0;
+        Fun = 0;
+
+        expensesbyMonth = await ExpensesScreenUseCases.ViewExpensesByMonth(targetMonth);
+
+
+        foreach (var expense in expensesbyMonth)
+        {
+            if (groupId == expense.GroupsGroupsId)
+            {
+                totalMonthlyExpenses += expense.Amount;
+
+                if (expense.ExpenseTypes.ToString() == "Insurance")
+
+                {
+                    RentersInsurance += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Electric")
+
+                {
+                    Electric += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Phone")
+
+                {
+                    Phone += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Internet")
+
+                {
+                    Internet += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Gas")
+
+                {
+                    Gas += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Parking")
+
+                {
+                    Parking += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Pet")
+
+                {
+                    ZoeyExpenses += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Subscription")
+
+                {
+                    Subscription += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Groceries")
+
+                {
+                    Groceries += expense.Amount;
+                }
+
+                if (expense.ExpenseTypes.ToString() == "Fun")
+
+                {
+                    Fun += expense.Amount;
+                }
+            }
+        }
+
+        DataItem[] expenseChartDataContents = {new DataItem
+    {
+        ExpenseTypeLabel = "Renters Insurance",
+        ExpenseAmount = RentersInsurance
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Electric",
+        ExpenseAmount = Electric
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Phone",
+        ExpenseAmount = Phone
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Internet",
+        ExpenseAmount = Internet
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Gas",
+        ExpenseAmount = Gas
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Parking",
+        ExpenseAmount = Parking
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Zoey Expenses",
+        ExpenseAmount = ZoeyExpenses
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Subscription",
+        ExpenseAmount = Subscription
+    },
+
+    new DataItem
+    {
+        ExpenseTypeLabel = "Groceries",
+        ExpenseAmount = Groceries
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Fun",
+        ExpenseAmount = Fun
+    }};
+
+        expenseChartData = expenseChartDataContents;
+
+        //await Task.Delay(2000);
+    }
+
+
+    public void groupSecurity()
+    {
+        if (!currentGroupMembers.Contains(currentUser))
+        {
+            NavManager.NavigateTo("/userProfilePage");
+        }
+    }
+
+
+
+
+
+
+    //protected override bool ShouldRender()
+    //{
+
+
+    //    if (revenue.All(x => x.ExpenseAmount == 0))
+    //    {
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
+
+    //}
+
+
+    //DataItem[] revenue = new DataItem[11];
+
+    }
+
+
+
+
+

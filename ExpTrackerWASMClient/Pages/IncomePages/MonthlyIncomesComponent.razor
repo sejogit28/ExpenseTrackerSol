@@ -32,7 +32,7 @@
         <tbody>
             @foreach (var income in incomesbyMonth)
             {
-                if (income.UserId == currentUser)
+                if (income.UserId == currentUser && income.GroupsGroupsId == null)
                 {
                     <tr>
                         <th scope="row">@income.IncomeId</th>
@@ -292,7 +292,7 @@ else
 
         foreach (var incomeAmount in incomesbyMonth)
         {
-            if (currentUser == incomeAmount.UserId)
+            if (currentUser == incomeAmount.UserId && incomeAmount.GroupsGroupsId == null)
             {
                 totalMonthlyIncome += incomeAmount.Amount;
             }

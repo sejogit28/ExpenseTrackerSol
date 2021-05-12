@@ -5,6 +5,7 @@
 @inject IGroupsScreenUseCases GroupsScreenUseCases
 @inject NavigationManager NavManager
 
+
 @if (currentGroup != null)
 {
     <div class="row justify-content-center">
@@ -193,10 +194,9 @@ else
     Incomes income;
     Groups currentGroup;
     IList<string> currentGroupMembers;
-
     AlertComponent alertComponent;
-
     IEnumerable<Incomes> incomesbyMonth;
+
 
     public double? totalMonthlyIncome;
     public string currentUser;

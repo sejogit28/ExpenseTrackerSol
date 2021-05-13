@@ -53,7 +53,11 @@
                         <th scope="row">@expenses.ExpenseTypes</th>
                         <th scope="row">@expenses.Amount</th>
                         <th scope="row">@expenses.Notes</th>
-                        <th scope="row"><NavLink style="color: blue" href="@($"/expensesbymonth/{expenses.MonthYear}")">@expenses.DateSpent.ToShortDateString()</NavLink></th>
+                        <th scope="row">
+                                <NavLink style="color: blue" href="@($"/groupexpensesbymonth/{groupId}/{expenses.MonthYear}")">
+                                    @expenses.DateSpent.ToShortDateString()
+                                </NavLink>
+                        </th>
                         <th scope="row">@expenses.DateSubmitted.ToShortDateString()</th>
                     </tr>
                 }

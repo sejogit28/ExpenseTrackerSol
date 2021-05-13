@@ -23,7 +23,9 @@
                 }
             </ul>
             <div class="card-footer">
-                Add a new member?
+                <button class="btn btn-outline-secondary" >
+                    Add A New Member?
+                </button>
             </div>
         </div>
     </div>
@@ -46,11 +48,13 @@ else
     public int groupId { get; set; }
 
     Groups currentGroup;
+    PossibleMemberInvite possibleMember;
     IList<string> currentGroupMembers;
     public string currentUser;
 
     protected override async Task OnParametersSetAsync()
     {
+
         currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
         currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
 
@@ -59,6 +63,10 @@ else
 
         groupSecurity();
 
+        possibleMember = new PossibleMemberInvite
+        {
+            InviterEmail = currentUser
+        };
     }
 
     public void groupSecurity()
@@ -67,6 +75,11 @@ else
         {
             NavManager.NavigateTo("/userProfilePage");
         }
+    }
+
+    public async Task sendGroupInvite()
+    {
+        GroupsScreenUseCases.SendInitialInviteEmail()
     }
 
 }

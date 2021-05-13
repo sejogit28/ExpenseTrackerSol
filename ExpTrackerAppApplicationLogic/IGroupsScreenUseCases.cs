@@ -13,7 +13,7 @@ namespace ExpTrackerAppApplicationLogic
         Task GroupInviteeConfirm(PossibleMemberConfirm possibleMember);
         Task GroupInviterConfirm(PossibleMemberConfirm currentMember);
         Task RemoveMemberFromGroup(int shrinkingGroupId, string removedMember);
-        Task SendInitialEmail(PossibleMemberInvite memberInvite);
+        Task SendInitialInviteEmail(PossibleMemberInvite memberInvite);
         Task UpdateGroupName(Groups updatedGroup);
         Task<IList<string>> ViewAllGroupMemberNames(int currentGroupId);
         Task<IList<Groups>> ViewAllGroups();

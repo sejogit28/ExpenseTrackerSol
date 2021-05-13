@@ -61,7 +61,7 @@ namespace ExpTrackerAppApplicationLogic
             await _groupRepository.addGroupMember(addNew);
         }
 
-        public async Task SendInitialEmail(PossibleMemberInvite memberInvite)
+        public async Task SendInitialInviteEmail(PossibleMemberInvite memberInvite)
         {
             await _groupRepository.sendGroupInvite(memberInvite);
         }
@@ -76,9 +76,9 @@ namespace ExpTrackerAppApplicationLogic
             await _groupRepository.inviterConfirm(currentMember);
         }
 
-        public async Task RemoveMemberFromGroup(int shrinkingGroupId, string removedMember)
+        public async Task RemoveMemberFromGroup(int shrinkingGroupId, string removedMemberName)
         {
-            await _groupRepository.removeMemberFromGroup(shrinkingGroupId, removedMember);
+            await _groupRepository.removeMemberFromGroup(shrinkingGroupId, removedMemberName);
         }
     }
 }

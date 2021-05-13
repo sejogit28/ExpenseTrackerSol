@@ -280,6 +280,8 @@ namespace ExpenseTrackerApi.Controllers
         [HttpDelete("deletememberfromgroup/{groupId:int}/{deletedMemberName}")]
         public async Task<IActionResult> deleteGroupMember(int groupId, string deletedMemberName) 
         {
+            
+
             var deletedMember = await _userManager.FindByNameAsync(deletedMemberName);
             if (deletedMember == null)
                 return NotFound($"{deletedMemberName} could not be found.");
@@ -292,7 +294,21 @@ namespace ExpenseTrackerApi.Controllers
             {
                 _datExpBase.GroupUsers.Remove(deletedMembership);
                 await _datExpBase.SaveChangesAsync();
-                return Ok();
+                var groupMemberCheck = await _datExpBase.GroupUsers
+                .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
+                if (groupMemberCheck.Count == 0) 
+                {
+                    _datExpBase.Groups.Remove(currentGroup);
+                    await _datExpBase.SaveChangesAsync();
+                    return Ok($"{deletedMemberName} has been removed from {currentGroup.GroupName}. " +
+                        $"This meant that {currentGroup.GroupName} had no members and was deleted");
+                }
+                else 
+                {
+                    await _datExpBase.SaveChangesAsync();
+                    return Ok($"{deletedMemberName} has been removed from {currentGroup.GroupName}");
+                }
+                
             }
             
         }

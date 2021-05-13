@@ -27,7 +27,7 @@
     <br />
 
     <div class="row">
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 35rem;">
             <div class="card-header">
                 Your Group(s):
             </div>
@@ -36,27 +36,33 @@
                 {
                     foreach (var group in userGroupList)
                     {
-                        <li class="list-group-item"> 
-                            <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">
-                                @group.Groups.GroupName
-                            </NavLink> 
-                            <button class="btn btn-outline-secondary float-right" @onclick="async () => { await DeleteGroup(group.Groups.GroupsId); }">
-                                Delete
-                            </button>
-                        </li>
+                <li class="list-group-item">
+                    <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                        @group.Groups.GroupName
+                    </NavLink>
+                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await DeleteGroup(group.Groups.GroupsId); }">
+                        Delete
+                    </button>
+                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await leaveGroup(group.Groups.GroupsId, currentIdentityUser.UserName); }">
+                        Leave Group
+                    </button>
+                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await getEditableGroupName(group.Groups.GroupsId); }">
+                        Edit Group Name
+                    </button>
+                </li>
                     }
                 }
             </ul>
             <div class="card-footer">
                 @if (showCreateGroupForm == false)
                 {
-                    <button type="button" class="btn btn-outline-info" @onclick="() => { toggleNewGroupForm(); }">
+                    <button type="button" class="btn btn-outline-info" @onclick="() => { toggleGroupForm(); }">
                         Create A New Group
                     </button>
-                 }
-                else 
+                }
+                else
                 {
-                    <button type="button" class="btn btn-outline-info" @onclick="() => { toggleNewGroupForm(); }">
+                    <button type="button" class="btn btn-outline-info" @onclick="() => { closeGroupForm(); }">
                         Cancel
                     </button>
                 }
@@ -67,9 +73,9 @@
     <br/>
     <br/>
 
-@if(showCreateGroupForm ==  true)
+@if (showCreateGroupForm == true)
 {
-<EditForm Model="group" OnValidSubmit="createNewGroup">
+<EditForm Model="group" OnValidSubmit="createNewGroupOrEditGroupName">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
     <div class="card w-25 shadow-sm">
@@ -84,9 +90,19 @@
             </div>
         </div>
         <div class="card-footer">
-            <button class="btn btn-outline-info">
-                Create Group
-            </button>
+            @if (group.GroupsId > 0)
+            {
+                <button class="btn btn-outline-info">
+                    Edit This Groups Name
+                </button>
+            }
+            else
+            {
+                <button class="btn btn-outline-info">
+                    Create Group
+                </button>
+            }
+
         </div>
     </div>
 </EditForm>
@@ -94,7 +110,7 @@
 <br/>
 <br />
 }
-    
+
 }
 else
 {
@@ -134,37 +150,47 @@ else
 
         showCreateGroupForm = false;
 
-        group = new Groups
-        {
-            DateCreated = DateTime.Now,
-            ExpenseTrackerUserId = currentIdentityUser.Id
-        };
+        getFreshGroup();
     }
 
-    public async Task createNewGroup()
+    public async Task createNewGroupOrEditGroupName()
     {
-        var newGroup = await GroupsScreenUseCases.CreateNewGroup(group, currentUser);
-
-        var newMemberObj = new AddNewMemberToGroup
+        if (group.GroupsId > 0)
         {
-            GroupId = newGroup.GroupsId,
-            NewMemberUserName = currentUser
-        };
+            await GroupsScreenUseCases.UpdateGroupName(group);
+            await reRenderPageAfterSubmit();
+        }
+        else
+        {
+            var newGroup = await GroupsScreenUseCases.CreateNewGroup(group, currentUser);
 
-        await GroupsScreenUseCases.AddUserToGroup(newMemberObj);
+            var newMemberObj = new AddNewMemberToGroup
+            {
+                GroupId = newGroup.GroupsId,
+                NewMemberUserName = currentUser
+            };
 
-        toggleNewGroupForm();
-        group.GroupName = "";
+            await GroupsScreenUseCases.AddUserToGroup(newMemberObj);
+
+            await reRenderPageAfterSubmit();
+        }
+
+    }
+
+
+    public async Task getEditableGroupName(int editableGroupId)
+    {
+        group = await GroupsScreenUseCases.ViewSingleGroup(editableGroupId);
+        toggleGroupForm();
+    }
+
+    public async Task leaveGroup(int shrinkingGroupId, string leavingMemberName)
+    {
+        await GroupsScreenUseCases.RemoveMemberFromGroup(shrinkingGroupId, leavingMemberName);
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
 
-
-
     }
 
-    public void toggleNewGroupForm()
-    {
-        showCreateGroupForm = !showCreateGroupForm;
-    }
 
     public async Task DeleteGroup(int deletableGroupId)
     {
@@ -172,5 +198,35 @@ else
 
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
     }
+
+    public async Task reRenderPageAfterSubmit()
+    {
+        closeGroupForm();
+        getFreshGroup();
+        userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
+    }
+
+
+    public void getFreshGroup()
+    {
+        group = new Groups
+        {
+            DateCreated = DateTime.Now,
+            ExpenseTrackerUserId = currentIdentityUser.Id
+        };
+    }
+
+    public void toggleGroupForm()
+    {
+        showCreateGroupForm = true;
+    }
+
+
+    public void closeGroupForm()
+    {
+        showCreateGroupForm = false;
+        getFreshGroup();
+    }
+
 }
 

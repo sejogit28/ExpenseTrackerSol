@@ -36,14 +36,65 @@
                 {
                     foreach (var group in userGroupList)
                     {
-                        <li class="list-group-item"> <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">@group.Groups.GroupName</NavLink> </li>
+                        <li class="list-group-item"> 
+                            <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                                @group.Groups.GroupName
+                            </NavLink> 
+                            <button class="btn btn-outline-secondary float-right" @onclick="async () => { await DeleteGroup(group.Groups.GroupsId); }">
+                                Delete
+                            </button>
+                        </li>
                     }
                 }
-
-
             </ul>
+            <div class="card-footer">
+                @if (showCreateGroupForm == false)
+                {
+                    <button type="button" class="btn btn-outline-info" @onclick="() => { toggleNewGroupForm(); }">
+                        Create A New Group
+                    </button>
+                 }
+                else 
+                {
+                    <button type="button" class="btn btn-outline-info" @onclick="() => { toggleNewGroupForm(); }">
+                        Cancel
+                    </button>
+                }
+            </div>
         </div>
     </div>
+
+    <br/>
+    <br/>
+
+@if(showCreateGroupForm ==  true)
+{
+<EditForm Model="group" OnValidSubmit="createNewGroup">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="card w-25 shadow-sm">
+        <h5 class="card-header">Create a New Group</h5>
+        <div class="card-body">
+            <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="group.ExpenseTrackerUserId"></InputText>
+            <InputDate hidden class="form-control" id="DateCreated" @bind-Value="group.DateCreated"></InputDate>
+
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="Amount" class="col-form-label">Group Name</label>
+                <InputText class="form-control" id="GroupName" @bind-Value="group.GroupName"></InputText>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button class="btn btn-outline-info">
+                Create Group
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+<br/>
+<br />
+}
+    
 }
 else
 {
@@ -66,8 +117,10 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
+    Groups group;
     List<GroupUsers> userGroupList;
 
+    public bool showCreateGroupForm { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,6 +132,45 @@ else
 
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
 
+        showCreateGroupForm = false;
+
+        group = new Groups
+        {
+            DateCreated = DateTime.Now,
+            ExpenseTrackerUserId = currentIdentityUser.Id
+        };
+    }
+
+    public async Task createNewGroup()
+    {
+        var newGroup = await GroupsScreenUseCases.CreateNewGroup(group, currentUser);
+
+        var newMemberObj = new AddNewMemberToGroup
+        {
+            GroupId = newGroup.GroupsId,
+            NewMemberUserName = currentUser
+        };
+
+        await GroupsScreenUseCases.AddUserToGroup(newMemberObj);
+
+        toggleNewGroupForm();
+        group.GroupName = "";
+        userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
+
+
+
+    }
+
+    public void toggleNewGroupForm()
+    {
+        showCreateGroupForm = !showCreateGroupForm;
+    }
+
+    public async Task DeleteGroup(int deletableGroupId)
+    {
+        await GroupsScreenUseCases.DeleteSingleGroup(deletableGroupId);
+
+        userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
     }
 }
 

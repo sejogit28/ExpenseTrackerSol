@@ -8,7 +8,7 @@ namespace ExpenseTrackerRepository
     public interface IGroupsRepository
     {
         Task addGroupMember(AddNewMemberToGroup addNew);
-        Task createGroup(Groups newGroup, string groupCreatorUserName);
+        Task<Groups> createGroup(Groups newGroup, string groupCreatorUserName);
         Task deleteGroup(int deletedGroupId);
         Task<IEnumerable<Groups>> listOfGroups();
         Task<Groups> getSingleGroup(int singleGroupId);

@@ -77,12 +77,14 @@ namespace ExpenseTrackerApi.Controllers
              
             await _datExpBase.SaveChangesAsync();
 
+
             return Ok(newgroup);
         }
 
         [HttpPost("addnewmembertogroup")]
         public async Task<IActionResult> addGroupCreatorToNewGroup([FromBody] AddNewMemberToGroup addNew) 
         {
+
             var potentialMember = await _userManager.FindByNameAsync(addNew.NewMemberUserName);
             if (potentialMember == null)
             {

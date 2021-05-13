@@ -36,10 +36,10 @@ namespace ExpenseTrackerRepository
             return await webApiExecuter.InvokeGet<Groups>($"api/Groups/{singleGroupId}");
         }
 
-        public async Task createGroup(Groups newGroup, string groupCreatorUserName)
+        public async Task<Groups> createGroup(Groups newGroup, string groupCreatorUserName)
         {
             //TESTED
-            await webApiExecuter.InvokePost($"api/Groups/creategroup/{groupCreatorUserName}", newGroup);
+            return await webApiExecuter.InvokePost($"api/Groups/creategroup/{groupCreatorUserName}", newGroup);
         }
 
         public async Task deleteGroup(int deletedGroupId)

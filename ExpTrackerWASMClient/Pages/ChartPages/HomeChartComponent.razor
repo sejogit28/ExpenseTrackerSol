@@ -97,7 +97,7 @@ else
 
         foreach (var income in incomesbyMonth)
         {
-            if (currentUser == income.UserId)
+            if (currentUser == income.UserId && income.GroupsGroupsId == null)
             {
                 totalMonthlyIncome += income.Amount;
             }
@@ -105,7 +105,7 @@ else
 
         foreach (var expense in expensesbyMonth)
         {
-            if (currentUser == expense.UserId)
+            if (currentUser == expense.UserId && expense.GroupsGroupsId == null)
             {
                 totalMonthlyExpenses += expense.Amount;
             }

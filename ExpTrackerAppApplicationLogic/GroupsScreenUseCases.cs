@@ -36,9 +36,9 @@ namespace ExpTrackerAppApplicationLogic
             return await _groupRepository.getSingleGroup(singleGroupId);
         }
 
-        public async Task CreateNewGroup(Groups newgroup, string groupCreatorName)
+        public async Task<Groups> CreateNewGroup(Groups newgroup, string groupCreatorName)
         {
-            await _groupRepository.createGroup(newgroup, groupCreatorName);
+            return await _groupRepository.createGroup(newgroup, groupCreatorName);
         }
 
         public async Task DeleteSingleGroup(int deletedGroupId)

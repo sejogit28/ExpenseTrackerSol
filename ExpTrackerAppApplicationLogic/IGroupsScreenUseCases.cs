@@ -8,7 +8,7 @@ namespace ExpTrackerAppApplicationLogic
     public interface IGroupsScreenUseCases
     {
         Task AddUserToGroup(AddNewMemberToGroup addNew);
-        Task CreateNewGroup(Groups newgroup, string groupCreatorName);
+        Task<Groups> CreateNewGroup(Groups newgroup, string groupCreatorName);
         Task DeleteSingleGroup(int deletedGroupId);
         Task GroupInviteeConfirm(PossibleMemberConfirm possibleMember);
         Task GroupInviterConfirm(PossibleMemberConfirm currentMember);

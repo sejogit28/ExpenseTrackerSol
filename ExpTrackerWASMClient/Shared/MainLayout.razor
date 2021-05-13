@@ -10,7 +10,9 @@
             <Authorized>
                 <div class="top-row px-4">
                     <NavLink style="color: black" class="nav-link" href="/userProfilePage">
-                        <p>Hello @context.User.FindFirst(ClaimTypes.Name).Value!!</p>
+                        <p>
+                            Hello @context.User.FindFirst(ClaimTypes.Name).Value!!(Click here to view your profile)
+                        </p>
                     </NavLink>
                 </div>
             </Authorized>

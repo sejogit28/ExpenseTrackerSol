@@ -165,7 +165,6 @@ namespace ExpenseTrackerApi.Controllers
         {
             var groupMember = await _userManager.FindByNameAsync(invite.InviterEmail);
             var invitedUser =  await _userManager.FindByNameAsync(invite.InviteeEmail);
-            var groupMemberId = groupMember.Id;
             if (invitedUser == null) 
             {
                 return NotFound($"{invite.InviteeEmail} could not be found. If {invite.InviteeEmail} has already" +
@@ -177,7 +176,7 @@ namespace ExpenseTrackerApi.Controllers
                 var message = new EmailMessage(new string[] {$"{invite.InviteeEmail}"}, 
                     "Invited to join a group for expenseTrack.com", $"Hello!! You've been invited to join" +
                     $" a group by {groupMember}. Please follow the link to be added in:" +
-                    $" https://localhost:44382/inviteeconfirm/{invite.GroupId}/{groupMemberId}");
+                    $" https://localhost:44382/inviteeconfirm/{invite.InviteeEmail}/{invite.GroupId}");
 
                    _emailSender.SendEmail(message);
                     return Ok(message);
@@ -189,21 +188,33 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> inviteeConfirm([FromBody] PossibleMemberConfirm possible) 
         {
             var currentGroup = await _datExpBase.Groups.FindAsync(possible.GroupId);
-            if (currentGroup == null)
-                return NotFound("This group could not be found");
-
             var invitedMember = await _userManager.FindByNameAsync(possible.InviteeEmail);
-            if (invitedMember == null)
-                return NotFound("This user could not be found");
+            var invitingMember = await _userManager.FindByNameAsync(possible.InviterEmail);
+            var emailSenderGroupCheck = await _datExpBase.GroupUsers.FindAsync(invitingMember.Id, possible.GroupId);
 
-            if (!await _userManager.CheckPasswordAsync(invitedMember, possible.Password))
+            if (currentGroup == null) 
+            {
+                return NotFound("This group could not be found");
+            }                        
+            else if (invitedMember == null)
+            {
+                return NotFound("This user could not be found");
+            }
+            else if (!await _userManager.CheckPasswordAsync(invitedMember, possible.Password))
+            {
                 return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+            }
+            else if(emailSenderGroupCheck == null) 
+            {
+                return Unauthorized($"{possible.InviterEmail} could not be found in the group" +
+                    $" {currentGroup.GroupName}, and therefore, could not have sent this email");
+            }
             else 
             {
                 var message = new EmailMessage(new string[] { $"{possible.InviterEmail}" },
                     "Invitation Accepted!", $"Hello!!, you're receiving this email because the invitation" +
                     $" you sent to {possible.InviteeEmail} was accepted! In order to confirm their " +
-                    $"addition to the group, click the following link: https://localhost:44382/inviterconfirm/{possible.GroupId}/{possible.InviteeEmail} " +
+                    $"addition to the group, click the following link: https://localhost:44382/inviterconfirm/{possible.InviteeEmail}/{possible.GroupId}/ " +
                     $"If you didn't send an invitation to {possible.InviteeEmail}, you can disregard " +
                     $"this email.");
 

@@ -23,12 +23,57 @@
                 }
             </ul>
             <div class="card-footer">
-                <button class="btn btn-outline-secondary" >
-                    Add A New Member?
-                </button>
+                @if (showMemberInviteForm == true)
+                {
+                    <button class="btn btn-outline-secondary" @onclick="() => { showMemberInviteForm = false; }">
+                        Cancel
+                    </button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary" @onclick="() => { showMemberInviteForm = true; }">
+                        Add A New Member?
+                    </button>
+                }
+                
             </div>
         </div>
     </div>
+
+    <br />
+    <br />
+    @if (showMemberInviteForm == true)
+    {
+        <EditForm Model="possibleMember" OnValidSubmit="sendGroupInvite">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="card w-25 shadow-sm">
+                <h5 class="card-header">Create a New Group</h5>
+                <div class="card-body">
+                    <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="possibleMember.InviterEmail"></InputText>
+                    <InputDate hidden class="form-control" id="DateCreated" @bind-Value="possibleMember.GroupId"></InputDate>
+
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="Amount" class="col-form-label">Group Name</label>
+                        <InputText class="form-control" id="GroupName" @bind-Value="possibleMember.InviteeEmail"></InputText>
+                    </div>
+                </div>
+                <div class="card-footer">
+
+
+                    <button class="btn btn-outline-info">
+                        Send Group Invite
+                    </button>
+
+
+                </div>
+            </div>
+        </EditForm>
+
+        <br />
+        <br />
+    }
+
 }
 else
 {
@@ -51,7 +96,7 @@ else
     PossibleMemberInvite possibleMember;
     IList<string> currentGroupMembers;
     public string currentUser;
-
+    public bool showMemberInviteForm;
     protected override async Task OnParametersSetAsync()
     {
 
@@ -63,8 +108,10 @@ else
 
         groupSecurity();
 
+        showMemberInviteForm = false;
         possibleMember = new PossibleMemberInvite
         {
+            GroupId = groupId,
             InviterEmail = currentUser
         };
     }
@@ -79,7 +126,15 @@ else
 
     public async Task sendGroupInvite()
     {
-        GroupsScreenUseCases.SendInitialInviteEmail()
-    }
+        await GroupsScreenUseCases.SendInitialInviteEmail(possibleMember);
 
+        showMemberInviteForm = false;
+
+        possibleMember = new PossibleMemberInvite
+        {
+            GroupId = groupId,
+            InviterEmail = currentUser
+        };
+
+    }
 }

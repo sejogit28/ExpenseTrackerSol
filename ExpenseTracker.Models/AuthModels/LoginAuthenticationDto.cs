@@ -14,7 +14,7 @@ namespace ExpenseTrackerModels
         [Required(ErrorMessage = "Password is required. ")]
         public string Password { get; set; }
     }
-
+    
     public class LoginResponseDto
     {
         public bool IsLoginSuccessful { get; set; }

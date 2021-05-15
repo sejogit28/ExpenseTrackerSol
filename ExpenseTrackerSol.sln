@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailServic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerRepositoryUserProfileTestingConsole", "ExpenseTrackerRepositoryAuthTestingConsole\ExpenseTrackerRepositoryUserProfileTestingConsole.csproj", "{8A3A5F44-62A3-4CE9-BEBB-48A6D8B73D61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExpTrackRepositoryGroupsTestingConsole", "ExpTrackRepositoryGroupsTestingConsole\ExpTrackRepositoryGroupsTestingConsole.csproj", "{2F012864-3658-4E6D-94F5-DA16ABC08329}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackRepositoryGroupsTestingConsole", "ExpTrackRepositoryGroupsTestingConsole\ExpTrackRepositoryGroupsTestingConsole.csproj", "{2F012864-3658-4E6D-94F5-DA16ABC08329}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

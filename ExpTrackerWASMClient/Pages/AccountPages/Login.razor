@@ -5,7 +5,7 @@
 
 <h3>Login</h3>
 
-@*Putting "context" next to Autorizeview below need sot be done if you are nesting multiple render fragments due 
+@*Putting "context" next to Autorizeview below needs to be done if you are nesting multiple render fragments due 
 to an error on blazors part*@
 
 <AuthorizeView Context="Auth">
@@ -66,6 +66,7 @@ to an error on blazors part*@
 </AuthorizeView>
 
 @code {
+
     private LoginAuthenticationDto _loginAuthentication = new LoginAuthenticationDto();
 
     public string currentUser;

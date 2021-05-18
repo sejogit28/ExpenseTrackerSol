@@ -1,24 +1,129 @@
-﻿
-<h3>Confirm your invitation</h3>
+﻿@page "/inviteeconfirm/{inviteeEmail}/{groupId:int}"
+@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject NavigationManager NavManager
 
-<EditForm>
+<h3>Please Input the required info to confirm you want to join this group</h3>
 
+<br />
+<br />
+
+<EditForm Model="inviteeConfirm" OnValidSubmit="InviteeConfirmSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+    <div class="card w-auto shadow-sm">
+        <h5 class="card-header">Confirm your invite</h5>
+        <div class="card-body">
+            <InputDate hidden class="form-control" id="GroupId" @bind-Value="inviteeConfirm.GroupId"></InputDate>
+            <InputText hidden class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviteeEmail"></InputText>
+
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="Amount" class="col-form-label">Inviter's Email(Email of the person who invited you to join)</label>
+                <InputText class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviterEmail"></InputText>
+                <ValidationMessage For="@(() => inviteeConfirm.InviterEmail)" />
+            </div>
+
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="Amount" class="col-form-label">Your Password</label>
+                <InputText type="password" class="form-control" id="Password" @bind-Value="inviteeConfirm.Password"></InputText>
+                <ValidationMessage For="@(() => inviteeConfirm.Password)" />
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="Amount" class="col-form-label">Confirm Your Password</label>
+                <InputText type="password" class="form-control" id="ConfirmPassword" @bind-Value="inviteeConfirm.ConfirmPassword"></InputText>
+                <ValidationMessage For="@(() => inviteeConfirm.ConfirmPassword)" />
+            </div>
+
+        </div>
+        <div class="card-footer">
+
+
+            <button class="btn btn-outline-primary">
+                Confirm Invite Request
+            </button>
+
+
+        </div>
+    </div>
 </EditForm>
 
+<AlertComponent @ref="alertComponent"></AlertComponent>
+
 @code {
-
-    PossibleMemberConfirm possibleMemberModel;
-
-    public string currentUser;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
+    [Parameter]
+    public int groupId { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    [Parameter]
+    public string inviteeEmail { get; set; }
+
+
+
+    public string currentUser;
+
+    PossibleMemberConfirm inviteeConfirm;
+    OperationResponse operationResponse;
+    AlertComponent alertComponent;
+
+    protected override async Task OnInitializedAsync()
     {
-        var authState = await AuthState;
-        var user = authState.User;
-        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        
+            var authState = await AuthState;
+        
+            var user = authState.User;
+
+            if (user.FindFirst(ClaimTypes.Name) != null)
+            {
+                currentUser = user.FindFirst(ClaimTypes.Name).Value;
+
+                if (currentUser != inviteeEmail)
+                {
+                    NavManager.NavigateTo("/userProfilePage");
+                }
+            }
+        
+
     }
+
+    protected override void OnParametersSet()
+    {
+
+
+
+        inviteeConfirm = new PossibleMemberConfirm
+        {
+            InviteeEmail = inviteeEmail,
+            InviterEmail = "",
+            Password = "",
+            ConfirmPassword = "",
+            GroupId = groupId
+        };
+
+
+    }
+
+    public async Task InviteeConfirmSubmit()
+    {
+        var result = await GroupsScreenUseCases.GroupInviteeConfirm(inviteeConfirm);
+        if(result.OperationSuccessful == true)
+        {
+            alertComponent.Message = "Success!!";
+            alertComponent.show("success");
+            StateHasChanged();
+            await Task.Delay(3000);
+            NavManager.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine(result.OperationMessage);
+            alertComponent.Message = result.OperationMessage;
+            alertComponent.show("danger");
+            StateHasChanged();
+
+        }
+    }
+
 }

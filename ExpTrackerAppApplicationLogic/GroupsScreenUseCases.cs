@@ -61,19 +61,19 @@ namespace ExpTrackerAppApplicationLogic
             await _groupRepository.addGroupMember(addNew);
         }
 
-        public async Task SendInitialInviteEmail(PossibleMemberInvite memberInvite)
+        public async Task<OperationResponse> SendInitialInviteEmail(PossibleMemberInvite memberInvite)
         {
-            await _groupRepository.sendGroupInvite(memberInvite);
+             return await _groupRepository.sendGroupInvite(memberInvite);
         }
 
-        public async Task GroupInviteeConfirm(PossibleMemberConfirm possibleMember)
+        public async Task<OperationResponse> GroupInviteeConfirm(PossibleMemberConfirm possibleMember)
         {
-            await _groupRepository.inviteeConfirm(possibleMember);
+            return await _groupRepository.inviteeConfirm(possibleMember);
         }
 
-        public async Task GroupInviterConfirm(PossibleMemberConfirm currentMember)
+        public async Task<OperationResponse> GroupInviterConfirm(PossibleMemberConfirm currentMember)
         {
-            await _groupRepository.inviterConfirm(currentMember);
+            return await _groupRepository.inviterConfirm(currentMember);
         }
 
         public async Task RemoveMemberFromGroup(int shrinkingGroupId, string removedMemberName)

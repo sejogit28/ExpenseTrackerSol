@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using ExpenseTrackerModels;
+using ExpenseTrackerModels.GroupModels;
+using System.Threading.Tasks;
 
 namespace ExpenseTrackerRepository.ApiRouteFetcher
 {
@@ -6,7 +8,8 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
     {
         Task InvokeDelete<T>(string uri);
         Task<T> InvokeGet<T>(string uri);
-        Task<T> InvokePost<T>(string uri, T obj);
+        Task<OperationResponse> InvokePost<T>(string uri, T obj);
+        Task<T> InvokePostObjResponse<T>(string uri, T obj);
         Task InvokePut<T>(string uri, T obj);
     }
 }

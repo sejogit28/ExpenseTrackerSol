@@ -35,26 +35,27 @@
                         Add A New Member?
                     </button>
                 }
-                
+
             </div>
         </div>
     </div>
 
     <br />
     <br />
+
     @if (showMemberInviteForm == true)
     {
         <EditForm Model="possibleMember" OnValidSubmit="sendGroupInvite">
             <DataAnnotationsValidator></DataAnnotationsValidator>
             <ValidationSummary></ValidationSummary>
             <div class="card w-25 shadow-sm">
-                <h5 class="card-header">Create a New Group</h5>
+                <h5 class="card-header">Invite A New Member To This Group</h5>
                 <div class="card-body">
                     <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="possibleMember.InviterEmail"></InputText>
                     <InputDate hidden class="form-control" id="DateCreated" @bind-Value="possibleMember.GroupId"></InputDate>
 
                     <div class="form-group mx-sm-3 mb-2">
-                        <label for="Amount" class="col-form-label">Group Name</label>
+                        <label for="Amount" class="col-form-label">Invitee's Email</label>
                         <InputText class="form-control" id="GroupName" @bind-Value="possibleMember.InviteeEmail"></InputText>
                     </div>
                 </div>
@@ -70,9 +71,11 @@
             </div>
         </EditForm>
 
+        <AlertComponent @ref="alertComponent"></AlertComponent>
         <br />
         <br />
     }
+
 
 }
 else
@@ -94,6 +97,7 @@ else
 
     Groups currentGroup;
     PossibleMemberInvite possibleMember;
+    AlertComponent alertComponent;
     IList<string> currentGroupMembers;
     public string currentUser;
     public bool showMemberInviteForm;
@@ -126,15 +130,28 @@ else
 
     public async Task sendGroupInvite()
     {
-        await GroupsScreenUseCases.SendInitialInviteEmail(possibleMember);
+        var result = await GroupsScreenUseCases.SendInitialInviteEmail(possibleMember);
 
-        showMemberInviteForm = false;
-
-        possibleMember = new PossibleMemberInvite
+        if (result.OperationSuccessful == true)
         {
-            GroupId = groupId,
-            InviterEmail = currentUser
-        };
+            alertComponent.Message = result.OperationMessage;
+            alertComponent.show("success");
+
+            await Task.Delay(2000);
+
+            showMemberInviteForm = false;
+
+            possibleMember = new PossibleMemberInvite
+            {
+                GroupId = groupId,
+                InviterEmail = currentUser
+            };
+        }
+        else
+        {
+            alertComponent.Message = result.OperationMessage;
+            alertComponent.show("danger");
+        }
 
     }
 }

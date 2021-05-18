@@ -1,29 +1,31 @@
-﻿<div class="alert alert-danger"
-     style="@($"display: {display}")"
-     role="alert">
-    @ErrorMessage
-    <button type="button" 
-    @onclick="dismiss" class="close" 
-    data-dismiss="alert" aria-label="Close">
+﻿<div class="alert alert-@alertType alert-dismissible fade show" style="@($"display: {display}")" role="alert">
+    @Message
+    <button type="button"  @onclick="dismiss" class="close"data-hide="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
 
+
+
 @code {
 
-    string display = "none";
- 
-    public string ErrorMessage { get; set; }
+    string display { get; set; }
+    public string alertType { get; set; }
 
-    public void show()
+    public string Message { get; set; }
+
+    public void show(string alertColor)
     {
+        //success or danger
+        alertType = alertColor;
         display = "block";
         StateHasChanged();
     }
 
-    public void dismiss() 
+    public void dismiss()
     {
         display = "none";
-        ErrorMessage = string.Empty;
+        Message = string.Empty;
+        StateHasChanged();
     }
 }

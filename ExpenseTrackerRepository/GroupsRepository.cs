@@ -39,7 +39,7 @@ namespace ExpenseTrackerRepository
         public async Task<Groups> createGroup(Groups newGroup, string groupCreatorUserName)
         {
             //TESTED
-            return await webApiExecuter.InvokePost($"api/Groups/creategroup/{groupCreatorUserName}", newGroup);
+            return await webApiExecuter.InvokePostObjResponse($"api/Groups/creategroup/{groupCreatorUserName}", newGroup);
         }
 
         public async Task deleteGroup(int deletedGroupId)
@@ -67,19 +67,19 @@ namespace ExpenseTrackerRepository
             await webApiExecuter.InvokePost("api/Groups/addnewmembertogroup", addNew);
         }
 
-        public async Task sendGroupInvite(PossibleMemberInvite initialInvite)
+        public async Task<OperationResponse> sendGroupInvite(PossibleMemberInvite initialInvite)
         {
-            await webApiExecuter.InvokePost($"api/Groups/sendgroupinvitation/initialInviteEmail", initialInvite);
+            return await webApiExecuter.InvokePost($"api/Groups/sendgroupinvitation/initialInviteEmail", initialInvite);
         }
 
-        public async Task inviteeConfirm(PossibleMemberConfirm possibleInvitee)
+        public async Task<OperationResponse> inviteeConfirm(PossibleMemberConfirm possibleInvitee)
         {
-            await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviteeconfirm", possibleInvitee);
+             return  await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviteeconfirm", possibleInvitee);
+            
         }
-
-        public async Task inviterConfirm(PossibleMemberConfirm possibleInviter)
+        public async Task<OperationResponse> inviterConfirm(PossibleMemberConfirm possibleInviter)
         {
-            await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviterconfirm", possibleInviter);
+            return await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviterconfirm", possibleInviter);
         }
 
         public async Task removeMemberFromGroup(int shrinkingGroupId, string userName)

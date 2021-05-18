@@ -1,9 +1,12 @@
-﻿using System;
+﻿using ExpenseTrackerModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ExpenseTrackerRepository.ApiRouteFetcher
@@ -24,28 +27,36 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
 
         public async Task<T> InvokeGet<T>(string uri)
         {
-            return await httpClient.GetFromJsonAsync<T>(GetUrl(uri));
+          return await httpClient.GetFromJsonAsync<T>(GetUrl(uri));
         }
 
-        public async Task<T> InvokePost<T>(string uri, T obj)
+        public async Task<OperationResponse> InvokePost<T>(string uri, T obj)
         {
-            var response = await httpClient.PostAsJsonAsync(GetUrl(uri), obj);
-            await HandleWebApiExeError(response);
-            //response.EnsureSuccessStatusCode();
-
-            return await response.Content.ReadFromJsonAsync<T>();
+            var postResponse = await httpClient.PostAsJsonAsync(GetUrl(uri), obj);
+            var postContent = await postResponse.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<OperationResponse>(postContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            //postResponse.EnsureSuccessStatusCode();
+            return result;
+        }
+        public async Task<T> InvokePostObjResponse<T>(string uri, T obj)
+        {
+            var postResponse = await httpClient.PostAsJsonAsync(GetUrl(uri), obj);
+            await HandleWebApiExeError(postResponse);
+            return await postResponse.Content.ReadFromJsonAsync<T>();
         }
 
         public async Task InvokePut<T>(string uri, T obj)
         {
-            var response = await httpClient.PutAsJsonAsync(GetUrl(uri), obj);
-            await HandleWebApiExeError(response);
+            var putResponse = await httpClient.PutAsJsonAsync(GetUrl(uri), obj);
+            putResponse.EnsureSuccessStatusCode();
+            await HandleWebApiExeError(putResponse);
         }
 
         public async Task InvokeDelete<T>(string uri)
         {
-            var response = await httpClient.DeleteAsync(GetUrl(uri));
-            await HandleWebApiExeError(response);
+            var deleteResponse = await httpClient.DeleteAsync(GetUrl(uri));
+            deleteResponse.EnsureSuccessStatusCode();
+            await HandleWebApiExeError(deleteResponse);
         }
 
         private string GetUrl(string uri)
@@ -55,11 +66,11 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
 
         private async Task HandleWebApiExeError(HttpResponseMessage response)
         {
-            if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode) 
             {
-                var errorMessage = await response.Content.ReadAsStringAsync();
-                throw new HttpRequestException(errorMessage);
-            }
+                var apiError = await response.Content.ReadAsStringAsync();
+                throw new HttpRequestException(apiError);
+            }          
         }
 
     }

@@ -10,5 +10,7 @@ namespace ExpenseTrackerModels.GroupModels
     {
         public int GroupId { get; set; }
         public string NewMemberUserName { get; set; }
+        public bool OperationSuccessful { get; set; }
+        public string OperationMessage { get; set; }
     }
 }

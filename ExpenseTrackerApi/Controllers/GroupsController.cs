@@ -117,7 +117,7 @@ namespace ExpenseTrackerApi.Controllers
                 
             else
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest($"Something went wrong.....");
             }
            
            
@@ -167,9 +167,12 @@ namespace ExpenseTrackerApi.Controllers
             var invitedUser =  await _userManager.FindByNameAsync(invite.InviteeEmail);
             if (invitedUser == null) 
             {
-                return NotFound($"{invite.InviteeEmail} could not be found. If {invite.InviteeEmail} has already" +
-                    $" created an account, please check spelling and try again. If they have not created " +
-                    $"an account, have them register first");
+                return NotFound(new OperationResponse
+                { 
+                    OperationSuccessful = false,
+                    OperationMessage = $"A user with the email: {invite.InviteeEmail} could not be found. If this user" +
+                    $" has already created an account, please check spelling and try again. If they have not created " +
+                    $"an account, have them register first" });
             }
             else 
             {
@@ -179,7 +182,11 @@ namespace ExpenseTrackerApi.Controllers
                     $" https://localhost:44382/inviteeconfirm/{invite.InviteeEmail}/{invite.GroupId}");
 
                    _emailSender.SendEmail(message);
-                    return Ok(message);
+                    return Ok(new OperationResponse
+                    {
+                        OperationSuccessful = true, 
+                        OperationMessage = $"Success!! An email has been sent to {invite.InviteeEmail}." 
+                    });
             }
             
         }
@@ -194,20 +201,40 @@ namespace ExpenseTrackerApi.Controllers
 
             if (currentGroup == null) 
             {
-                return NotFound("This group could not be found");
+                return NotFound(new OperationResponse
+                { 
+                    OperationSuccessful = false, 
+                    OperationMessage = $"The group with the Id: {possible.GroupId} could not be found" 
+                });
             }                        
             else if (invitedMember == null)
             {
-                return NotFound("This user could not be found");
+               
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"The user with the name: {possible.InviteeEmail} could not be found"
+                });
             }
+        
             else if (!await _userManager.CheckPasswordAsync(invitedMember, possible.Password))
             {
-                return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+              
+                return Unauthorized(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"The user with the name: {possible.InviteeEmail} did not enter " +
+                    $"the right password"
+                });
             }
             else if(emailSenderGroupCheck == null) 
             {
-                return Unauthorized($"{possible.InviterEmail} could not be found in the group" +
-                    $" {currentGroup.GroupName}, and therefore, could not have sent this email");
+                return Unauthorized(new OperationResponse
+                { 
+                    OperationSuccessful = false,
+                    OperationMessage = $"{possible.InviterEmail} could not be found in the group" +
+                    $" {currentGroup.GroupName}, and therefore, could not have sent this email" 
+                });
             }
             else 
             {
@@ -219,7 +246,11 @@ namespace ExpenseTrackerApi.Controllers
                     $"this email.");
 
                 _emailSender.SendEmail(message);
-                return Ok(possible);
+                return Ok(new OperationResponse
+                { 
+                    OperationSuccessful = true,
+                    OperationMessage = $"Success!! Your invite to the group: {currentGroup.GroupName} has been" +
+                    $" confirmed, once {possible.InviterEmail} confirms on their end, you will join the group!"});
             }
         }
 
@@ -233,27 +264,48 @@ namespace ExpenseTrackerApi.Controllers
 
             if (invitingMember == null)
             {
-                return NotFound($"This member: {possible.InviterEmail} could not be found");
+                return NotFound(new OperationResponse
+                { 
+                    OperationSuccessful = false,
+                    OperationMessage = $"This member: {possible.InviterEmail} could not be found" 
+                });
             }
                 
             else if (!await _userManager.CheckPasswordAsync(invitingMember, possible.Password))
             {
-                return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+                return Unauthorized(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = "Wrong password entered"
+                });
             }
                         
             else if (invitedMember == null)
             {
-                return NotFound($"{invitedMember.Email} could not be found");
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"{invitedMember.Email} could not be found" 
+                });
             }
                           
             else if (currentGroup == null)
             {
-                return NotFound("This group could not be found");
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = "The specified group could not be found"
+                });
             }
 
             else if(currentGroupCheck != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                return BadRequest(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"The user {possible.InviterEmail} is already apart of the " +
+                    $"group {currentGroup.GroupName} so this operation was cancelled"
+                });
             }
                 
             else
@@ -267,25 +319,43 @@ namespace ExpenseTrackerApi.Controllers
 
                 await _datExpBase.GroupUsers.AddAsync(newMemberAddition);
                 await _datExpBase.SaveChangesAsync();
-                return Ok(newMemberAddition);
+                return Ok(new OperationResponse
+                {
+                    OperationSuccessful = true,
+                    OperationMessage = $"Success!! {possible.InviteeEmail} has been added to the " +
+                    $"group {currentGroup.GroupName}"
+                });
             }
         }
 
         [HttpGet("listofgroupmembernames/{groupId:int}")]
         public async Task<IActionResult> listOfGroupMemberNames(int groupId)
         {
-            IList<string> GroupUserNames = new List<string>();
-
-            var listofGroupUsers = await _datExpBase.GroupUsers
-                .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
-            foreach (var user in listofGroupUsers)
+            var currentGroup = await _datExpBase.Groups.FindAsync(groupId);
+            if(currentGroup == null) 
             {
-                var userObj = await _datExpBase.ExpenseTrackerUser.FindAsync(user.ExpenseTrackerUserId);
-                GroupUserNames.Add(userObj.UserName);
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"The specified group with the Id: {groupId}"
+                });
             }
-            /*It doesn't appear that you can return a linq query without getting a 500 error about
-             * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
-            return Ok(GroupUserNames);
+            else 
+            {
+                IList<string> GroupUserNames = new List<string>();
+
+                var listofGroupUsers = await _datExpBase.GroupUsers
+                    .Where(g => g.GroupsGroupsId == groupId).ToListAsync();
+                foreach (var user in listofGroupUsers)
+                {
+                    var userObj = await _datExpBase.ExpenseTrackerUser.FindAsync(user.ExpenseTrackerUserId);
+                    GroupUserNames.Add(userObj.UserName);
+                }
+                /*It doesn't appear that you can return a linq query without getting a 500 error about
+                 * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
+                return Ok(GroupUserNames);
+            }
+            
         }
 
         [HttpDelete("deletememberfromgroup/{groupId:int}/{deletedMemberName}")]
@@ -295,12 +365,20 @@ namespace ExpenseTrackerApi.Controllers
 
             var deletedMember = await _userManager.FindByNameAsync(deletedMemberName);
             if (deletedMember == null)
-                return NotFound($"{deletedMemberName} could not be found.");
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"{deletedMemberName} could not be found."
+                });
 
             var currentGroup = await _datExpBase.Groups.FindAsync(groupId);
             var deletedMembership = await _datExpBase.GroupUsers.FindAsync(deletedMember.Id, groupId);
             if (deletedMembership == null)
-                return NotFound($"{deletedMemberName} is not currently a member of {currentGroup.GroupName}.");
+                return NotFound(new OperationResponse
+                {
+                    OperationSuccessful = false,
+                    OperationMessage = $"{deletedMemberName} is not currently a member of {currentGroup.GroupName}."
+                });
             else 
             {
                 _datExpBase.GroupUsers.Remove(deletedMembership);
@@ -311,13 +389,21 @@ namespace ExpenseTrackerApi.Controllers
                 {
                     _datExpBase.Groups.Remove(currentGroup);
                     await _datExpBase.SaveChangesAsync();
-                    return Ok($"{deletedMemberName} has been removed from {currentGroup.GroupName}. " +
-                        $"This meant that {currentGroup.GroupName} had no members and was deleted");
+                    return Ok(new OperationResponse
+                    {
+                        OperationSuccessful = true,
+                        OperationMessage = $"{deletedMemberName} has been removed from {currentGroup.GroupName}. " +
+                        $"This meant that {currentGroup.GroupName} had no members and was deleted"
+                    });
                 }
                 else 
                 {
                     await _datExpBase.SaveChangesAsync();
-                    return Ok($"{deletedMemberName} has been removed from {currentGroup.GroupName}");
+                    return Ok(new OperationResponse
+                    {
+                        OperationSuccessful = true,
+                        OperationMessage = $"{deletedMemberName} has been removed from {currentGroup.GroupName}"
+                    });
                 }
                 
             }

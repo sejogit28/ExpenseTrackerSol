@@ -259,8 +259,8 @@ else
         {
             if (income.DatePaid.ToString("yyyy-MM") != targetMonth)
             {
-                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
-                alertComponent.show();
+                alertComponent.Message = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show("danger");
             }
             else
             {
@@ -278,8 +278,8 @@ else
 
             if (income.DatePaid.ToString("yyyy-MM") != targetMonth)
             {
-                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
-                alertComponent.show();
+                alertComponent.Message = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show("danger");
             }
             else
             {

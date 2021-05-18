@@ -91,14 +91,14 @@ Console.ReadLine();*/
 /*Console.WriteLine("///////////////");
 Console.WriteLine("Sending an email to a potential Group member");
 await sendGroupInviteTest();
-Console.ReadLine();
+Console.ReadLine();*/
 
 Console.WriteLine("///////////////");
 Console.WriteLine("Confirming group invite as the invitee");
 await inviteeConfirmTest();
 Console.ReadLine();
 
-Console.WriteLine("///////////////");
+/*Console.WriteLine("///////////////");
 Console.WriteLine("Confirming the invitation as the inviter and then adding the invitee to the group");
 await inviterConfirmTest();
 Console.ReadLine();*/
@@ -210,11 +210,11 @@ async Task inviteeConfirmTest()
     {
         InviteeEmail = "sejoTestEmail1828@mailinator.com",
         InviterEmail = "sejogoo@gmail.com",
-        Password = "D8f8ndM@il",
+        Password = "D8f8ndM",
         ConfirmPassword = "D8f8ndM@il",
         GroupId = 8
     };
-    await groupsRepository.inviteeConfirm(inviteeConfirmation);
+     await groupsRepository.inviteeConfirm(inviteeConfirmation);
 
 }
 

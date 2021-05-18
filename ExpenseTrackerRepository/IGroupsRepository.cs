@@ -12,11 +12,11 @@ namespace ExpenseTrackerRepository
         Task deleteGroup(int deletedGroupId);
         Task<IEnumerable<Groups>> listOfGroups();
         Task<Groups> getSingleGroup(int singleGroupId);
-        Task inviteeConfirm(PossibleMemberConfirm possibleInvitee);
-        Task inviterConfirm(PossibleMemberConfirm possibleInviter);
+        Task<OperationResponse> inviteeConfirm(PossibleMemberConfirm possibleInvitee);
+        Task<OperationResponse> inviterConfirm(PossibleMemberConfirm possibleInviter);
         Task<List<string>> listofGroupMemberNames(int currentGroupId);
         Task removeMemberFromGroup(int shrinkingGroupId, string userName);
-        Task sendGroupInvite(PossibleMemberInvite initialInvite);
+        Task<OperationResponse> sendGroupInvite(PossibleMemberInvite initialInvite);
         Task updateGroup(Groups updatedGroup);
         Task<List<GroupUsers>> listOfGroupsByUser(string userName);
     }

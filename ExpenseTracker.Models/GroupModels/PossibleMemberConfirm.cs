@@ -29,5 +29,7 @@ namespace ExpenseTrackerModels.GroupModels
 
         [Required]
         public int GroupId { get; set; }
+
+       
     }
 }

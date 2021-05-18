@@ -10,10 +10,10 @@ namespace ExpTrackerAppApplicationLogic
         Task AddUserToGroup(AddNewMemberToGroup addNew);
         Task<Groups> CreateNewGroup(Groups newgroup, string groupCreatorName);
         Task DeleteSingleGroup(int deletedGroupId);
-        Task GroupInviteeConfirm(PossibleMemberConfirm possibleMember);
-        Task GroupInviterConfirm(PossibleMemberConfirm currentMember);
+        Task<OperationResponse> GroupInviteeConfirm(PossibleMemberConfirm possibleMember);
+        Task<OperationResponse> GroupInviterConfirm(PossibleMemberConfirm currentMember);
         Task RemoveMemberFromGroup(int shrinkingGroupId, string removedMember);
-        Task SendInitialInviteEmail(PossibleMemberInvite memberInvite);
+        Task<OperationResponse> SendInitialInviteEmail(PossibleMemberInvite memberInvite);
         Task UpdateGroupName(Groups updatedGroup);
         Task<IList<string>> ViewAllGroupMemberNames(int currentGroupId);
         Task<IList<Groups>> ViewAllGroups();

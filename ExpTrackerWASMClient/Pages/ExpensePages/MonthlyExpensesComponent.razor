@@ -89,7 +89,9 @@ else
     </h2>
 }
 
-<AlertComponent @ref="alertComponent"></AlertComponent>
+<div>
+    <AlertComponent @ref="alertComponent"></AlertComponent>
+</div>
 
 @if (expense != null)
 {
@@ -203,9 +205,11 @@ else
         var authState = await AuthState;
         var user = authState.User;
 
+      
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        
 
-        //user.FindFirst.
+
 
         expense = new Expenses
         {
@@ -253,8 +257,8 @@ else
         {
             if (expense.DateSpent.ToString("yyyy-MM") != targetMonth)
             {
-                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
-                alertComponent.show();
+                alertComponent.Message = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show("danger");
             }
             else
             {
@@ -272,8 +276,8 @@ else
 
             if (expense.DateSpent.ToString("yyyy-MM") != targetMonth)
             {
-                alertComponent.ErrorMessage = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
-                alertComponent.show();
+                alertComponent.Message = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
+                alertComponent.show("danger");
             }
             else
             {

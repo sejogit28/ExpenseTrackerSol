@@ -8,6 +8,74 @@
         <h3>@currentGroup.GroupName's Home Page</h3>
     </div>
 
+    <div class="row justify-content-center">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#"><span class="oi oi-people" aria-hidden="true"></span> </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"> Home  <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@($"/groupexpenses/{groupId}")">
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> All Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@($"/groupincomes/{groupId}")">
+                        <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Charts
+                        </NavLink>
+                        <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                            @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                            {
+                                <NavLink class="dropdown-item" href="@($"/GroupIncExpComparisonChart/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
+                                    <span class="oi  oi-pie-chart " aria-hidden="true"></span> Budget Chart for: @yearMonth.ToString("yyyy-MM")
+                                </NavLink>
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Expenses
+                        </NavLink>
+                        <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                            @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                            {
+                                <NavLink class="dropdown-item" href="@($"/groupexpensesbymonth/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
+                                    <span class="oi  oi-pie-chart " aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
+                                </NavLink>
+                            }
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <NavLink class="nav-link dropdown-toggle" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Incomes
+                        </NavLink>
+                        <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                            @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                            {
+                                <NavLink class="dropdown-item" href="@($"/groupincomesbymonth/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
+                                    <span class="oi  oi-pie-chart " aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
+                                </NavLink>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+    </div>
+
+    <br/>
+
     <div class="row">
         <div class="card">
             <div class="card-header">
@@ -101,6 +169,8 @@ else
     IList<string> currentGroupMembers;
     public string currentUser;
     public bool showMemberInviteForm;
+
+
     protected override async Task OnParametersSetAsync()
     {
 
@@ -118,6 +188,12 @@ else
             GroupId = groupId,
             InviterEmail = currentUser
         };
+    }
+
+    private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
+    {
+        for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
+            yield return day;
     }
 
     public void groupSecurity()

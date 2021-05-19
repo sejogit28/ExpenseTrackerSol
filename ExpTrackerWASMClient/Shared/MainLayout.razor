@@ -8,12 +8,10 @@
     <div class="main">
         <AuthorizeView>
             <Authorized>
-                <div class="top-row px-4">
-                    <NavLink style="color: black" class="nav-link" href="/userProfilePage">
+                <div class="top-row px-4">      
                         <p>
-                            Hello @context.User.FindFirst(ClaimTypes.Name).Value!!(Click here to view your profile)
-                        </p>
-                    </NavLink>
+                            Hello @context.User.FindFirst(ClaimTypes.Name).Value!!
+                        </p>                   
                 </div>
             </Authorized>
             

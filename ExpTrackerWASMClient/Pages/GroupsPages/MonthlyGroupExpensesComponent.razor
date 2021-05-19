@@ -9,11 +9,21 @@
 @if (currentGroup != null)
 {
     <div class="row justify-content-center">
-        <h2>@currentGroup.GroupName's Monthly Expenses for @targetMonth</h2>
-        <NavLink class="nav-link" href="@($"/groupexpensesbymonth/comparisonchart/{groupId}/{targetMonth}")">
-            <span class="iconify icon:oi:bar-chart icon-inline:false"></span>
-            Visualize
-        </NavLink>
+        <div class="col-3 justify-content-start">
+            <a class="btn btn-primary" href="@($"/grouphomepage/{groupId}")" role="button">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </a>
+        </div>
+        <div class="col-6 justify-content-center">
+            <h1>
+                @currentGroup.GroupName's Monthly Expenses for @targetMonth                
+            </h1>          
+        </div>
+        <div class="col-3 justify-content-end">
+            <NavLink class="btn btn-primary" href="@($"/groupexpensesbymonth/comparisonchart/{groupId}/{targetMonth}")">
+                <span class="iconify icon:oi:bar-chart icon-inline:true"></span> Visualize
+            </NavLink>
+        </div>
     </div>
 }
 

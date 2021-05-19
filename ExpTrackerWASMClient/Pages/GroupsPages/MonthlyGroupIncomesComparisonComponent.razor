@@ -3,12 +3,24 @@
 @inject IGroupsScreenUseCases GroupsScreenUseCases
 @inject NavigationManager NavManager
 
-@if (currentGroup != null)
-{
+    @if (currentGroup != null)
+    {
     <div class="row justify-content-center">
-        <h2>@currentGroup.GroupName's Monthly Incomes Comparison for @targetMonth</h2>
+        <div class="col-3 justify-content-start">
+            <a class="btn btn-info" href="@($"/groupincomesbymonth/{groupId}/{targetMonth}")" role="button">
+                <span class="oi oi-arrow-thick-left" aria-hidden="true"></span> Back to @targetMonth Income
+            </a>
+        </div>
+        <div class="col-6 justify-content-center">
+            <h2>@currentGroup.GroupName's Monthly Incomes Comparison for @targetMonth</h2>
+        </div>
+        <div class="col-3 justify-content-end">
+            <a class="btn btn-info" href="@($"/grouphomepage/{groupId}")" role="button">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </a>
+        </div>
     </div>
-}
+    }
 
     @if (totalMonthlyIncomes != 0)
     {
@@ -51,13 +63,13 @@
     @code
 {
 
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthState { get; set; }
 
-    [Parameter]
-    public int groupId { get; set; }
+        [Parameter]
+        public int groupId { get; set; }
 
-    public string currentUser;
+public string currentUser;
 
     //10 enum categories
     [Parameter]

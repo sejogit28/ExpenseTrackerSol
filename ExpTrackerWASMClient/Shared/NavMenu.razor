@@ -1,5 +1,4 @@
-﻿@if (currentUser != null)
-{
+﻿
 <div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Expense Tracker</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -47,7 +46,7 @@
                         @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                         {
 
-                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black"  href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
 
@@ -55,13 +54,13 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown px-3 ">
-                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                    <NavLink class="nav-link dropdown-toggle" style="color: black"  id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         <span class="oi oi-list-rich" aria-hidden="true"></span>  Incomes By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
                         @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                         {
-                            <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black" href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                            <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black"  href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
                         }
@@ -81,19 +80,28 @@
                     </ul>
                 </li>
 
+                @if (groupsList != null)
+                { 
                 <li class="nav-item dropdown px-3 ">
                     <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         <span class="oi oi-people" aria-hidden="true"></span> Your Groups
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                         @foreach (var group in groupsList)
                         {
-                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
-                                <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
-                            </NavLink>
+                            if (group.ExpenseTrackerUserId == currentUserObj.Id)
+                            {
+                                <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                                    <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
+                                </NavLink>
+                            }
                         }
                     </ul>
                 </li>
+                }
+
+
 
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" style="color: black" @onclick="() => { AuthRepository.Logout(); }">
@@ -104,9 +112,9 @@
         </AuthorizeView>
     </ul>
 </div>
-}
 
-else 
+
+@*else 
 {
 <div class="justify-content-center align-content-center">
     <h2>
@@ -116,7 +124,7 @@ else
         </div>
     </h2>
 </div>
-}
+}*@
 
 @code {
 
@@ -124,15 +132,21 @@ else
     public Task<AuthenticationState> AuthState { get; set; }
 
     [Inject]
+    NavigationManager NavManager { get; set; }
+
+    [Inject]
     public IAuthRepository AuthRepository { get; set; }
 
     [Inject]
     IGroupsScreenUseCases GroupsScreenUseCases { get; set; }
 
+    [Inject]
+    IAdminScreenUseCases AdminScreenUseCases { get; set; }
+
     List<GroupUsers> groupsList;
 
     public string currentUser;
-
+    ExpenseTrackerUser currentUserObj;
 
     private bool collapseNavMenu = true;
 
@@ -147,12 +161,22 @@ else
 
         if (user.FindFirst(ClaimTypes.Name) != null)
         {
+
             currentUser = user.FindFirst(ClaimTypes.Name).Value;
             groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
+            currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
         }
 
 
     }
+
+    //protected override void OnAfterRender(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+
+    //    }
+    //}
 
     private void ToggleNavMenu()
     {
@@ -165,4 +189,5 @@ else
         for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
             yield return day;
     }
+
 }

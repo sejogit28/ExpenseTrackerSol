@@ -105,8 +105,8 @@ namespace ExpenseTrackerApi.Controllers
             }
             else 
             {
-                var deletedExpenses = _datExpBase.Expenses.Where(p => p.UserId == deletedUser.UserName);
-                var deletedIncomes = _datExpBase.Incomes.Where(p => p.UserId == deletedUser.UserName);
+                var deletedExpenses = _datExpBase.Expenses.Where(p => p.UserId == deletedUser.UserName).Where(e => e.GroupsGroupsId == null);
+                var deletedIncomes = _datExpBase.Incomes.Where(p => p.UserId == deletedUser.UserName).Where(e => e.GroupsGroupsId == null); ;
                 _datExpBase.Incomes.RemoveRange(deletedIncomes);
                 _datExpBase.Expenses.RemoveRange(deletedExpenses);
 

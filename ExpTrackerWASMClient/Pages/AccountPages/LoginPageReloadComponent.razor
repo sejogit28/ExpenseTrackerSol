@@ -1,0 +1,14 @@
+﻿@page "/loginPageReload"
+@inject NavigationManager NavManager
+
+<h1>One Sec....</h1>
+
+@code {      
+
+    protected override async void OnInitialized()
+    {
+        await Task.Delay(3000);
+        NavManager.NavigateTo("/userProfilePage", forceLoad: true);
+    }
+
+}

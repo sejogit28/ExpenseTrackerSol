@@ -205,9 +205,9 @@ else
         var authState = await AuthState;
         var user = authState.User;
 
-      
+
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-        
+
 
 
 
@@ -312,12 +312,24 @@ else
             }
         }
         /*"totalMonthlyExpenses = 0" always had to be put AFTER the expensesbyMonth Initialization
-        in order to reset correctlywhen going back and forth between diffent months. Putting it at
+        in order to reset correctly when going back and forth between different months. Putting it at
         the beginning of the OnParametersSetAsync function made it so that the amount didn't reset
-        and instead just keep adding, leading to seeing a total number of expenses for all pages visited, instead of a total for each month*/
+        and instead just kept increasin, leading to seeing a total number of expenses for all pages visited,
+        instead of a total for each month*/
 
 
     }
 
+
+    public async Task moveExpenseToGroup(int expenseId, int newGroupId)
+    {
+        await getEditableExpense(expenseId);
+        expense.GroupsGroupsId = newGroupId;
+        await ExpensesScreenUseCases.EditExpense(expense);
+
+        makeFreshExpense();
+
+        await refreshValues();
+    }
 
 }

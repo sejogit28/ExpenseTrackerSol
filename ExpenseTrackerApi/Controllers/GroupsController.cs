@@ -46,8 +46,13 @@ namespace ExpenseTrackerApi.Controllers
             else 
             {
                 var listOfUsersGroupsHopefully = await _datExpBase.GroupUsers
-                    .Include(g => g.Groups).ThenInclude(gu => gu.GroupUsers)
+                    .Include(e => e.ExpenseTrackerUser).ThenInclude(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
                     .Where(u => u.ExpenseTrackerUserId == currentUser.Id).ToListAsync();
+
+                //var newListofGroups = await _datExpBase.Groups
+                //    .Include(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
+                //    .ThenInclude(guu => guu.GroupUsers).Where(u => u.ExpenseTrackerUserId == currentUser.Id)
+                //    .ToListAsync();
                 return Ok(listOfUsersGroupsHopefully);
             }
         }

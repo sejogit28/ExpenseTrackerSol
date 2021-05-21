@@ -36,20 +36,20 @@
                 {
                     foreach (var group in userGroupList)
                     {
-                <li class="list-group-item">
-                    <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">
-                        @group.Groups.GroupName
-                    </NavLink>
-                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await DeleteGroup(group.Groups.GroupsId); }">
-                        Delete
-                    </button>
-                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await leaveGroup(group.Groups.GroupsId, currentIdentityUser.UserName); }">
-                        Leave Group
-                    </button>
-                    <button class="btn btn-outline-secondary float-right" @onclick="async () => { await getEditableGroupName(group.Groups.GroupsId); }">
-                        Edit Group Name
-                    </button>
-                </li>
+                        <li class="list-group-item">
+                            <NavLink href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                                @group.Groups.GroupName
+                            </NavLink>
+                            <button class="btn btn-outline-secondary float-right" @onclick="async () => { await DeleteGroup(group.Groups.GroupsId); }">
+                                Delete
+                            </button>
+                            <button class="btn btn-outline-secondary float-right" @onclick="async () => { await leaveGroup(group.Groups.GroupsId, currentIdentityUser.UserName); }">
+                                Leave Group
+                            </button>
+                            <button class="btn btn-outline-secondary float-right" @onclick="async () => { await getEditableGroupName(group.Groups.GroupsId); }">
+                                Edit Group Name
+                            </button>
+                        </li>
                     }
                 }
             </ul>

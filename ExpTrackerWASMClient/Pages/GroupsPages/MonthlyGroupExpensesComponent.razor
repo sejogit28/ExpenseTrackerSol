@@ -62,7 +62,12 @@
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableExpense(expense.ExpenseId)">
                                     Edit
                                 </button>
-
+                                @if (expense.UserId == currentUser)
+                                {
+                                    <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => takeBackExpense(expense.ExpenseId)">
+                                        Reclaim
+                                    </button>
+                                }
                                 <button type="button" class="btn btn-outline-secondary  mb-3" @onclick="() => deleteExpense(expense.ExpenseId)">
                                     Delete
                                 </button>
@@ -347,6 +352,33 @@ else
         {
             NavManager.NavigateTo("/userProfilePage");
         }
+    }
+
+    public async Task takeBackExpense(int expenseId)
+    {
+        bool confirmedTransfer = await JsRuntime.InvokeAsync<bool>("confirm",
+           $"Are you sure you want to reclaim Expense #{expenseId}? That will send this expense back to your personal monthly expense page," +
+           $" removing it from this groups page.");
+
+        if (confirmedTransfer)
+        {
+            await getEditableExpense(expenseId);
+            expense.GroupsGroupsId = null;
+            await ExpensesScreenUseCases.EditExpense(expense);
+
+            makeFreshExpense();
+
+            await refreshValues();
+
+            alertComponent.Message = $"Transfer Completed Successfully";
+            alertComponent.show("success");
+        }
+        else
+        {
+            alertComponent.Message = $"Transfer Cancelled";
+            alertComponent.show("secondary");
+        }
+
     }
 
 

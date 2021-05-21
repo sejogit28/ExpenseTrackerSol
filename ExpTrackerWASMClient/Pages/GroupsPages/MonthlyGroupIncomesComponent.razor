@@ -66,6 +66,13 @@
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">
                                     Edit
                                 </button>
+                                @if (income.UserId == currentUser)
+                                {
+                                    <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => takeBackIncome(income.IncomeId)">
+                                        Reclaim
+                                    </button>
+                                }
+
 
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => deleteIncome(income.IncomeId)">
                                     Delete
@@ -337,6 +344,33 @@ else
             MonthYear = "placeholder",
             GroupsGroupsId = groupId
         };
+    }
+
+    public async Task takeBackIncome(int incomeId)
+    {
+        bool confirmedTransfer = await JsRuntime.InvokeAsync<bool>("confirm",
+           $"Are you sure you want to reclaim Income #{incomeId}? That will send this expense back " +
+           $"to your personal monthly income page, removing it from this groups page.");
+
+        if (confirmedTransfer)
+        {
+            await getEditableIncome(incomeId);
+            income.GroupsGroupsId = null;
+            await IncomesScreenUseCases.EditIncome(income);
+
+            makeFreshIncome();
+
+            await refreshValues();
+
+            alertComponent.Message = $"Transfer Completed Successfully";
+            alertComponent.show("success");
+        }
+        else
+        {
+            alertComponent.Message = $"Transfer Cancelled";
+            alertComponent.show("secondary");
+        }
+
     }
 
 }

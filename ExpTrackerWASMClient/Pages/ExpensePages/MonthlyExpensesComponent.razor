@@ -2,10 +2,12 @@
 @page  "/expensesbymonth/"
 @inject IJSRuntime JsRuntime
 @inject IExpensesScreenUseCases ExpensesScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject IAdminScreenUseCases AdminScreenUseCases
 
 <div class="row justify-content-center">
     <h2>Monthly Expenses for @targetMonth</h2>
-    <NavLink class="nav-link" href="@($"/expensesbymonth/comparisonchart/{targetMonth}")">
+    <NavLink class="btn btn-primary" href="@($"/expensesbymonth/comparisonchart/{targetMonth}")">
         <span class="iconify icon:oi:bar-chart icon-inline:false"></span>
         Visualize
     </NavLink>
@@ -48,6 +50,20 @@
                                     Edit
                                 </button>
 
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary mb-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Transfer
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        @foreach (var group in groupsList)
+                                        {
+                                            <a class="dropdown-item" @onclick="() => moveExpenseToGroup(expense.ExpenseId, group.Groups.GroupsId)" >Send to: @group.Groups.GroupName</a>
+                                        }
+
+                                    </div>
+                                </div>
+
+
                                 <button type="button" class="btn btn-outline-secondary  mb-3" @onclick="() => deleteExpense(expense.ExpenseId)">
                                     Delete
                                 </button>
@@ -76,7 +92,7 @@
         </ul>
     </div>
 
-   
+
 
 }
 else
@@ -168,11 +184,9 @@ else
 
 @code {
 
-    Expenses expense;
 
-    AlertComponent alertComponent;
 
-    //Needs to match the route params but that match doesn't need to be case sensitive
+    //Needs to match the route params but that match isn't case sensitive
     [Parameter]
     public string targetMonth { get; set; }
 
@@ -180,6 +194,11 @@ else
     public Task<AuthenticationState> AuthState { get; set; }
 
     IEnumerable<Expenses> expensesbyMonth;
+    List<GroupUsers> groupsList;
+
+    Expenses expense;
+    AlertComponent alertComponent;
+    ExpenseTrackerUser currentUserObj;
 
     public double? totalMonthlyExpenses;
     public string currentUser;
@@ -207,8 +226,8 @@ else
 
 
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
-
+        currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
+        groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
 
 
         expense = new Expenses
@@ -228,10 +247,10 @@ else
 
     async Task deleteExpense(int deletedExpenseId)
     {
-        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
-            $"Are you sure you want to delete Income #{deletedExpenseId}? This can't be undone.....");
+        bool confirmedDelete = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to delete Expense #{deletedExpenseId}? This can't be undone.....");
 
-        if (confirmed)
+        if (confirmedDelete)
         {
             await ExpensesScreenUseCases.DeleteExpense(deletedExpenseId);
 
@@ -323,13 +342,30 @@ else
 
     public async Task moveExpenseToGroup(int expenseId, int newGroupId)
     {
-        await getEditableExpense(expenseId);
-        expense.GroupsGroupsId = newGroupId;
-        await ExpensesScreenUseCases.EditExpense(expense);
 
-        makeFreshExpense();
+        bool confirmedTransfer = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to transfer Expense #{expenseId}? That will send this expense to the selected group," +
+            $" removing it from this page and its amount from your personal total expenses for this month");
 
-        await refreshValues();
+        if (confirmedTransfer)
+        {
+            await getEditableExpense(expenseId);
+            expense.GroupsGroupsId = newGroupId;
+            await ExpensesScreenUseCases.EditExpense(expense);
+
+            makeFreshExpense();
+
+            await refreshValues();
+
+            alertComponent.Message = $"Transfer Completed Successfully";
+            alertComponent.show("success");
+        }
+        else
+        {
+            alertComponent.Message = $"Transfer Cancelled";
+            alertComponent.show("secondary");
+        }
+
     }
 
 }

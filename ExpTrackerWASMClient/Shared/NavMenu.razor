@@ -46,7 +46,7 @@
                         @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                         {
 
-                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black"  href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                            <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
 
@@ -54,13 +54,13 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown px-3 ">
-                    <NavLink class="nav-link dropdown-toggle" style="color: black"  id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         <span class="oi oi-list-rich" aria-hidden="true"></span>  Incomes By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
                         @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                         {
-                            <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black"  href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
+                            <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black" href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
                         }
@@ -81,24 +81,33 @@
                 </li>
 
                 @if (groupsList != null)
-                { 
-                <li class="nav-item dropdown px-3 ">
-                    <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
-                        <span class="oi oi-people" aria-hidden="true"></span> Your Groups
-                    </NavLink>
-                    <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+                {
+                    <li class="nav-item dropdown px-3 ">
+                        <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                            <span class="oi oi-people" aria-hidden="true"></span> Your Groups
+                        </NavLink>
+                        <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
 
-                        @foreach (var group in groupsList)
-                        {
-                            if (group.ExpenseTrackerUserId == currentUserObj.Id)
+                            @foreach (var group in groupsList)
                             {
-                                <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
-                                    <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
-                                </NavLink>
+                                if (group.ExpenseTrackerUserId == currentUserObj.Id)
+                                {
+                                    <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                                        <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
+                                    </NavLink>
+                                }
                             }
-                        }
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item px-3" @onclick="ToggleNavMenu">
+                        <NavLink style="color: black" class="nav-link" >
+                            Loading...<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"> 
+                            </div>
+                        </NavLink>
+                    </li>
                 }
 
 

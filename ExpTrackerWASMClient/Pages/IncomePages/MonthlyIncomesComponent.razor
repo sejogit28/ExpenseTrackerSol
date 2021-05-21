@@ -2,11 +2,13 @@
 @page "/incomesbymonth/"
 @inject IJSRuntime JsRuntime
 @inject IIncomesScreenUseCases IncomesScreenUseCases
+@inject IGroupsScreenUseCases GroupsScreenUseCases
+@inject IAdminScreenUseCases AdminScreenUseCases
 
 
 <div class="row justify-content-center">
     <h2>Monthly Incomes for @targetMonth</h2>
-    <NavLink class="nav-link" href="@($"/incomesbymonth/comparisonchart/{targetMonth}")">
+    <NavLink  class="btn btn-info" href="@($"/incomesbymonth/comparisonchart/{targetMonth}")">
         <span class="iconify icon:oi:bar-chart icon-inline:false"></span> Visualize
     </NavLink>
 </div>
@@ -47,6 +49,19 @@
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">
                                     Edit
                                 </button>
+
+                                <div class="btn-group" role="group">
+                                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary mb-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Transfer
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                        @foreach (var group in groupsList)
+                                        {
+                                            <a class="dropdown-item" @onclick="() => moveIncomeToGroup(income.IncomeId, group.Groups.GroupsId)">Send to: @group.Groups.GroupName</a>
+                                        }
+
+                                    </div>
+                                </div>
 
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => deleteIncome(income.IncomeId)">
                                     Delete
@@ -170,8 +185,6 @@ else
 
 @code {
 
-    Incomes income;
-    AlertComponent alertComponent;
 
     //Needs to match the route params but that match doesn't need to be case sensitive
     [Parameter]
@@ -182,6 +195,11 @@ else
 
 
     IEnumerable<Incomes> incomesbyMonth;
+    List<GroupUsers> groupsList;
+
+    ExpenseTrackerUser currentUserObj;
+    Incomes income;
+    AlertComponent alertComponent;
 
     public double? totalMonthlyIncome;
     public string currentUser;
@@ -206,6 +224,9 @@ else
         var user = authState.User;
 
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
+        groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
+
 
         income = new Incomes
         {
@@ -296,6 +317,29 @@ else
             {
                 totalMonthlyIncome += incomeAmount.Amount;
             }
+        }
+    }
+
+    public async Task moveIncomeToGroup(int incomeId, int newGroupId)
+    {
+        bool confirmedTransfer = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to transfer Expense #{incomeId}? That will send this expense to the selected group," +
+            $" removing it from this page and its amount from your personal total expenses for this month");
+
+        if (confirmedTransfer)
+        {
+            await getEditableIncome(incomeId);
+            income.GroupsGroupsId = newGroupId;
+            await IncomesScreenUseCases.EditIncome(income);
+
+            makeFreshIncome();
+
+            await refreshValues();
+        }
+        else
+        {
+            alertComponent.Message = $"Transfer Cancelled";
+            alertComponent.show("secondary");
         }
     }
 

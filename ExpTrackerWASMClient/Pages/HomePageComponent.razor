@@ -1,0 +1,76 @@
+﻿@attribute [Microsoft.AspNetCore.Authorization.AllowAnonymous]
+@page "/"
+@page "/home"
+@inject NavigationManager NavManager
+
+
+<section class="bg-secondary py-5 border-bottom shadow-lg">
+    <div class=" container-fluid px-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-10">
+                <h1 class=" text-center">Welcome To The Expen<span class="oi oi-dollar" aria-hidden="true"></span>e Track!!</h1>
+                <div class="row">
+                    <h3>
+                        "<strong>Financial literacy</strong> not only involves the ability to count your money, it also tests
+                        your ability to evaluate the cost and benefit associated with each decision you make"
+                    </h3>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="py-5 bg-white shadow-lg" id="features">
+    <div class="container-fluid px-5 my-5">
+        <div class="row gx-5">
+            <div class="text-center display-2 col-lg-4 mb-5 mb-lg-0">
+                <span class="oi oi-dollar" aria-hidden="true"></span>
+                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-collection"></i></div>
+                <h1 class="fw-bolder">Submit Your Expenses and Incomes At Your Own Pace</h1>
+                <p class="h3">Expenses and incomes can be submitted any time. Make your own schedule and Expense Track will be here to support you!</p>
+                <a class="h4 btn btn-outline-primary text-decoration-none" href="/login">
+                    Log Back In
+                </a>
+            </div>
+            <div class="text-center display-2  col-lg-4 mb-5 mb-lg-0">
+                <span class="oi oi-pie-chart" aria-hidden="true"></span>
+                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-building"></i></div>
+                <h1 class="fw-bolder">View Different Kinds of Interactive Charts</h1>
+                <p class="h3">Compare different categories of spending such as Groceries, Gas, Subscriptions, Fun etc. Use these charts to modify spending habits as needed</p>
+                <a class="h4 btn btn-primary text-decoration-none" href="/register">
+                    Jump on the Expense Track(100% Free)
+                </a>
+            </div>
+            <div class="text-center display-2  col-lg-4 mb-5 mb-lg-0">
+                <span class="oi oi-people" aria-hidden="true"></span>
+                <div class="feature bg-primary bg-gradient text-white rounded-3 mb-3"><i class="bi bi-toggles2"></i></div>
+                <h1 class="fw-bolder">Open Accounts with Friends, Family or Co-Workers</h1>
+                <p class="h3">Review budgets with a friend, co-worker, or spouse. Create a group and work with others to review spending and save money!</p>
+                <a class="h4  btn btn-outline-primary text-decoration-none" href="#!">
+                    Back To Top
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+
+<section class="bg-white py-5 shadow-lg">
+    <div class="container-fluid px-5">
+        <div class="row justify-content-center">
+            <img class="img-fluid h-100" src="/ExpenseTrackLogo.png" />
+        </div>
+
+    </div>
+</section>
+
+<footer class="py-5 bg-white shadow-lg">
+    <div class="container px-5"><p class="m-0 text-center">Copyright &copy; Expense Track 2021</p></div>
+</footer>
+@code
+{
+
+}
+

@@ -139,8 +139,8 @@ namespace ExpenseTrackerApi.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, "User");
-
-            return Ok($"{user.UserName} has been registered");//String interpolation is similar to Javascript
+            //String interpolation has some similarities to Javascript
+            return Ok($"{user.UserName} has been registered");
         }
 
         private SigningCredentials GetSigningCredentials()

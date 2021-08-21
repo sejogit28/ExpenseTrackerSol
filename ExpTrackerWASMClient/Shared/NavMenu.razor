@@ -27,6 +27,17 @@
                         <span class="oi oi-person" aria-hidden="true"></span> Your Profile
                     </NavLink>
                 </li>
+
+                <AuthorizeView Context="innerAuthView" Roles="Administrator">
+                   
+                    <li class="nav-item px-3" @onclick="ToggleNavMenu">
+                        <NavLink style="color: black" class="nav-link" href="admin/dashboard">
+                            <span class="oi oi-person" aria-hidden="true"></span> Admin Users List
+                        </NavLink>
+                    </li>
+                        
+                </AuthorizeView>
+
                 <li class="nav-item px-3" @onclick="ToggleNavMenu">
                     <NavLink style="color: black" class="nav-link" href="/expenses">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> All Expenses
@@ -138,7 +149,9 @@
 @code {
 
     [CascadingParameter]
-    public Task<AuthenticationState> AuthState { get; set; }
+    public Task<AuthenticationState> _authState { get; set; }
+
+    private AuthenticationState authState { get; set; }
 
     [Inject]
     NavigationManager NavManager { get; set; }
@@ -164,7 +177,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var authState = await AuthState;
+        var authState = await _authState;
         var user = authState.User;
 
 

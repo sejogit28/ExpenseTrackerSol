@@ -45,7 +45,7 @@ namespace ExpenseTrackerApi.Controllers
             }
             else 
             {
-                var listOfUsersGroupsHopefully = await _datExpBase.GroupUsers
+                var listOfUserGroups = await _datExpBase.GroupUsers
                     .Include(e => e.ExpenseTrackerUser).ThenInclude(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
                     .Where(u => u.ExpenseTrackerUserId == currentUser.Id).ToListAsync();
 
@@ -53,7 +53,7 @@ namespace ExpenseTrackerApi.Controllers
                 //    .Include(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
                 //    .ThenInclude(guu => guu.GroupUsers).Where(u => u.ExpenseTrackerUserId == currentUser.Id)
                 //    .ToListAsync();
-                return Ok(listOfUsersGroupsHopefully);
+                return Ok(listOfUserGroups);
             }
         }
 
@@ -342,7 +342,7 @@ namespace ExpenseTrackerApi.Controllers
                 return NotFound(new OperationResponse
                 {
                     OperationSuccessful = false,
-                    OperationMessage = $"The specified group with the Id: {groupId}"
+                    OperationMessage = $"The specified group with the Id: {groupId} could not be found"
                 });
             }
             else 
@@ -357,7 +357,7 @@ namespace ExpenseTrackerApi.Controllers
                     GroupUserNames.Add(userObj.UserName);
                 }
                 /*It doesn't appear that you can return a linq query without getting a 500 error about
-                 * Json Serializer Cycles(would get this error if you returned the listofGroupUsers)*/
+                 * Json Serializer Cycles?(would get this error if you returned the listofGroupUsers)*/
                 return Ok(GroupUserNames);
             }
             

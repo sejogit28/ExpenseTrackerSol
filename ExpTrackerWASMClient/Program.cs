@@ -43,7 +43,7 @@ namespace ExpTrackerWASMClient
             builder.Services.AddScoped<TooltipService>();
             builder.Services.AddScoped<ContextMenuService>();
 
-            builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter("https://localhost:5001", new HttpClient()));
+            builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter("https://expensetrackerapi20210823145232.azurewebsites.net", new HttpClient()));
             /*It is bad practice to keep creating new instances of HttpClient(as the default AddScope Method shows below)
              So when calling a Interface/abstraction that relies on HttpClient it is better to use the Singleton Method
             as opposed to using the Transient method*/

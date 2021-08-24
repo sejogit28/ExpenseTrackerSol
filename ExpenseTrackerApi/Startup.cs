@@ -78,7 +78,7 @@ namespace ExpenseTrackerApi
                 option.AddDefaultPolicy(builder =>
                 {
                     //The url below needs to come from the client you want to connect to.
-                    builder.WithOrigins("https://localhost:44382").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("https://exptrackerwasmclient20210823222931.azurewebsites.net").AllowAnyHeader().AllowAnyMethod();
                 });
             });
         }

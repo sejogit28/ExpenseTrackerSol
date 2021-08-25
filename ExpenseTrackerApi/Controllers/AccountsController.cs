@@ -199,12 +199,51 @@ namespace ExpenseTrackerApi.Controllers
 
             return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
         }
-        [HttpGet("EmailTest")]
-        public void EmailTest() 
-        {
-            var message = new EmailMessage(new string[] { "sejoTestEmail1828@mailinator.com" }, "Test Email", "This is the content for a test email!");
-            _emailSender.SendEmail(message);
-        }
+
+        //[HttpPost("DemoUserLogin")]
+        //public async Task<IActionResult> DemoUserLogin()
+        //{
+
+
+        //    var user = await _userManager.FindByNameAsync("expenseTrackDemoUser28@mailinator.com");
+
+        //    if (user == null || !await _userManager.CheckPasswordAsync(user, "D8f8nd@DU"))
+        //        return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+
+        //    var signingCredentials = GetSigningCredentials();
+        //    var claims = await GetClaims(user);
+        //    var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+        //    var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+
+        //    return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
+        //}
+
+        //[HttpPost("DemoAdminLogin")]
+        //public async Task<IActionResult> DemoAdminLogin()
+        //{
+
+
+        //    var user = await _userManager.FindByNameAsync("expenseTrackDemoAdmin28@mailinator.com");
+
+        //    if (user == null || !await _userManager.CheckPasswordAsync(user, "D8f8nd@DA"))
+        //        return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+
+        //    var signingCredentials = GetSigningCredentials();
+        //    var claims = await GetClaims(user);
+        //    var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+        //    var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+
+        //    return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
+        //}
+
+        //[HttpGet("EmailTest")]
+        //public void EmailTest() 
+        //{
+        //    var message = new EmailMessage(new string[] { "sejoTestEmail1828@mailinator.com" }, "Test Email", "This is the content for a test email!");
+        //    _emailSender.SendEmail(message);
+        //}
 
         [HttpGet("ResetPassword")]
         public async Task ResetPassword([FromBody]ForgotPassword forgotPassword)

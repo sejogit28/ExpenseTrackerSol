@@ -33,7 +33,7 @@ namespace ExpenseTrackerRepository
             var expContent = JsonSerializer.Serialize(userRegistrationDto);
             var bodyContent = new StringContent(expContent, Encoding.UTF8, "application/json");
 
-            var expRegisterResult = await _client.PostAsync("https://localhost:5001/api/accounts/Registration", bodyContent);
+            var expRegisterResult = await _client.PostAsync("https://expensetrackerapi20210823145232.azurewebsites.net/api/accounts/Registration", bodyContent);
             var expRegisterContent = await expRegisterResult.Content.ReadAsStringAsync();
 
             if (!expRegisterResult.IsSuccessStatusCode) 
@@ -51,7 +51,7 @@ namespace ExpenseTrackerRepository
             var content = JsonSerializer.Serialize(loginAuthenticationDto);
             var bodyContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            var loginResult = await _client.PostAsync("https://localhost:5001/api/accounts/login", bodyContent);
+            var loginResult = await _client.PostAsync("https://expensetrackerapi20210823145232.azurewebsites.net/api/accounts/login", bodyContent);
             var loginContent = await loginResult.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<LoginResponseDto>(loginContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 

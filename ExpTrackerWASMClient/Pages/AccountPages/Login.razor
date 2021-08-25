@@ -44,11 +44,16 @@ to an error on blazors part*@
         @*<br/>
         <div class="row">
             <h2>
-                <NavLink class="nav-link" href="@($"/forgotPassword")"> Forgot Password??? </NavLink>  
+                <NavLink class="nav-link" href="@($"/forgotPassword")"> Forgot Password??? </NavLink>
             </h2>
         </div>*@
 
         <br />
+
+        <div class="row">
+            <button type="button" class="btn btn-outline-info"  @onclick="async () => { await LoginDemoAdmin(); }"> Login as Demo Admin</button>
+            <button type="button" class="btn btn-outline-info" @onclick="async () => { await LoginDemoUser(); }"> Login as Demo User</button>
+        </div>
 
         <div class="row">
             <h2 class="text-center">Not a Member? <NavLink class="nav-link" href="@($"/register")"> Sign-up today!</NavLink></h2>
@@ -84,6 +89,50 @@ to an error on blazors part*@
     {
         ShowLoginError = false;
 
+        var result = await AuthRepository.Login(_loginAuthentication);
+        if (!result.IsLoginSuccessful)
+        {
+            Error = result.ErrMessage;
+            ShowLoginError = true;
+        }
+        else
+        {
+            //var timer = new Timer(new TimerCallback(_ =>
+            //{
+
+            //}), null, 250, 250);
+            NavManager.NavigateTo("/loginPageReload");
+        }
+    }
+
+    public async Task LoginDemoAdmin()
+    {
+        ShowLoginError = false;
+
+        _loginAuthentication.Email = "expenseTrackDemoAdmin28@www.mailinator.com";
+        _loginAuthentication.Password = "D8f8nd@DA";
+        var result = await AuthRepository.Login(_loginAuthentication);
+        if (!result.IsLoginSuccessful)
+        {
+            Error = result.ErrMessage;
+            ShowLoginError = true;
+        }
+        else
+        {
+            //var timer = new Timer(new TimerCallback(_ =>
+            //{
+
+            //}), null, 250, 250);
+            NavManager.NavigateTo("/loginPageReload");
+        }
+    }
+
+    public async Task LoginDemoUser()
+    {
+        ShowLoginError = false;
+
+        _loginAuthentication.Email = "expenseTrackDemoUser28@www.mailinator.com";
+        _loginAuthentication.Password = "D8f8nd@DU";
         var result = await AuthRepository.Login(_loginAuthentication);
         if (!result.IsLoginSuccessful)
         {

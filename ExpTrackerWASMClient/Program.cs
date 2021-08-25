@@ -48,7 +48,7 @@ namespace ExpTrackerWASMClient
              So when calling a Interface/abstraction that relies on HttpClient it is better to use the Singleton Method
             as opposed to using the Transient method*/
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://exptrackerwasmclient20210823222931.azurewebsites.net/") });
            
 
 

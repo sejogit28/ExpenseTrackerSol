@@ -3,7 +3,7 @@
 @inject IAuthRepository AuthRepository
 @inject NavigationManager NavManager
 
-<h3>Login</h3>
+<h1>Login Below</h1>
 
 @*Putting "context" next to Autorizeview below needs to be done if you are nesting multiple render fragments due 
 to an error on blazors part*@
@@ -50,9 +50,9 @@ to an error on blazors part*@
 
         <br />
 
-        <div class="row">
-            <button type="button" class="btn btn-outline-info"  @onclick="async () => { await LoginDemoAdmin(); }"> Login as Demo Admin</button>
-            <button type="button" class="btn btn-outline-info" @onclick="async () => { await LoginDemoUser(); }"> Login as Demo User</button>
+        <div class="row mb-3">
+            <button type="button" class="btn btn-outline-info mr-3"  @onclick="async () => { await LoginDemoAdmin(); }">1-Click Login as Demo Admin</button>
+            <button type="button" class="btn btn-outline-info" @onclick="async () => { await LoginDemoUser(); }">1-Click Login as Demo User</button>
         </div>
 
         <div class="row">
@@ -109,7 +109,7 @@ to an error on blazors part*@
     {
         ShowLoginError = false;
 
-        _loginAuthentication.Email = "expenseTrackDemoAdmin28@www.mailinator.com";
+        _loginAuthentication.Email = "expenseTrackDemoAdmin28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DA";
         var result = await AuthRepository.Login(_loginAuthentication);
         if (!result.IsLoginSuccessful)
@@ -131,7 +131,7 @@ to an error on blazors part*@
     {
         ShowLoginError = false;
 
-        _loginAuthentication.Email = "expenseTrackDemoUser28@www.mailinator.com";
+        _loginAuthentication.Email = "expenseTrackDemoUser28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DU";
         var result = await AuthRepository.Login(_loginAuthentication);
         if (!result.IsLoginSuccessful)

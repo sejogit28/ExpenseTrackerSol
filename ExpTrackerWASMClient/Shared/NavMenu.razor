@@ -101,7 +101,7 @@
 
                             @foreach (var group in groupsList)
                             {
-                                if (group.ExpenseTrackerUserId == currentUserObj.Id)
+                                if (group.ExpenseTrackerUserId == currentUserObj.UserId)
                                 {
                                     <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
                                         <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
@@ -168,7 +168,7 @@
     List<GroupUsers> groupsList;
 
     public string currentUser;
-    ExpenseTrackerUser currentUserObj;
+    UserProfile currentUserObj;
 
     private bool collapseNavMenu = true;
 

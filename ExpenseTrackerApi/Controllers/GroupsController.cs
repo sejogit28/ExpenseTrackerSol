@@ -184,7 +184,7 @@ namespace ExpenseTrackerApi.Controllers
                 var message = new EmailMessage(new string[] {$"{invite.InviteeEmail}"}, 
                     "Invited to join a group for expenseTrack.com", $"Hello!! You've been invited to join" +
                     $" a group by {groupMember}. Please follow the link to be added in:" +
-                    $" https://localhost:44382/inviteeconfirm/{invite.InviteeEmail}/{invite.GroupId}");
+                    $" https://exptrackerwasmclient20210823222931.azurewebsites.net/inviteeconfirm/{invite.InviteeEmail}/{invite.GroupId}");
 
                    _emailSender.SendEmail(message);
                     return Ok(new OperationResponse
@@ -246,7 +246,7 @@ namespace ExpenseTrackerApi.Controllers
                 var message = new EmailMessage(new string[] { $"{possible.InviterEmail}" },
                     "Invitation Accepted!", $"Hello!!, you're receiving this email because the invitation" +
                     $" you sent to {possible.InviteeEmail} was accepted! In order to confirm their " +
-                    $"addition to the group, click the following link: https://localhost:44382/inviterconfirm/{possible.InviteeEmail}/{possible.GroupId}/ " +
+                    $"addition to the group, click the following link: https://exptrackerwasmclient20210823222931.azurewebsites.net/inviterconfirm/{possible.InviteeEmail}/{possible.GroupId}/ " +
                     $"If you didn't send an invitation to {possible.InviteeEmail}, you can disregard " +
                     $"this email.");
 

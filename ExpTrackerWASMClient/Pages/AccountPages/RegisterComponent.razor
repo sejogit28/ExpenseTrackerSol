@@ -4,7 +4,7 @@
 @inject NavigationManager NavigationManager
 
 
-<h3>Register Below!</h3>
+<h1>Register Below!</h1>
 
 @if (ShowRegistrationErrors)
 {
@@ -15,7 +15,7 @@
         }
     </div>
 }
-<EditForm Model="_userRegistration" OnValidSubmit="RegisterExpUser" class="card card-body bg-light mt-5">
+<EditForm Model="_userRegistration" OnValidSubmit="RegisterExpUser" class="card card-body bg-light mt-5 mb-3">
     <DataAnnotationsValidator />
     <div class="form-group row">
         <label for="email" class="col-md-2 col-form-label">Email:</label>
@@ -45,6 +45,11 @@
     </div>
 </EditForm>
 
+<div class="row my-3">
+    <button type="button" class="btn btn-outline-info mr-3" @onclick="async () => { await LoginDemoAdmin(); }">1-Click Login as Demo Admin</button>
+    <button type="button" class="btn btn-outline-info" @onclick="async () => { await LoginDemoUser(); }">1-Click Login as Demo User</button>
+</div>
+
 <br/>
 <br />
 @if (registerSuccessful == true)
@@ -58,6 +63,7 @@
 @code {
 
     private UserRegistrationDto _userRegistration = new UserRegistrationDto();
+    private LoginAuthenticationDto _loginAuthentication = new LoginAuthenticationDto();
     public bool ShowRegistrationErrors;
     public IEnumerable<string> Errors;
 
@@ -77,12 +83,37 @@
             ShowRegistrationErrors = true;
         }
         else
-        {           
+        {
             registerSuccessful = true;
             StateHasChanged();
             await Task.Delay(3000);
             NavigationManager.NavigateTo("/login");
         }
 
+    }
+
+    public async Task LoginDemoAdmin()
+    {
+        ShowRegistrationErrors = false;
+
+        _loginAuthentication.Email = "expenseTrackDemoAdmin28@mailinator.com";
+        _loginAuthentication.Password = "D8f8nd@DA";
+        await AuthRepository.Login(_loginAuthentication);
+        
+            NavigationManager.NavigateTo("/loginPageReload");
+      
+    }
+
+    public async Task LoginDemoUser()
+    {
+        ShowRegistrationErrors = false;
+
+        _loginAuthentication.Email = "expenseTrackDemoUser28@mailinator.com";
+        _loginAuthentication.Password = "D8f8nd@DU";
+        await AuthRepository.Login(_loginAuthentication);
+        
+        
+            NavigationManager.NavigateTo("/loginPageReload");
+        
     }
 }

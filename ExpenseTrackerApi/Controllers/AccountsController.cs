@@ -2,6 +2,7 @@
 using EmailService;
 using ExpenseTrackerModels;
 using ExpenseTrackerModels.AuthModels;
+using ExpenseTrackerModels.UserViewModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -48,7 +49,19 @@ namespace ExpenseTrackerApi.Controllers
         {
             var usersQueryable =  _userManager.Users;
             var usersList = usersQueryable.ToList();
-            return Ok(usersList);
+            var userProfileList = new List<UserProfile>();
+            foreach(var user in usersList)
+            {
+                var singleUserObject = new UserProfile
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    UserEmail = user.Email,
+                    UserDateJoined = user.DateAdded
+                };
+                userProfileList.Add(singleUserObject);
+            }
+            return Ok(userProfileList);
         }
 
         [HttpGet("getSingleUser/{singleUserName}")]
@@ -61,7 +74,14 @@ namespace ExpenseTrackerApi.Controllers
             }
             else 
             {
-               return Ok(singleUser);
+                var singleUserObject = new UserProfile
+                {
+                    UserId = singleUser.Id,
+                    UserName = singleUser.UserName,
+                    UserEmail = singleUser.Email,
+                    UserDateJoined = singleUser.DateAdded
+                };
+               return Ok(singleUserObject);
             }
          
         }
@@ -129,7 +149,13 @@ namespace ExpenseTrackerApi.Controllers
         {
             if (userRegistration == null || !ModelState.IsValid)
                 return BadRequest();
-            var user = new ExpenseTrackerUser { UserName = userRegistration.Email, Email = userRegistration.Email };
+
+            var user = new ExpenseTrackerUser
+            {
+                UserName = userRegistration.Email,
+                Email = userRegistration.Email,
+                DateAdded = DateTime.Now
+            };
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
             if (!result.Succeeded)
@@ -139,6 +165,10 @@ namespace ExpenseTrackerApi.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, "User");
+            if(userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@www.mailinator.com")
+            {
+                await _userManager.AddToRoleAsync(user, "Administrator");
+            }
             //String interpolation has some similarities to Javascript
             return Ok($"{user.UserName} has been registered");
         }

@@ -5,7 +5,7 @@
 @if (currentIdentityUser != null)
 {
     <div class="row">
-        <h3>Hello @currentIdentityUser.UserName, welcome to your profile page!</h3>
+        <h3>Hello @currentUser, welcome to your profile page!</h3>
     </div>
 
     <br />
@@ -15,9 +15,9 @@
         <details>
             <summary>User Info(Click here to reveal)</summary>
             <ol>
-                <li>Your Id: @currentIdentityUser.Id</li>
-                <li>Your Email: @currentIdentityUser.Email</li>
-                <li>The date you signed up: @currentIdentityUser.DateAdded</li>
+                <li>Your Id: @currentIdentityUser.UserId</li>
+                <li>Your Email: @currentIdentityUser.UserEmail</li>
+                <li>The date you signed up: @currentIdentityUser.UserDateJoined</li>
                 <li>Your username: @currentIdentityUser.UserName</li>
             </ol>
         </details>
@@ -141,7 +141,7 @@ else
 @code {
 
     public string currentUser;
-    ExpenseTrackerUser currentIdentityUser;
+    UserProfile currentIdentityUser;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
@@ -158,6 +158,7 @@ else
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
 
         currentIdentityUser = await AdminScreenUseCases.ViewSingleUser(currentUser);
+
 
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
 
@@ -225,7 +226,7 @@ else
         group = new Groups
         {
             DateCreated = DateTime.Now,
-            ExpenseTrackerUserId = currentIdentityUser.Id
+            ExpenseTrackerUserId = currentIdentityUser.UserId
         };
     }
 

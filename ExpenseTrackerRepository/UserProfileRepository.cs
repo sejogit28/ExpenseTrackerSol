@@ -1,5 +1,6 @@
 ﻿using ExpenseTrackerModels;
 using ExpenseTrackerModels.AuthModels;
+using ExpenseTrackerModels.UserViewModel;
 using ExpenseTrackerRepository.ApiRouteFetcher;
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
@@ -16,15 +17,15 @@ namespace ExpenseTrackerRepository
             this.webApiExecuter = webApiExecuter;
         }
 
-        public async Task<IList<ExpenseTrackerUser>> GetAllUsers()
+        public async Task<IList<UserProfile>> GetAllUsers()
         {
-            var usersList = await webApiExecuter.InvokeGet<IList<ExpenseTrackerUser>>("api/accounts/allUsers");
+            var usersList = await webApiExecuter.InvokeGet<IList<UserProfile>>("api/accounts/allUsers");
             return usersList;
         }
 
-        public async Task<ExpenseTrackerUser> GetSingleUser(string singleUserName)
+        public async Task<UserProfile> GetSingleUser(string singleUserName)
         {
-            return await webApiExecuter.InvokeGet<ExpenseTrackerUser>($"api/accounts/getSingleUser/{singleUserName}");
+            return await webApiExecuter.InvokeGet<UserProfile>($"api/accounts/getSingleUser/{singleUserName}");
         }
 
         public async Task DeleteSingleUser(string deletedUserId)

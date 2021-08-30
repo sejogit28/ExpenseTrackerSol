@@ -60,6 +60,7 @@ else
 
     public float totalMonthlyExpenses;
 
+    static float Housing;
     static float RentersInsurance;
     static float Electric;
     static float Phone;
@@ -89,6 +90,7 @@ else
 
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
 
+        Housing = 0;
         RentersInsurance = 0;
         Electric = 0;
         Phone = 0;
@@ -108,6 +110,12 @@ else
             if (currentUser == expense.UserId)
             {
                 totalMonthlyExpenses += expense.Amount;
+
+                if (expense.ExpenseTypes.ToString() == "Housing")
+
+                {
+                    Housing += expense.Amount;
+                }
 
                 if (expense.ExpenseTypes.ToString() == "Insurance")
 
@@ -210,6 +218,11 @@ else
     {
         ExpenseTypeLabel = "Subscription",
         ExpenseAmount = Subscription
+    },
+    new DataItem
+    {
+        ExpenseTypeLabel = "Housing",
+        ExpenseAmount = Housing
     },
 
     new DataItem

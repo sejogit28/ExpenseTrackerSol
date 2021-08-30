@@ -181,6 +181,8 @@ namespace ExpenseTrackerApi.Controllers
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
+     
+
         private async Task<List<Claim>> GetClaims(ExpenseTrackerUser user)
         {
             var claims = new List<Claim>

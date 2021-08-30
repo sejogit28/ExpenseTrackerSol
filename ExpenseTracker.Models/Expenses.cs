@@ -35,6 +35,7 @@ namespace ExpenseTrackerModels
         public ExpenseCategoriesList ExpenseTypes { get; set; }
         public enum ExpenseCategoriesList 
         {
+            Housing,
             Insurance,
             Electric,
             Phone,

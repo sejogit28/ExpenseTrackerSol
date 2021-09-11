@@ -55,7 +55,7 @@
 @if (registerSuccessful == true)
 {
 <div class="alert alert-success" role="alert">
-    <p>"Registration Successful! Redirecting to login page...";</p>
+    <p>@Message</p>
 </div>
 }
 
@@ -84,10 +84,8 @@
         }
         else
         {
-            registerSuccessful = true;
-            StateHasChanged();
-            await Task.Delay(3000);
-            NavigationManager.NavigateTo("/login");
+            await SetMessage(true, "Registration Successful! Redirecting to login page...");
+            RedirectToNextPage("/login");
         }
 
     }
@@ -95,25 +93,41 @@
     public async Task LoginDemoAdmin()
     {
         ShowRegistrationErrors = false;
-
+        await SetMessage(true, "Demo User Login Successful! Redirecting to profile page...");
         _loginAuthentication.Email = "expenseTrackDemoAdmin28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DA";
         await AuthRepository.Login(_loginAuthentication);
-        
-            NavigationManager.NavigateTo("/loginPageReload");
-      
+        RedirectToNextPage("/loginPageReload");
+
     }
 
     public async Task LoginDemoUser()
     {
         ShowRegistrationErrors = false;
-
+        await SetMessage(true, "Demo User Login Successful! Redirecting to profile page...");
         _loginAuthentication.Email = "expenseTrackDemoUser28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DU";
         await AuthRepository.Login(_loginAuthentication);
-        
-        
-            NavigationManager.NavigateTo("/loginPageReload");
-        
+
+        RedirectToNextPage("/loginPageReload");
+
     }
+
+    private async Task SetMessage(bool messageStatus, string currentMessage)
+    {
+        registerSuccessful = messageStatus;
+        Message = currentMessage;
+        StateHasChanged();
+        await Task.Delay(3000);
+
+    }
+
+    private void RedirectToNextPage(string path)
+    {
+        NavigationManager.NavigateTo(path);
+        registerSuccessful = false;
+        Message = "";
+    }
+
+
 }

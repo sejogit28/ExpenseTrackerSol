@@ -59,9 +59,17 @@
                                 Transfer
                             </button>
                             <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                                @foreach (var group in groupsList)
+                                @if (groupsList.Count() == 0)
+                                { 
+                                    <a class="dropdown-item" disabled>No Groups Yet</a>
+                                }
+                                else
                                 {
-                                    <a class="dropdown-item" @onclick="() => moveIncomeToGroup(income.IncomeId, group.Groups.GroupsId)">Send to: @group.Groups.GroupName</a>
+                                    @foreach (var group in groupsList)
+                                    {
+                                        <a class="dropdown-item" @onclick="() => moveIncomeToGroup(income.IncomeId, group.Groups.GroupsId)">Send to: @group.Groups.GroupName</a>
+                                    }
+                                
                                 }
 
                             </div>

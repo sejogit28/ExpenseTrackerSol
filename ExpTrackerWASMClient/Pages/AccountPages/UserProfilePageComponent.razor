@@ -30,8 +30,13 @@
         <div class="card" style="width: 35rem;">
             @if(userGroupList != null)
             {
-
-                @if(userGroupList.Count() < 2)
+                if(userGroupList.Count() == 0) 
+                {
+                    <div class="card-header">
+                        No Groups Yet
+                    </div>
+                }
+                else if(userGroupList.Count() < 2)
                 {
                     <div class="card-header">
                         Your Group:

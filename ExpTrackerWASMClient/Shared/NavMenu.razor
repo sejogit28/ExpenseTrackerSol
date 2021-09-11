@@ -99,14 +99,24 @@
                         </NavLink>
                         <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
 
-                            @foreach (var group in groupsList)
+                            @if(groupsList.Count() == 0)
+                            { 
+                                <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" disabled>
+                                    No Groups Yet
+                                </NavLink>
+                            }
+                            else
                             {
-                                if (group.ExpenseTrackerUserId == currentUserObj.UserId)
+                                @foreach (var group in groupsList)
                                 {
-                                    <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
-                                        <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
-                                    </NavLink>
+                                    if (group.ExpenseTrackerUserId == currentUserObj.UserId)
+                                    {
+                                        <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
+                                            <span class="oi oi-people" aria-hidden="true"></span> Homepage for: @group.Groups.GroupName
+                                        </NavLink>
+                                    }
                                 }
+                          
                             }
                         </ul>
                     </li>

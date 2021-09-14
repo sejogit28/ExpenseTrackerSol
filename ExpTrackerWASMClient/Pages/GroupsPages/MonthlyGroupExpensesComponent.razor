@@ -159,12 +159,12 @@ else
             @if (expense.ExpenseId > 0)
             {
 
-                <button class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary mr-3 mb-3">
                     Submit Edited Values For Expense #@expense.ExpenseId
                 </button>
 
 
-                <button class="btn btn-outline-secondary" @onclick="() => { makeFreshExpense(); }">
+                <button class="btn btn-outline-secondary mr-3 mb-3" @onclick="() => { makeFreshExpense(); }">
                     Create A New Expense Instead(Clear Form)
                 </button>
 

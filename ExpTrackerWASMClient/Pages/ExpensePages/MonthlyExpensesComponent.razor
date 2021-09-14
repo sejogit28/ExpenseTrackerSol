@@ -42,9 +42,7 @@
                         <th scope="row">@expense.ExpenseTypes</th>
                         <th scope="row">@expense.Amount</th>
                         <th scope="row">
-                            <span class="d-inline-block" tabindex="0" data-toggle="tooltip" title="@expense.Notes">
-                                <button class="btn btn-outline-primary" style="pointer-events: none;" type="button" disabled>Note</button>
-                            </span>
+                            @expense.Notes
                         </th>
                         <th scope="row">@expense.DateSpent.ToShortDateString()</th>
                         <th scope="row">@expense.DateSubmitted.ToShortDateString()</th>
@@ -166,12 +164,12 @@ else
             @if (expense.ExpenseId > 0)
             {
 
-                <button class="btn btn-outline-primary">
+                <button class="btn btn-outline-primary mr-3 mb-3">
                     Submit Edited Values For Expense #@expense.ExpenseId
                 </button>
 
 
-                <button class="btn btn-outline-secondary" @onclick="() => { makeFreshExpense(); }">
+                <button class="btn btn-outline-secondary mr-3 mb-3" @onclick="() => { makeFreshExpense(); }">
                     Create A New Expense Instead(Clear Form)
                 </button>
 

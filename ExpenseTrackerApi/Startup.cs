@@ -34,10 +34,11 @@ namespace ExpenseTrackerApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+
 
             services.AddDbContext<ExpenseTrackerDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ExpenseTrackerUser, IdentityRole>()
                 .AddEntityFrameworkStores<ExpenseTrackerDbContext>();
@@ -78,7 +79,7 @@ namespace ExpenseTrackerApi
                 option.AddDefaultPolicy(builder =>
                 {
                     //The url below needs to come from the client you want to connect to.
-                    builder.WithOrigins("https://exptrackerwasmclient20210823222931.azurewebsites.net").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("https://localhost:44382").AllowAnyHeader().AllowAnyMethod();
                 });
             });
         }

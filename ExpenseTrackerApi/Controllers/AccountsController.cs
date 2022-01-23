@@ -154,7 +154,7 @@ namespace ExpenseTrackerApi.Controllers
             {
                 UserName = userRegistration.Email,
                 Email = userRegistration.Email,
-                DateAdded = DateTime.Now
+                DateAdded = DateTime.Now.ToUniversalTime()
             };
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);

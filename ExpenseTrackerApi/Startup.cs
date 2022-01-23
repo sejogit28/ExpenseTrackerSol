@@ -37,7 +37,7 @@ namespace ExpenseTrackerApi
 
 
             services.AddDbContext<ExpenseTrackerDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("PostgresRemoteConnection")));
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ExpenseTrackerUser, IdentityRole>()

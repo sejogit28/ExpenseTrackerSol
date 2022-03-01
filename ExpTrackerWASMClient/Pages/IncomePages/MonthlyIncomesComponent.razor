@@ -46,8 +46,8 @@
                         <button class="btn btn-outline-info" style="pointer-events: none;" type="button" disabled>Note</button>
                     </span>
                 </th>
-                <th scope="row">@income.DatePaid.ToShortDateString()</th>
-                <th scope="row">@income.DateSubmitted.ToShortDateString()</th>
+                <th scope="row">@income.DatePaid.UtcDateTime.ToLocalTime().ToString("g")</th>
+                <th scope="row">@income.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
                 <th scope="row">
                     <div class="btn-group" role="group" aria-label="Income Action Options">
                         <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">

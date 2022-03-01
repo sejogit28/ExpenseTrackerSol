@@ -21,13 +21,13 @@ namespace ExpenseTrackerModels
         public float Amount { get; set; }
         [Required]
         //[MaxLength(25)]
-        public DateTime DatePaid { get; set; }
+        public DateTimeOffset DatePaid { get; set; }
         [Required]
         [MaxLength(25)]
         public string MonthYear { get; set; }
 
         [Required]
-        public DateTime DateSubmitted { get; set; }
+        public DateTimeOffset DateSubmitted { get; set; }
         public IncomeCategoriesList IncomeTypes { get; set; }
         public enum IncomeCategoriesList
         {

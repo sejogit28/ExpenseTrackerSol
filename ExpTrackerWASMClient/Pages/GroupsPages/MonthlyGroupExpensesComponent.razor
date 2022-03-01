@@ -55,8 +55,8 @@
                         <th scope="row">@expense.ExpenseTypes</th>
                         <th scope="row">@expense.Amount</th>
                         <th scope="row">@expense.Notes</th>
-                        <th scope="row">@expense.DateSpent.ToShortDateString()</th>
-                        <th scope="row">@expense.DateSubmitted.ToShortDateString()</th>
+                        <th scope="row">@expense.DateSpent.UtcDateTime.ToLocalTime().ToString("g")</th>
+                        <th scope="row">@expense.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
                         <th scope="row">
                             <div class="btn-group" role="group" aria-label="Expense Action Options">
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableExpense(expense.ExpenseId)">

@@ -23,14 +23,14 @@ namespace ExpenseTrackerModels
 
         [Required]
         public float Amount { get; set; }
-        public DateTime DateSpent { get; set; }
+        public DateTimeOffset DateSpent { get; set; }
 
         [Required]
         [MaxLength(25)]
         public string MonthYear { get; set; }
 
         [Required]
-        public DateTime DateSubmitted { get; set; }
+        public DateTimeOffset DateSubmitted { get; set; }
 
         public ExpenseCategoriesList ExpenseTypes { get; set; }
         public enum ExpenseCategoriesList 

@@ -15,7 +15,7 @@ namespace ExpenseTrackerModels
         public string GroupName { get; set; }
 
         [Required]
-        public DateTime DateCreated { get; set; }
+        public DateTimeOffset DateCreated { get; set; }
 
         public string ExpenseTrackerUserId { get; set; }
         public ExpenseTrackerUser ExpenseTrackerUser { get; set; }

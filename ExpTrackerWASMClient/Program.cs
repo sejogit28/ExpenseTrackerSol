@@ -43,8 +43,10 @@ namespace ExpTrackerWASMClient
             builder.Services.AddScoped<TooltipService>();
             builder.Services.AddScoped<ContextMenuService>();
 
-            var remoteApiDomain = "https://bug-track-api.herokuapp.com";
+            var remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
             var localApiDomain = "https://localhost:5001";
+
+            var localClientDomain = "https://localhost:44382";
 
             builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(remoteApiDomain, new HttpClient()));
             //builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(localApiDomain, new HttpClient()));
@@ -53,7 +55,7 @@ namespace ExpTrackerWASMClient
              So when calling a Interface/abstraction that relies on HttpClient it is better to use the Singleton Method
             as opposed to using the Transient method*/
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:44382/") });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(localClientDomain + "/") });
            
 
 

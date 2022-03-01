@@ -234,8 +234,8 @@ else
 
         income = new Incomes
         {
-            DatePaid = DateTimeOffset.Now,
-            DateSubmitted = DateTimeOffset.Now,
+            DatePaid = DateTime.Now.ToUniversalTime(),
+            DateSubmitted = DateTime.Now.ToUniversalTime(),
             UserId = currentUser,
             MonthYear = "placeholder"
         };
@@ -336,8 +336,8 @@ else
     {
         income = new Incomes
         {
-            DatePaid = DateTimeOffset.Now,
-            DateSubmitted = DateTimeOffset.Now,
+            DatePaid = DateTime.Now.ToUniversalTime(),
+            DateSubmitted = DateTime.Now.ToUniversalTime(),
             UserId = income.UserId,
             MonthYear = "placeholder",
             GroupsGroupsId = groupId

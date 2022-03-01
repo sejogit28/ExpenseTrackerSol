@@ -80,6 +80,7 @@ namespace ExpenseTrackerApi
                 {
                     //The url below needs to come from the client you want to connect to.
                     builder.WithOrigins("https://localhost:44382").AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins("https://loving-turing-d3cc22.netlify.app").AllowAnyHeader().AllowAnyMethod();
                 });
             });
         }

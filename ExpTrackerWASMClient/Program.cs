@@ -47,6 +47,7 @@ namespace ExpTrackerWASMClient
             var localApiDomain = "https://localhost:5001";
 
             var localClientDomain = "https://localhost:44382";
+            var remoteClientDomain = "https://loving-turing-d3cc22.netlify.app";
 
             builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(remoteApiDomain, new HttpClient()));
             //builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(localApiDomain, new HttpClient()));
@@ -55,7 +56,7 @@ namespace ExpTrackerWASMClient
              So when calling a Interface/abstraction that relies on HttpClient it is better to use the Singleton Method
             as opposed to using the Transient method*/
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(localClientDomain + "/") });
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(remoteClientDomain + "/") });
            
 
 

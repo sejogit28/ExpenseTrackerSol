@@ -221,7 +221,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
 
-        targetMonth = targetMonth ?? DateTime.Now.ToString("yyyy-MM");
+        targetMonth = targetMonth ?? DateTimeOffset.Now.ToString("yyyy-MM");
         currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
         currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
 
@@ -234,8 +234,8 @@ else
 
         income = new Incomes
         {
-            DatePaid = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DatePaid = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = currentUser,
             MonthYear = "placeholder"
         };
@@ -336,8 +336,8 @@ else
     {
         income = new Incomes
         {
-            DatePaid = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DatePaid = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = income.UserId,
             MonthYear = "placeholder",
             GroupsGroupsId = groupId

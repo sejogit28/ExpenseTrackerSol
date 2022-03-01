@@ -216,8 +216,8 @@ else
 
         expense = new Expenses
         {
-            DateSpent = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DateSpent = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = expense.UserId,
             MonthYear = "placeholder"
         };
@@ -240,8 +240,8 @@ else
 
         expense = new Expenses
         {
-            DateSpent = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DateSpent = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = currentUser,
             MonthYear = "placeholder"
         };

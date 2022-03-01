@@ -226,8 +226,8 @@ else
 
         expense = new Expenses
         {
-            DateSpent = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DateSpent = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = currentUser,
             MonthYear = "placeholder",
             GroupsGroupsId = groupId
@@ -310,8 +310,8 @@ else
 
         expense = new Expenses
         {
-            DateSpent = DateTime.Now,
-            DateSubmitted = DateTime.Now,
+            DateSpent = DateTimeOffset.Now,
+            DateSubmitted = DateTimeOffset.Now,
             UserId = expense.UserId,
             MonthYear = "placeholder",
             GroupsGroupsId = groupId

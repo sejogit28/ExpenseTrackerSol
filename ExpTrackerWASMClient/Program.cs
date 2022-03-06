@@ -49,7 +49,7 @@ namespace ExpTrackerWASMClient
             var localClientDomain = "https://localhost:44382";
             var remoteClientDomain = "https://loving-turing-d3cc22.netlify.app";
 
-            builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(remoteApiDomain, new HttpClient()));
+            builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(localApiDomain, new HttpClient()));
             //builder.Services.AddSingleton<IWebApiExecuter, WebApiExecuter>(sp => new WebApiExecuter(localApiDomain, new HttpClient()));
 
             /*It is bad practice to keep creating new instances of HttpClient(as the default AddScope Method shows below)

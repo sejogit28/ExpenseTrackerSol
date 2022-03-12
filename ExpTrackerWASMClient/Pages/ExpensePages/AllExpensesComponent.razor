@@ -53,8 +53,12 @@
                         <th scope="row">@expenses.ExpenseTypes</th>
                         <th scope="row">@expenses.Amount</th>
                         <th scope="row">@expenses.Notes</th>
-                        <th scope="row"><NavLink style="color: blue" href="@($"/expensesbymonth/{expenses.MonthYear}")">@expenses.DateSpent.ToString("g")</NavLink></th>
-                        <th scope="row">@expenses.DateSubmitted.ToString("g")</th>
+                        <th scope="row">
+                            <NavLink style="color: blue" href="@($"/expensesbymonth/{expenses.MonthYear}")">
+                                @expenses.DateSpent.ToLocalTime().ToString("d")
+                            </NavLink>
+                        </th>
+                        <th scope="row">@expenses.DateSubmitted.ToLocalTime().ToString("d")</th>
                     </tr>
                 }
             }

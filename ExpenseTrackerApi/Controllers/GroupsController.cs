@@ -35,6 +35,7 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> GetGroups()
         {
             var groupList = await _datExpBase.Groups.ToListAsync();
+
             return Ok(groupList);
         }
 
@@ -42,6 +43,7 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> GetGroupsByUser(string userName)
         {
             var currentUser = await _userManager.FindByNameAsync(userName);
+
             if (currentUser == null)
             {
                 return NotFound($"The user with the name {userName} could not be found");
@@ -52,39 +54,35 @@ namespace ExpenseTrackerApi.Controllers
                     .Include(e => e.ExpenseTrackerUser).ThenInclude(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
                     .Where(u => u.ExpenseTrackerUserId == currentUser.Id).ToListAsync();
 
-                //var newListofGroups = await _datExpBase.Groups
-                //    .Include(gu => gu.GroupUsers).ThenInclude(g => g.Groups)
-                //    .ThenInclude(guu => guu.GroupUsers).Where(u => u.ExpenseTrackerUserId == currentUser.Id)
-                //    .ToListAsync();
                 return Ok(listOfUserGroups);
             }
         }
 
         [HttpGet("{singlegroupid:int}")]
-        public async Task<IActionResult> GetSingleGroup(int singlegroupid)
+        public async Task<IActionResult> GetSingleGroup(int singleGroupId)
         {
-            var singleGroup = await _datExpBase.Groups.FindAsync(singlegroupid);
+            var singleGroup = await _datExpBase.Groups.FindAsync(singleGroupId);
+
             if (singleGroup == null)
             {
                 return NotFound();
             }
+
             return Ok(singleGroup);
         }
 
         [HttpPost("creategroup/{userName}")]
         public async Task<IActionResult> CreateGroup([FromBody] Groups newgroup, string userName)
         {
-
             var groupCreator = await _userManager.FindByNameAsync(userName);
+
             if (groupCreator == null)
             {
                 return NotFound($"{userName} could not be found");
             }
             newgroup.ExpenseTrackerUserId = groupCreator.Id;
             await _datExpBase.Groups.AddAsync(newgroup);
-
             await _datExpBase.SaveChangesAsync();
-
 
             return Ok(newgroup);
         }
@@ -92,25 +90,19 @@ namespace ExpenseTrackerApi.Controllers
         [HttpPost("addnewmembertogroup")]
         public async Task<IActionResult> AddGroupCreatorToNewGroup([FromBody] AddNewMemberToGroup addNew)
         {
-
             var potentialMember = await _userManager.FindByNameAsync(addNew.NewMemberUserName);
+
             if (potentialMember == null)
             {
                 return NotFound($"{addNew.NewMemberUserName} could not be found");
             }
             var newGroup = await _datExpBase.Groups.FindAsync(addNew.GroupId);
-            //The Identity Users Id had to be put first for some reason....
-
             var groupCheck = await _datExpBase.GroupUsers.FindAsync(potentialMember.Id, addNew.GroupId);
-
-
 
             if (newGroup == null)
             {
                 return NotFound($"Group could not be found");
             }
-
-
             else if (groupCheck == null)
             {
                 var newGroupMember = new GroupUsers
@@ -122,13 +114,10 @@ namespace ExpenseTrackerApi.Controllers
                 await _datExpBase.SaveChangesAsync();
                 return Ok(newGroupMember);
             }
-
             else
             {
                 return BadRequest($"Something went wrong.....");
             }
-
-
         }
 
         [HttpPut("updategroup/{updatedgroupId:int}")]
@@ -137,20 +126,22 @@ namespace ExpenseTrackerApi.Controllers
 
             if (updatedGroupId != updatedGroup.GroupsId) return BadRequest();
             _datExpBase.Entry(updatedGroup).State = EntityState.Modified;
+
             try
             {
                 await _datExpBase.SaveChangesAsync();
                 return Ok(updatedGroup);
             }
-
             catch
             {
+
                 if (await _datExpBase.Groups.FindAsync(updatedGroupId) == null)
                 {
                     return NotFound();
                     throw;
                 }
             }
+
             return NoContent();
         }
 
@@ -158,6 +149,7 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> DeleteSingleGroup(int groupId)
         {
             var deletableGroup = await _datExpBase.Groups.FindAsync(groupId);
+
             if (deletableGroup == null)
             {
                 return NotFound();
@@ -165,6 +157,7 @@ namespace ExpenseTrackerApi.Controllers
 
             _datExpBase.Groups.Remove(deletableGroup);
             await _datExpBase.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -173,8 +166,10 @@ namespace ExpenseTrackerApi.Controllers
         {
             var groupMember = await _userManager.FindByNameAsync(invite.InviterEmail);
             var invitedUser = await _userManager.FindByNameAsync(invite.InviteeEmail);
+
             if (invitedUser == null)
             {
+
                 return NotFound(new OperationResponse
                 {
                     OperationSuccessful = false,
@@ -191,6 +186,7 @@ namespace ExpenseTrackerApi.Controllers
                     $" {localClient}/{invite.InviteeEmail}/{invite.GroupId}");
 
                 _emailSender.SendEmail(message);
+
                 return Ok(new OperationResponse
                 {
                     OperationSuccessful = true,
@@ -210,6 +206,7 @@ namespace ExpenseTrackerApi.Controllers
 
             if (currentGroup == null)
             {
+
                 return NotFound(new OperationResponse
                 {
                     OperationSuccessful = false,
@@ -225,7 +222,6 @@ namespace ExpenseTrackerApi.Controllers
                     OperationMessage = $"The user with the name: {possible.InviteeEmail} could not be found"
                 });
             }
-
             else if (!await _userManager.CheckPasswordAsync(invitedMember, possible.Password))
             {
 
@@ -238,6 +234,7 @@ namespace ExpenseTrackerApi.Controllers
             }
             else if (emailSenderGroupCheck == null)
             {
+
                 return Unauthorized(new OperationResponse
                 {
                     OperationSuccessful = false,
@@ -255,6 +252,7 @@ namespace ExpenseTrackerApi.Controllers
                     $"this email.");
 
                 _emailSender.SendEmail(message);
+
                 return Ok(new OperationResponse
                 {
                     OperationSuccessful = true,

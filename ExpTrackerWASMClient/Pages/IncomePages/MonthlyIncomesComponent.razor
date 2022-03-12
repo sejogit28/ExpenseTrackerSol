@@ -48,8 +48,8 @@
                                 <button class="btn btn-outline-info" style="pointer-events: none;" type="button" disabled>Note</button>
                             </span>
                         </th>
-                        <th scope="row">@income.DatePaid.ToString("g")</th>
-                        <th scope="row">@income.DateSubmitted.ToString("g")</th>
+                        <th scope="row">@income.DatePaid.ToLocalTime().ToString("d")</th>
+                        <th scope="row">@income.DateSubmitted.ToLocalTime().ToString("d")</th>
                         <th scope="row">
                             <div class="btn-group" role="group" aria-label="Income Action Options">
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">
@@ -129,9 +129,9 @@ else
 
                         @foreach (var value in Enum.GetValues(typeof(Incomes.IncomeCategoriesList)))
                         {
-                        <option>
-                            @value
-                        </option>
+                            <option>
+                                @value
+                            </option>
                         }
                 </InputSelect>
             </div>
@@ -213,7 +213,7 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        targetMonth = targetMonth ?? DateTimeOffset.Now.ToString("yyyy-MM");
+        targetMonth = targetMonth ??  DateTime.Now.ToString("yyyy-MM");
         var authState = await AuthState;
         var user = authState.User;
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
@@ -261,6 +261,7 @@ else
             }
             else
             {
+                income.DatePaid = income.DatePaid.ToUniversalTime();
                 await IncomesScreenUseCases.EditIncome(income);
                 makeFreshIncome();
                 await refreshValues();
@@ -276,6 +277,7 @@ else
             }
             else
             {
+                income.DatePaid = income.DatePaid.ToUniversalTime();
                 await IncomesScreenUseCases.CreateNewIncome(income);
                 makeFreshIncome();
                 await refreshValues();

@@ -58,8 +58,8 @@
                         <th scope="row">@income.IncomeTypes</th>
                         <th scope="row">@income.Amount</th>
                         <th scope="row">@income.Notes</th>
-                        <th scope="row">@income.DatePaid.ToString("g")</th>
-                        <th scope="row">@income.DateSubmitted.ToString("g")</th>
+                        <th scope="row">@income.DatePaid.ToLocalTime().ToString("d")</th>
+                        <th scope="row">@income.DateSubmitted.ToLocalTime().ToString("d")</th>
                         <th scope="row">
                             <div class="btn-group" role="group" aria-label="Income Action Options">
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableIncome(income.IncomeId)">
@@ -250,6 +250,7 @@ else
             }
             else
             {
+                income.DatePaid = income.DatePaid.ToUniversalTime();
                 await IncomesScreenUseCases.EditIncome(income);
                 makeFreshIncome();
                 await refreshValues();
@@ -265,6 +266,7 @@ else
             }
             else
             {
+                income.DatePaid = income.DatePaid.ToUniversalTime();
                 await IncomesScreenUseCases.CreateNewIncome(income);
                 makeFreshIncome();
                 await refreshValues();

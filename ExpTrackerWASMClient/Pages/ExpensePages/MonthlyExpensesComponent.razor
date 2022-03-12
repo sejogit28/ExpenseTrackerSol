@@ -220,17 +220,11 @@ else
     protected override async Task OnParametersSetAsync()
     {
         targetMonth = targetMonth ?? DateTime.Now.ToString("yyyy-MM");
-
         var authState = await AuthState;
-
         var user = authState.User;
-
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
         currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
-
         groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
-
         expense = new Expenses
         {
             DateSpent = DateTime.Now.ToUniversalTime(),
@@ -239,9 +233,7 @@ else
             MonthYear = "placeholder"
         };
 
-
         await refreshValues();
-
         makeFreshExpense();
     }
 
@@ -275,6 +267,7 @@ else
             }
             else
             {
+                expense.DateSpent = expense.DateSpent.ToUniversalTime();
                 await ExpensesScreenUseCases.EditExpense(expense);
                 makeFreshExpense();
                 await refreshValues();

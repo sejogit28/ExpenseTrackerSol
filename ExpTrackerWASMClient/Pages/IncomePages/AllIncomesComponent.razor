@@ -55,8 +55,12 @@
                             <th scope="row">@income.IncomeTypes</th>
                             <th scope="row">@income.Amount</th>
                             <th scope="row">@income.Notes</th>
-                            <th scope="row"><NavLink href="@($"/incomesbymonth/{income.MonthYear}")">@income.DatePaid.ToString("g")</NavLink></th>
-                            <th scope="row">@income.DateSubmitted.ToString("g")</th>
+                            <th scope="row">
+                                <NavLink href="@($"/incomesbymonth/{income.MonthYear}")">
+                                    @income.DatePaid.ToLocalTime().ToString("d")
+                                </NavLink>
+                            </th>
+                            <th scope="row">@income.DateSubmitted.ToLocalTime().ToString("d")</th>
                         </tr>
                     }
                 }

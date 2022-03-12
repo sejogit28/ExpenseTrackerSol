@@ -23,8 +23,8 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" @onclick="async() => { await unFilterExpenses();  }">All</a>
-                    <div class="dropdown-divider"></div>
-                    @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
+                    <div class="dropdown-divider" />
+
                     @foreach (var value in Enum.GetValues(typeof(Expenses.ExpenseCategoriesList)))
                     {
                         <a class="dropdown-item" @onclick="async() => { await filterExpenses(value.ToString()); }">@value.ToString()</a>
@@ -68,10 +68,10 @@
                         <th scope="row">@expenses.Notes</th>
                         <th scope="row">
                             <NavLink style="color: blue" href="@($"/groupexpensesbymonth/{groupId}/{expenses.MonthYear}")">
-                                @expenses.DateSpent.ToString("g")
+                                @expenses.DateSpent.ToLocalTime().ToString("d")
                             </NavLink>
                         </th>
-                        <th scope="row">@expenses.DateSubmitted.ToString("g")</th>
+                        <th scope="row">@expenses.DateSubmitted.ToLocalTime().ToString("d")</th>
                     </tr>
                 }
             }

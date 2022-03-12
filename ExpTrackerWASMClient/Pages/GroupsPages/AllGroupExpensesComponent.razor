@@ -7,6 +7,7 @@
 @if (currentGroup != null)
 {
     <div class="row justify-content-center">
+
         <div class="col-3 justify-content-start">
             <a class="btn btn-primary" href="@($"/grouphomepage/{groupId}")" role="button">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -31,103 +32,104 @@
                 </div>
             </div>
         </div>
+
     </div>
 }
 
-    <br />
+<br />
 
-    @if (filteredExpenses != null)
-    {
-
-        <table class="table table-striped table-hover table-responsive-lg shadow">
-            <thead>
-                <tr>
-                    <th scope="col">Expense Id</th>
-                    <th scope="col">User Id</th>
-                    <th scope="col">Expense Type</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col">Date Spent</th>
-                    <th scope="col">Date Submitted</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var expenses in filteredExpenses)
-                {
-                    if (groupId == expenses.GroupsGroupsId)
-                    {
-                        <tr>
-                            <th scope="row">@expenses.ExpenseId</th>
-                            <th scope="row">@expenses.UserId</th>
-                            <th scope="row">@expenses.ExpenseTypes</th>
-                            <th scope="row">@expenses.Amount</th>
-                            <th scope="row">@expenses.Notes</th>
-                            <th scope="row">
-                                <NavLink style="color: blue" href="@($"/groupexpensesbymonth/{groupId}/{expenses.MonthYear}")">
-                                    @expenses.DateSpent.ToString("g")
-                                </NavLink>
-                            </th>
-                            <th scope="row">@expenses.DateSubmitted.ToString("g")</th>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <h2>
-            Fetching Info...
-            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-            </div>
-        </h2>
-    }
-
-
-
-    @code
+@if (filteredExpenses != null)
 {
-        [CascadingParameter]
-        public Task<AuthenticationState> AuthState { get; set; }
+    <table class="table table-striped table-hover table-responsive-lg shadow">
 
-        [Parameter]
-        public int groupId { get; set; }
+        <thead>
+            <tr>
+                <th scope="col">Expense Id</th>
+                <th scope="col">User Id</th>
+                <th scope="col">Expense Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Date Spent</th>
+                <th scope="col">Date Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
 
-public string currentUser;
+            @foreach (var expenses in filteredExpenses)
+            {
+
+                if (groupId == expenses.GroupsGroupsId)
+                {
+                    <tr>
+                        <th scope="row">@expenses.ExpenseId</th>
+                        <th scope="row">@expenses.UserId</th>
+                        <th scope="row">@expenses.ExpenseTypes</th>
+                        <th scope="row">@expenses.Amount</th>
+                        <th scope="row">@expenses.Notes</th>
+                        <th scope="row">
+                            <NavLink style="color: blue" href="@($"/groupexpensesbymonth/{groupId}/{expenses.MonthYear}")">
+                                @expenses.DateSpent.ToString("g")
+                            </NavLink>
+                        </th>
+                        <th scope="row">@expenses.DateSubmitted.ToString("g")</th>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <h2>
+        Fetching Info...
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
+    </h2>
+}
+
+@code
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    [Parameter]
+    public int groupId { get; set; }
+
+    public string currentUser;
+
     Groups currentGroup;
+
     IList<Expenses> filteredExpenses;
+
     IList<string> currentGroupMembers;
 
     protected override async Task OnInitializedAsync()
     {
         currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
         currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
-
         var authState = await AuthState;
         var user = authState.User;
-
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
         groupSecurity();
-
         filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
     }
 
     public async Task filterExpenses(string searchTerm)
     {
-
         await unFilterExpenses();
 
         foreach (var expense in filteredExpenses.ToList())
         {
+
             if (expense.ExpenseTypes.ToString() != searchTerm)
             {
                 filteredExpenses.Remove(expense);
             }
         }
+
         StateHasChanged();
     }
+
     public async Task unFilterExpenses()
     {
         filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
@@ -141,5 +143,4 @@ public string currentUser;
             NavManager.NavigateTo("/userProfilePage");
         }
     }
-
-    }
+}

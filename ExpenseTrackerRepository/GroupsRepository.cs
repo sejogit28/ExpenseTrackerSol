@@ -65,7 +65,7 @@ namespace ExpenseTrackerRepository
 
         public async Task<OperationResponse> inviteeConfirm(PossibleMemberConfirm possibleInvitee)
         {
-             return  await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviteeconfirm", possibleInvitee)
+            return await webApiExecuter.InvokePost("api/Groups/sendgroupinvitation/inviteeconfirm", possibleInvitee);
         }
 
         public async Task<OperationResponse> inviterConfirm(PossibleMemberConfirm possibleInviter)

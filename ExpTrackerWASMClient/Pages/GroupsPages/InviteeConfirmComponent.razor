@@ -9,48 +9,43 @@
 <br />
 
 <EditForm Model="inviteeConfirm" OnValidSubmit="InviteeConfirmSubmit">
+
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
     <div class="card w-auto shadow-sm">
         <h5 class="card-header">Confirm your invite</h5>
         <div class="card-body">
-            <InputDate hidden class="form-control" id="GroupId" @bind-Value="inviteeConfirm.GroupId"></InputDate>
-            <InputText hidden class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviteeEmail"></InputText>
-
+            <InputDate hidden class="form-control" id="GroupId" @bind-Value="inviteeConfirm.GroupId" />
+            <InputText hidden class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviteeEmail" />
             <div class="form-group mx-sm-3 mb-2">
                 <label for="Amount" class="col-form-label">Inviter's Email(Email of the person who invited you to join)</label>
-                <InputText class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviterEmail"></InputText>
+                <InputText class="form-control" id="InviteeEmail" @bind-Value="inviteeConfirm.InviterEmail" />
                 <ValidationMessage For="@(() => inviteeConfirm.InviterEmail)" />
             </div>
-
             <div class="form-group mx-sm-3 mb-2">
                 <label for="Amount" class="col-form-label">Your Password</label>
-                <InputText type="password" class="form-control" id="Password" @bind-Value="inviteeConfirm.Password"></InputText>
+                <InputText type="password" class="form-control" id="Password" @bind-Value="inviteeConfirm.Password" />
                 <ValidationMessage For="@(() => inviteeConfirm.Password)" />
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <label for="Amount" class="col-form-label">Confirm Your Password</label>
-                <InputText type="password" class="form-control" id="ConfirmPassword" @bind-Value="inviteeConfirm.ConfirmPassword"></InputText>
+                <InputText type="password" class="form-control" id="ConfirmPassword" @bind-Value="inviteeConfirm.ConfirmPassword" />
                 <ValidationMessage For="@(() => inviteeConfirm.ConfirmPassword)" />
             </div>
-
         </div>
         <div class="card-footer">
-
-
             <button class="btn btn-outline-primary">
                 Confirm Invite Request
             </button>
-
-
         </div>
     </div>
+
 </EditForm>
 
-<AlertComponent @ref="alertComponent"></AlertComponent>
+<AlertComponent @ref="alertComponent" />
 
-@code {
-
+@code
+{
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
@@ -60,39 +55,32 @@
     [Parameter]
     public string inviteeEmail { get; set; }
 
-
-
     public string currentUser;
 
     PossibleMemberConfirm inviteeConfirm;
+
     OperationResponse operationResponse;
+
     AlertComponent alertComponent;
 
     protected override async Task OnInitializedAsync()
     {
-        
-            var authState = await AuthState;
-        
-            var user = authState.User;
+        var authState = await AuthState;
+        var user = authState.User;
 
-            if (user.FindFirst(ClaimTypes.Name) != null)
+        if (user.FindFirst(ClaimTypes.Name) != null)
+        {
+            currentUser = user.FindFirst(ClaimTypes.Name).Value;
+
+            if (currentUser != inviteeEmail)
             {
-                currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
-                if (currentUser != inviteeEmail)
-                {
-                    NavManager.NavigateTo("/userProfilePage");
-                }
+                NavManager.NavigateTo("/userProfilePage");
             }
-        
-
+        }
     }
 
     protected override void OnParametersSet()
     {
-
-
-
         inviteeConfirm = new PossibleMemberConfirm
         {
             InviteeEmail = inviteeEmail,
@@ -101,14 +89,13 @@
             ConfirmPassword = "",
             GroupId = groupId
         };
-
-
     }
 
     public async Task InviteeConfirmSubmit()
     {
         var result = await GroupsScreenUseCases.GroupInviteeConfirm(inviteeConfirm);
-        if(result.OperationSuccessful == true)
+
+        if (result.OperationSuccessful == true)
         {
             alertComponent.Message = "Success!!";
             alertComponent.show("success");
@@ -122,8 +109,6 @@
             alertComponent.Message = result.OperationMessage;
             alertComponent.show("danger");
             StateHasChanged();
-
         }
     }
-
 }

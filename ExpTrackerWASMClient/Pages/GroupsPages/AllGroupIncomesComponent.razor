@@ -7,6 +7,7 @@
 @if (currentGroup != null)
 {
     <div class="row justify-content-center">
+
         <div class="col-3 justify-content-start">
             <a class="btn btn-info" href="@($"/grouphomepage/{groupId}")" role="button">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -22,15 +23,17 @@
                 </button>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" @onclick="async() => { await unFilterIncomes();  }">All</a>
-                    <div class="dropdown-divider"></div>
-                    @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
+                    <div class="dropdown-divider" />
+
                     @foreach (var value in Enum.GetValues(typeof(Incomes.IncomeCategoriesList)))
                     {
                         <a class="dropdown-item" @onclick="async() => { await filterIncomes(value.ToString()); }">@value.ToString()</a>
                     }
+
                 </div>
             </div>
         </div>
+
     </div>
 }
 
@@ -38,8 +41,8 @@
 
 @if (filteredIncomes != null)
 {
-
     <table class="table table-striped table-hover table-responsive-lg shadow">
+
         <thead>
             <tr>
                 <th scope="col">Income Id</th>
@@ -52,8 +55,10 @@
             </tr>
         </thead>
         <tbody>
+
             @foreach (var income in filteredIncomes)
             {
+
                 if (groupId == income.GroupsGroupsId)
                 {
                     <tr>
@@ -68,6 +73,7 @@
                 }
             }
         </tbody>
+
     </table>
 }
 else
@@ -75,7 +81,6 @@ else
     <h2>
         Fetching Info...
         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
         </div>
     </h2>
 }
@@ -91,43 +96,40 @@ else
     public int groupId { get; set; }
 
     public string currentUser;
+
     Groups currentGroup;
+
     IList<Incomes> filteredIncomes;
+
     IList<string> currentGroupMembers;
-    //public string SearchTerm;
-    //IList<Incomes> allIncomes;
 
     protected override async Task OnInitializedAsync()
     {
-
         currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
         currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
-
         var authState = await AuthState;
         var user = authState.User;
-
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
         groupSecurity();
-
         filteredIncomes = await IncomesScreenUseCases.ViewAllIncomes();
     }
 
     public async Task filterIncomes(string searchTerm)
     {
-        //IList<String> incomeCategories = new[] {"Paid_Back", "Job", "Borrowed", "Tax_Return"};
-
         await unFilterIncomes();
 
         foreach (var income in filteredIncomes.ToList())
         {
+
             if (income.IncomeTypes.ToString() != searchTerm)
             {
                 filteredIncomes.Remove(income);
             }
         }
+
         StateHasChanged();
     }
+
     public async Task unFilterIncomes()
     {
         filteredIncomes = await IncomesScreenUseCases.ViewAllIncomes();
@@ -136,10 +138,10 @@ else
 
     public void groupSecurity()
     {
+
         if (!currentGroupMembers.Contains(currentUser))
         {
             NavManager.NavigateTo("/userProfilePage");
         }
     }
-
 }

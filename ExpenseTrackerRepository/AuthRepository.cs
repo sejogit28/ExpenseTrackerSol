@@ -21,8 +21,8 @@ namespace ExpenseTrackerRepository
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorageService;
-        private string localApiDomain = "https://localhost:5001";
-        private string remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
+        private readonly string localApiDomain = "https://localhost:5001";
+        private readonly string remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
         public AuthRepository(HttpClient client, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService, IWebApiExecuter webApiExecuter)
         {
             _client = client;

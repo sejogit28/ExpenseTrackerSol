@@ -11,6 +11,7 @@ to an error on blazors part*@
 <AuthorizeView Context="Auth">
 
     <NotAuthorized>
+
         @if (ShowLoginError)
         {
             <div class="alert alert-danger" role="alert">
@@ -41,33 +42,24 @@ to an error on blazors part*@
             </div>
         </EditForm>
 
-        @*<br/>
-        <div class="row">
-            <h2>
-                <NavLink class="nav-link" href="@($"/forgotPassword")"> Forgot Password??? </NavLink>
-            </h2>
-        </div>*@
-
         <br />
 
         <div class="row mb-3">
             <button type="button" class="btn btn-outline-info mr-3 mb-3"  @onclick="async () => { await LoginDemoAdmin(); }">1-Click Login as Demo Admin</button>
             <button type="button" class="btn btn-outline-info mb-3" @onclick="async () => { await LoginDemoUser(); }">1-Click Login as Demo User</button>
         </div>
-
         <div class="row">
             <h2 class="text-center">Not a Member? <NavLink class="nav-link" href="@($"/register")"> Sign-up today!</NavLink></h2>
         </div>
     </NotAuthorized>
 
     <Authorized >
-        
         <h6>
             Hi @Auth.User.Identity.Name! You are already logged in and may have been redirected here because you tried to
             access a page you arent authorized to. Use the dashboard on the left to jump back in!
         </h6>
-        
     </Authorized>
+
 </AuthorizeView>
 
 @code {

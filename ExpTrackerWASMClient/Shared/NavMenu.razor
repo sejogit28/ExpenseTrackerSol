@@ -7,6 +7,7 @@
 </div>
 
 <div class="@NavMenuCssClass">
+
     <ul class="nav flex-column">
         <AuthorizeView>
             <NotAuthorized>
@@ -29,15 +30,12 @@
                 </li>
 
                 <AuthorizeView Context="innerAuthView" Roles="Administrator">
-
                     <li class="nav-item px-3" @onclick="ToggleNavMenu">
                         <NavLink style="color: black" class="nav-link" href="admin/dashboard">
                             <span class="oi oi-person" aria-hidden="true"></span> Admin Users List
                         </NavLink>
                     </li>
-
                 </AuthorizeView>
-
                 <li class="nav-item px-3" @onclick="ToggleNavMenu">
                     <NavLink style="color: black" class="nav-link" href="/expenses">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> All Expenses
@@ -48,19 +46,17 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
                     </NavLink>
                 </li>
-
                 <li class="nav-item dropdown px-3 ">
                     <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                         @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
-
                             <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
-
                         }
                     </ul>
                 </li>
@@ -69,6 +65,7 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span>  Incomes By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                         @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
                             <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black" href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
@@ -82,6 +79,7 @@
                         <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Comparison Charts
                     </NavLink>
                     <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
+
                         @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
                             <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/IncExpComparisonChart/{yearMonth.ToString("yyyy-MM")}")">
@@ -107,8 +105,10 @@
                             }
                             else
                             {
+
                                 @foreach (var group in groupsList)
                                 {
+
                                     if (group.ExpenseTrackerUserId == currentUserObj.UserId)
                                     {
                                         <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" href="@($"/grouphomepage/{group.Groups.GroupsId}")">
@@ -116,7 +116,6 @@
                                         </NavLink>
                                     }
                                 }
-
                             }
                         </ul>
                     </li>
@@ -141,7 +140,8 @@
 </div>
 
 
-@code {
+@code 
+{
 
     [CascadingParameter]
     public Task<AuthenticationState> _authState { get; set; }
@@ -163,6 +163,7 @@
     List<GroupUsers> groupsList;
 
     public string currentUser;
+
     UserProfile currentUserObj;
 
     private bool collapseNavMenu = true;
@@ -171,7 +172,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         var authState = await _authState;
         var user = authState.User;
 
@@ -182,8 +182,6 @@
             groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
             currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
         }
-
-
     }
 
     private void ToggleNavMenu()
@@ -194,11 +192,12 @@
 
     private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
     {
+
         for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
             yield return day;
     }
 
-    private IEnumerable<DateTime> setsMonthDropDownRange() 
+    private IEnumerable<DateTime> setsMonthDropDownRange()
     {
         return EachMonth(new DateTime(2022, 1, 1), DateTime.Now).Reverse();
     }

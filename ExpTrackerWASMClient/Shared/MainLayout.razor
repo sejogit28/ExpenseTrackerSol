@@ -1,33 +1,30 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
+
     <div style="background-image: linear-gradient(180deg, rgb(0, 153, 255), rgb(224 224 224))" class="sidebar">
         <NavMenu />
     </div>
-    
     <div class="main">
         <AuthorizeView>
             <Authorized>
-                <div class="top-row px-4">      
-                        <p>
-                            Hello @context.User.FindFirst(ClaimTypes.Name).Value!!
-                        </p>                   
+                <div class="top-row px-4">
+                    <p>
+                        Hello @context.User.FindFirst(ClaimTypes.Name).Value!!
+                    </p>
                 </div>
             </Authorized>
-            
             <NotAuthorized>
                 <div class="top-row px-4">
                     <p>Hello!</p>
                 </div>
             </NotAuthorized>
         </AuthorizeView>
-        
-
-        
         <div class="content px-4">
             @Body
         </div>
     </div>
+
 </div>
 
 

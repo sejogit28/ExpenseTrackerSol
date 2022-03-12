@@ -10,7 +10,7 @@
     <ul class="nav flex-column">
         <AuthorizeView>
             <NotAuthorized>
-                <li class="nav-item px-3"  @onclick="ToggleNavMenu">
+                <li class="nav-item px-3" @onclick="ToggleNavMenu">
                     <NavLink style="color: black" class="nav-link" href="/login">
                         <span class="oi oi-account-login" aria-hidden="true"></span> Login
                     </NavLink>
@@ -29,13 +29,13 @@
                 </li>
 
                 <AuthorizeView Context="innerAuthView" Roles="Administrator">
-                   
+
                     <li class="nav-item px-3" @onclick="ToggleNavMenu">
                         <NavLink style="color: black" class="nav-link" href="admin/dashboard">
                             <span class="oi oi-person" aria-hidden="true"></span> Admin Users List
                         </NavLink>
                     </li>
-                        
+
                 </AuthorizeView>
 
                 <li class="nav-item px-3" @onclick="ToggleNavMenu">
@@ -54,7 +54,7 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Expenses By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
-                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                        @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
 
                             <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/expensesbymonth/{yearMonth.ToString("yyyy-MM")}")">
@@ -69,7 +69,7 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span>  Incomes By Month
                     </NavLink>
                     <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
-                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                        @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
                             <NavLink class="dropdown-item" @onclick="ToggleNavMenu" style="color: black" href="@($"/incomesbymonth/{yearMonth.ToString("yyyy-MM")}")">
                                 <span class="oi oi-list-rich" aria-hidden="true"></span> Incomes for: @yearMonth.ToString("yyyy-MM")
@@ -77,15 +77,15 @@
                         }
                     </ul>
                 </li>
-                <li class="nav-item dropdown px-3 ">
+                <li class="nav-item dropdown px-3">
                     <NavLink class="nav-link dropdown-toggle" style="color: black" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
                         <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Comparison Charts
                     </NavLink>
-                    <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
-                        @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
+                    <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
+                        @foreach (DateTime yearMonth in setsMonthDropDownRange())
                         {
                             <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" href="@($"/IncExpComparisonChart/{yearMonth.ToString("yyyy-MM")}")">
-                                <span class="oi  oi-pie-chart " aria-hidden="true"></span> Budget Chart for: @yearMonth.ToString("yyyy-MM")
+                                <span class="oi oi-pie-chart" aria-hidden="true"></span> Budget Chart for: @yearMonth.ToString("yyyy-MM")
                             </NavLink>
                         }
                     </ul>
@@ -99,8 +99,8 @@
                         </NavLink>
                         <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
 
-                            @if(groupsList.Count() == 0)
-                            { 
+                            @if (groupsList.Count() == 0)
+                            {
                                 <NavLink @onclick="ToggleNavMenu" class="dropdown-item" style="color: black" Match="NavLinkMatch.Prefix" disabled>
                                     No Groups Yet
                                 </NavLink>
@@ -116,7 +116,7 @@
                                         </NavLink>
                                     }
                                 }
-                          
+
                             }
                         </ul>
                     </li>
@@ -124,15 +124,12 @@
                 else
                 {
                     <li class="nav-item px-3" @onclick="ToggleNavMenu">
-                        <NavLink style="color: black" class="nav-link" >
-                            Loading...<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"> 
+                        <NavLink style="color: black" class="nav-link">
+                            Loading...<div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
                             </div>
                         </NavLink>
                     </li>
                 }
-
-
-
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" style="color: black" @onclick="() => { AuthRepository.Logout(); }">
                         <span class="oi oi-account-logout" aria-hidden="true"></span> Logout
@@ -143,18 +140,6 @@
     </ul>
 </div>
 
-
-@*else 
-{
-<div class="justify-content-center align-content-center">
-    <h2>
-        Loading...
-        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-        </div>
-    </h2>
-</div>
-}*@
 
 @code {
 
@@ -190,7 +175,6 @@
         var authState = await _authState;
         var user = authState.User;
 
-
         if (user.FindFirst(ClaimTypes.Name) != null)
         {
 
@@ -201,14 +185,6 @@
 
 
     }
-
-    //protected override void OnAfterRender(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-
-    //    }
-    //}
 
     private void ToggleNavMenu()
     {
@@ -222,4 +198,8 @@
             yield return day;
     }
 
+    private IEnumerable<DateTime> setsMonthDropDownRange() 
+    {
+        return EachMonth(new DateTime(2022, 1, 1), DateTime.Now).Reverse();
+    }
 }

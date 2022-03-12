@@ -21,6 +21,7 @@ namespace ExpTrackerAppApplicationLogic
         {
             var expenseEnumerable = await expenseRepository.getExpenses();
             var expenseList = (IList<Expenses>)expenseEnumerable;
+
             return expenseList;
         }
 

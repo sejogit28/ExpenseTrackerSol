@@ -13,7 +13,12 @@
     public string alertType { get; set; }
 
     public string Message { get; set; }
+    
+    protected override void  OnParametersSet()
+    {
+        display = "none";
 
+    }
     public void show(string alertColor)
     {
         //success or danger

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DataStoreEF.Migrations
 {
     [DbContext(typeof(ExpenseTrackerDbContext))]
-    [Migration("20220306172935_reInit")]
-    partial class reInit
+    [Migration("20220312093437_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -248,15 +248,15 @@ namespace DataStoreEF.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dea57a55-bf9f-4e32-b6ef-5463f164e8de",
-                            ConcurrencyStamp = "bd4d99ab-1324-4397-907e-9052f3169ba6",
+                            Id = "c3fce2af-8906-427d-b154-a6e3ab1fa039",
+                            ConcurrencyStamp = "48a93a27-f82f-4707-930f-786474bdc6dc",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d89a15a2-c17c-40f2-ae0f-1ba7a6184346",
-                            ConcurrencyStamp = "c2cc00e4-1850-4975-b174-6e4fb3f51b3f",
+                            Id = "0d23d2c6-66ad-4ed4-b10a-6ef30798ebf0",
+                            ConcurrencyStamp = "6cc27a12-804c-4c58-b966-e5fa006a3a19",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

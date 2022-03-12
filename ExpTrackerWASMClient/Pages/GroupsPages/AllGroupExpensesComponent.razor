@@ -64,10 +64,10 @@
                             <th scope="row">@expenses.Notes</th>
                             <th scope="row">
                                 <NavLink style="color: blue" href="@($"/groupexpensesbymonth/{groupId}/{expenses.MonthYear}")">
-                                    @expenses.DateSpent.UtcDateTime.ToLocalTime().ToString("g")
+                                    @expenses.DateSpent.ToString("g")
                                 </NavLink>
                             </th>
-                            <th scope="row">@expenses.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
+                            <th scope="row">@expenses.DateSubmitted.ToString("g")</th>
                         </tr>
                     }
                 }

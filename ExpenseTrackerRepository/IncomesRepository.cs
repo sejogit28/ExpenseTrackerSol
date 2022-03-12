@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 
 namespace ExpenseTrackerRepository
 {
-    //AKA "BlogPostService"
     public class IncomesRepository : IIncomesRepository
-
     {
         private readonly IWebApiExecuter webApiExecuter;
 
@@ -36,9 +34,7 @@ namespace ExpenseTrackerRepository
 
         public async Task createIncome(Incomes newIncome)
         {
-            await webApiExecuter.InvokePost("api/Incomes/createincome", newIncome);
-
-            
+            await webApiExecuter.InvokePost("api/Incomes/createincome", newIncome);            
         }
 
         public async Task deleteIncome(int deletedIncomeId)

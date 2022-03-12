@@ -26,8 +26,13 @@ namespace ExpenseTrackerRepository.AuthProviders
         public override async Task<AuthenticationState> GetAuthenticationStateAsync() 
         {
             var token = await _localStorageService.GetItemAsync<string>("authToken");
-            if (string.IsNullOrWhiteSpace(token))
+
+            if (string.IsNullOrWhiteSpace(token)) 
+            {
+
                 return _anonymous;
+            }
+
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaimsFromJWT(token), "jwtAuthType")));

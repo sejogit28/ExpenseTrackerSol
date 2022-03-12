@@ -15,14 +15,13 @@ namespace ExpenseTrackerModels
         [Required]
         [MaxLength(50)]
         public string UserId { get; set; }
-        //public string GroupId { get; set; }
 
         [MaxLength(200)]
         public string Notes { get; set; }
 
-
         [Required]
         public float Amount { get; set; }
+
         public DateTimeOffset DateSpent { get; set; }
 
         [Required]
@@ -49,6 +48,7 @@ namespace ExpenseTrackerModels
         }
 
         public int? GroupsGroupsId { get; set; }
+
         public Groups Groups { get; set; }
 
     }

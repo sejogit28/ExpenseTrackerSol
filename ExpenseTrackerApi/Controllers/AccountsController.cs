@@ -35,6 +35,7 @@ namespace ExpenseTrackerApi.Controllers
         private readonly IConfiguration _configuration;
         private readonly IEmailSender _emailSender;
         private readonly ExpenseTrackerDbContext _datExpBase;
+
         public AccountsController(UserManager<ExpenseTrackerUser> userManager, IConfiguration configuration, IEmailSender emailSender, ExpenseTrackerDbContext etDB)
         {
             _datExpBase = etDB;
@@ -45,12 +46,13 @@ namespace ExpenseTrackerApi.Controllers
         }
 
         [HttpGet("allUsers")]
-        public IActionResult GetAllIdentityUsers() 
+        public IActionResult GetAllIdentityUsers()
         {
-            var usersQueryable =  _userManager.Users;
+            var usersQueryable = _userManager.Users;
             var usersList = usersQueryable.ToList();
             var userProfileList = new List<UserProfile>();
-            foreach(var user in usersList)
+
+            foreach (var user in usersList)
             {
                 var singleUserObject = new UserProfile
                 {
@@ -61,6 +63,7 @@ namespace ExpenseTrackerApi.Controllers
                 };
                 userProfileList.Add(singleUserObject);
             }
+
             return Ok(userProfileList);
         }
 
@@ -68,11 +71,13 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> GetIdentityUser(string singleUserName)
         {
             var singleUser = await _userManager.FindByNameAsync(singleUserName);
-            if (singleUser == null) 
+
+            if (singleUser == null)
             {
+
                 return NotFound();
             }
-            else 
+            else
             {
                 var singleUserObject = new UserProfile
                 {
@@ -81,9 +86,10 @@ namespace ExpenseTrackerApi.Controllers
                     UserEmail = singleUser.Email,
                     UserDateJoined = singleUser.DateAdded
                 };
-               return Ok(singleUserObject);
+
+                return Ok(singleUserObject);
             }
-         
+
         }
 
         [HttpPut("updateUserPassword/{userName}")]
@@ -94,36 +100,41 @@ namespace ExpenseTrackerApi.Controllers
 
             if (updatedUser == null)
             {
+
                 return NotFound($"User with Identiy Username: \"{userName}\" was not found");
             }
-            else if (passwordCheck != true) 
+            else if (passwordCheck != true)
             {
+
                 return BadRequest($"Value entered for \"current Password\" for user: {updatedUser.Email} did not match stored password ");
             }
-            else 
+            else
             {
                 //if(changePassword != updatedUser.)
                 var result = await _userManager.ChangePasswordAsync(updatedUser, changePassword.CurrentPassword, changePassword.NewPassword);
-                if (result.Succeeded) 
+                if (result.Succeeded)
                 {
                     return Ok($"The user {updatedUser.Email} has had their password updated");
                 }
                 else
                 {
+
                     return BadRequest($"Something went wrong while trying to update the password for the user: {updatedUser.Email}");
                 }
             }
         }
 
         [HttpDelete("deleteSingleUser/{userId}")]
-        public async Task<IActionResult> DeleteUser(string userId) 
+        public async Task<IActionResult> DeleteUser(string userId)
         {
             var deletedUser = await _userManager.FindByIdAsync(userId);
-            if(deletedUser == null) 
+
+            if (deletedUser == null)
             {
+
                 return NotFound($"User with Identiy Id: \"{userId}\" was not found");
             }
-            else 
+            else
             {
                 var deletedExpenses = _datExpBase.Expenses.Where(p => p.UserId == deletedUser.UserName).Where(e => e.GroupsGroupsId == null);
                 var deletedIncomes = _datExpBase.Incomes.Where(p => p.UserId == deletedUser.UserName).Where(e => e.GroupsGroupsId == null); ;
@@ -131,13 +142,16 @@ namespace ExpenseTrackerApi.Controllers
                 _datExpBase.Expenses.RemoveRange(deletedExpenses);
 
                 var result = await _userManager.DeleteAsync(deletedUser);
-                if (result.Succeeded) 
+
+                if (result.Succeeded)
                 {
                     await _datExpBase.SaveChangesAsync();
+
                     return Ok(deletedUser);
                 }
-                else 
+                else
                 {
+
                     return BadRequest($"Something went wrong while trying to delete the user: {deletedUser.Email}");
                 }
 
@@ -148,7 +162,10 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> RegisterExpUser([FromBody] UserRegistrationDto userRegistration)
         {
             if (userRegistration == null || !ModelState.IsValid)
+            {
+
                 return BadRequest();
+            }
 
             var user = new ExpenseTrackerUser
             {
@@ -158,6 +175,7 @@ namespace ExpenseTrackerApi.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, userRegistration.Password);
+
             if (!result.Succeeded)
             {
                 var errors = result.Errors.Select(e => e.Description);
@@ -165,11 +183,12 @@ namespace ExpenseTrackerApi.Controllers
             }
 
             await _userManager.AddToRoleAsync(user, "User");
-            if(userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@www.mailinator.com")
+
+            if (userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@www.mailinator.com")
             {
                 await _userManager.AddToRoleAsync(user, "Administrator");
             }
-            //String interpolation has some similarities to Javascript
+
             return Ok($"{user.UserName} has been registered");
         }
 
@@ -181,7 +200,7 @@ namespace ExpenseTrackerApi.Controllers
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
-     
+
 
         private async Task<List<Claim>> GetClaims(ExpenseTrackerUser user)
         {
@@ -192,7 +211,8 @@ namespace ExpenseTrackerApi.Controllers
             };
 
             var roles = await _userManager.GetRolesAsync(user);
-            foreach(var role in roles)
+
+            foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
@@ -200,7 +220,7 @@ namespace ExpenseTrackerApi.Controllers
             return claims;
         }
 
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim>claims)
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var tokOptions = new JwtSecurityToken(
                 issuer: _jwtSettings.GetSection("validIssuer").Value,
@@ -216,12 +236,13 @@ namespace ExpenseTrackerApi.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginAuthenticationDto loginAuthenticationDto)
         {
-            
-
             var user = await _userManager.FindByNameAsync(loginAuthenticationDto.Email);
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, loginAuthenticationDto.Password))
+            {
+
                 return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
+            }
 
             var signingCredentials = GetSigningCredentials();
             var claims = await GetClaims(user);
@@ -232,64 +253,20 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
         }
 
-        //[HttpPost("DemoUserLogin")]
-        //public async Task<IActionResult> DemoUserLogin()
-        //{
-
-
-        //    var user = await _userManager.FindByNameAsync("expenseTrackDemoUser28@mailinator.com");
-
-        //    if (user == null || !await _userManager.CheckPasswordAsync(user, "D8f8nd@DU"))
-        //        return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
-
-        //    var signingCredentials = GetSigningCredentials();
-        //    var claims = await GetClaims(user);
-        //    var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-        //    var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-
-        //    return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
-        //}
-
-        //[HttpPost("DemoAdminLogin")]
-        //public async Task<IActionResult> DemoAdminLogin()
-        //{
-
-
-        //    var user = await _userManager.FindByNameAsync("expenseTrackDemoAdmin28@mailinator.com");
-
-        //    if (user == null || !await _userManager.CheckPasswordAsync(user, "D8f8nd@DA"))
-        //        return Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
-
-        //    var signingCredentials = GetSigningCredentials();
-        //    var claims = await GetClaims(user);
-        //    var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-        //    var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-
-        //    return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
-        //}
-
-        //[HttpGet("EmailTest")]
-        //public void EmailTest() 
-        //{
-        //    var message = new EmailMessage(new string[] { "sejoTestEmail1828@mailinator.com" }, "Test Email", "This is the content for a test email!");
-        //    _emailSender.SendEmail(message);
-        //}
 
         [HttpGet("ResetPassword")]
-        public async Task ResetPassword([FromBody]ForgotPassword forgotPassword)
+        public async Task ResetPassword([FromBody] ForgotPassword forgotPassword)
         {
             var user = await _userManager.FindByNameAsync(forgotPassword.Email);
             var userId = user.Id;
 
-            if (user == null) 
+            if (user == null)
             {
                 Unauthorized(new LoginResponseDto { ErrMessage = "Invalid Authentication" });
             }
-            else 
+            else
             {
-                var message = new EmailMessage(new string[] { $"{forgotPassword.Email}" }, 
+                var message = new EmailMessage(new string[] { $"{forgotPassword.Email}" },
                     "Reset Password",
                     $"Hi!! If you're seeing this it's cause someone requested a password" +
                     $" change using your email. This user has the id of {userId}");
@@ -297,7 +274,5 @@ namespace ExpenseTrackerApi.Controllers
 
             }
         }
-
-
     }
 }

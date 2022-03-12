@@ -7,6 +7,7 @@ namespace ExpenseTrackerModels
     public class ExpenseTrackerUser : IdentityUser
     {
         public DateTimeOffset DateAdded { get; set; }
+
         public IList<GroupUsers> GroupUsers { get; set; }
     }
 }

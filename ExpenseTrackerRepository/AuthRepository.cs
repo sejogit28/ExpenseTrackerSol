@@ -38,14 +38,14 @@ namespace ExpenseTrackerRepository
             var expRegisterResult = await _client.PostAsync(localApiDomain + "/api/accounts/Registration", bodyContent);
             var expRegisterContent = await expRegisterResult.Content.ReadAsStringAsync();
 
-            if (!expRegisterResult.IsSuccessStatusCode) 
+            if (!expRegisterResult.IsSuccessStatusCode)
             {
                 var result = JsonSerializer.Deserialize<RegistrationResponseDto>(expRegisterContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
                 return result;
             }
-            
-            return new RegistrationResponseDto { IsSuccessfulRegistration = true };
 
+            return new RegistrationResponseDto { IsSuccessfulRegistration = true };
         }
 
         public async Task<LoginResponseDto> Login(LoginAuthenticationDto loginAuthenticationDto)
@@ -58,7 +58,10 @@ namespace ExpenseTrackerRepository
             var result = JsonSerializer.Deserialize<LoginResponseDto>(loginContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (!loginResult.IsSuccessStatusCode)
+            {
+
                 return result;
+            }
 
             await _localStorageService.SetItemAsync("authToken", result.Token);
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);

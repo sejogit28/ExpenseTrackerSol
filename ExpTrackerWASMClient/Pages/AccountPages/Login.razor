@@ -11,6 +11,7 @@ to an error on blazors part*@
 <AuthorizeView Context="Auth">
 
     <NotAuthorized>
+
         @if (ShowLoginError)
         {
             <div class="alert alert-danger" role="alert">
@@ -41,33 +42,24 @@ to an error on blazors part*@
             </div>
         </EditForm>
 
-        @*<br/>
-        <div class="row">
-            <h2>
-                <NavLink class="nav-link" href="@($"/forgotPassword")"> Forgot Password??? </NavLink>
-            </h2>
-        </div>*@
-
         <br />
 
         <div class="row mb-3">
             <button type="button" class="btn btn-outline-info mr-3 mb-3"  @onclick="async () => { await LoginDemoAdmin(); }">1-Click Login as Demo Admin</button>
             <button type="button" class="btn btn-outline-info mb-3" @onclick="async () => { await LoginDemoUser(); }">1-Click Login as Demo User</button>
         </div>
-
         <div class="row">
             <h2 class="text-center">Not a Member? <NavLink class="nav-link" href="@($"/register")"> Sign-up today!</NavLink></h2>
         </div>
     </NotAuthorized>
 
     <Authorized >
-        
         <h6>
             Hi @Auth.User.Identity.Name! You are already logged in and may have been redirected here because you tried to
             access a page you arent authorized to. Use the dashboard on the left to jump back in!
         </h6>
-        
     </Authorized>
+
 </AuthorizeView>
 
 @code {
@@ -76,8 +68,8 @@ to an error on blazors part*@
 
     public string currentUser;
 
-
     public bool ShowLoginError { get; set; }
+
     public string Error { get; set; }
 
     [CascadingParameter]
@@ -88,8 +80,8 @@ to an error on blazors part*@
     public async Task LoginUser()
     {
         ShowLoginError = false;
-
         var result = await AuthRepository.Login(_loginAuthentication);
+
         if (!result.IsLoginSuccessful)
         {
             Error = result.ErrMessage;
@@ -104,10 +96,10 @@ to an error on blazors part*@
     public async Task LoginDemoAdmin()
     {
         ShowLoginError = false;
-
         _loginAuthentication.Email = "expenseTrackDemoAdmin28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DA";
         var result = await AuthRepository.Login(_loginAuthentication);
+
         if (!result.IsLoginSuccessful)
         {
             Error = result.ErrMessage;
@@ -115,10 +107,6 @@ to an error on blazors part*@
         }
         else
         {
-            //var timer = new Timer(new TimerCallback(_ =>
-            //{
-
-            //}), null, 250, 250);
             NavManager.NavigateTo("/loginPageReload");
         }
     }
@@ -126,10 +114,10 @@ to an error on blazors part*@
     public async Task LoginDemoUser()
     {
         ShowLoginError = false;
-
         _loginAuthentication.Email = "expenseTrackDemoUser28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DU";
         var result = await AuthRepository.Login(_loginAuthentication);
+
         if (!result.IsLoginSuccessful)
         {
             Error = result.ErrMessage;
@@ -137,10 +125,6 @@ to an error on blazors part*@
         }
         else
         {
-            //var timer = new Timer(new TimerCallback(_ =>
-            //{
-
-            //}), null, 250, 250);
             NavManager.NavigateTo("/loginPageReload");
         }
     }

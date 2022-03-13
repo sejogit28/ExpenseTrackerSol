@@ -10,29 +10,30 @@ namespace ExpenseTrackerModels
     {
         [Key]
         public int IncomeId { get; set; }
+
         [Required]
         [MaxLength(75)]
         public string UserId { get; set; }
-        //public string GroupId { get; set; }
 
         [MaxLength(200)]
         public string Notes { get; set; }
+
         [Required]
         public float Amount { get; set; }
+
         [Required]
-        //[MaxLength(25)]
         public DateTimeOffset DatePaid { get; set; }
+
         [Required]
         [MaxLength(25)]
         public string MonthYear { get; set; }
 
         [Required]
         public DateTimeOffset DateSubmitted { get; set; }
+
         public IncomeCategoriesList IncomeTypes { get; set; }
         public enum IncomeCategoriesList
         {
-
-            
             Taxes,           
             Job,
             Borrowed,          
@@ -41,6 +42,7 @@ namespace ExpenseTrackerModels
         }
 
         public int? GroupsGroupsId { get; set; }
+
         public Groups Groups { get; set; }
     }
 }

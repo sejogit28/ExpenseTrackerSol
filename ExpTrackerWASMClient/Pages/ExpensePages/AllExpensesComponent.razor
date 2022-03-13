@@ -2,111 +2,115 @@
 
 @inject IExpensesScreenUseCases ExpensesScreenUseCases
 
-    <div class="row justify-content-center">
-        <h1>A Full List of All Your Expenses<i class="bi bi-list-ul"></i></h1>
-    </div>
+<div class="row justify-content-center">
+    <h1>A Full List of All Your Expenses<i class="bi bi-list-ul"></i></h1>
+</div>
 
-    <div class="row justify-content-center">
-        <div class="btn-group dropright" >
-            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Filter By Expense Type
-            </button>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" @onclick="async() => { await unFilterExpenses();  }">All</a>
-                <div class="dropdown-divider"></div>
-                @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
-                @foreach (var value in Enum.GetValues(typeof(Expenses.ExpenseCategoriesList)))
-                {
-                    <a class="dropdown-item" @onclick="async() => { await filterExpenses(value.ToString()); }">@value.ToString()</a>
+<div class="row justify-content-center">
+    <div class="btn-group dropright">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Filter By Expense Type
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" @onclick="async() => { await unFilterExpenses();  }">All</a>
+            <div class="dropdown-divider"></div>
 
-                }
-            </div>
+            @foreach (var value in Enum.GetValues(typeof(Expenses.ExpenseCategoriesList)))
+            {
+                <a class="dropdown-item" @onclick="async() => { await filterExpenses(value.ToString()); }">@value.ToString()</a>
+            }
         </div>
     </div>
-    
-    <br/>
+</div>
 
-    @if (filteredExpenses != null)
-    {
+<br />
 
-        <table class="table table-striped table-hover table-responsive-lg shadow">
-            <thead>
-                <tr>
-                    <th scope="col">Expense Id</th>
-                    <th scope="col">User Id</th>
-                    <th scope="col">Expense Type</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col">Date Spent</th>
-                    <th scope="col">Date Submitted</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var expenses in filteredExpenses)
+@if (filteredExpenses != null)
+{
+
+    <table class="table table-striped table-hover table-responsive-lg shadow">
+        <thead>
+            <tr>
+                <th scope="col">Expense Id</th>
+                <th scope="col">User Id</th>
+                <th scope="col">Expense Type</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Notes</th>
+                <th scope="col">Date Spent</th>
+                <th scope="col">Date Submitted</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var expenses in filteredExpenses)
+            {
+
+                if (currentUser == expenses.UserId && expenses.GroupsGroupsId == null)
                 {
-                    if (currentUser == expenses.UserId && expenses.GroupsGroupsId == null)
-                    {
                     <tr>
                         <th scope="row">@expenses.ExpenseId</th>
                         <th scope="row">@expenses.UserId</th>
                         <th scope="row">@expenses.ExpenseTypes</th>
                         <th scope="row">@expenses.Amount</th>
                         <th scope="row">@expenses.Notes</th>
-                        <th scope="row"><NavLink style="color: blue" href="@($"/expensesbymonth/{expenses.MonthYear}")">@expenses.DateSpent.UtcDateTime.ToLocalTime().ToString("g")</NavLink></th>
-                        <th scope="row">@expenses.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
+                        <th scope="row">
+                            <NavLink style="color: blue" href="@($"/expensesbymonth/{expenses.MonthYear}")">
+                                @expenses.DateSpent.ToLocalTime().ToString("d")
+                            </NavLink>
+                        </th>
+                        <th scope="row">@expenses.DateSubmitted.ToLocalTime().ToString("d")</th>
                     </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <h2>
-            Fetching Info...
-            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-            </div>
-        </h2>
-    }
-
-
-
-    @code
-{
-        [CascadingParameter]
-        public Task<AuthenticationState> AuthState { get; set; }
-        public string currentUser;
-
-        IList<Expenses> filteredExpenses;
-
-        protected override async Task OnInitializedAsync()
-        {
-            var authState = await AuthState;
-            var user = authState.User;
-
-            currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
-            filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
-        }
-
-        public async Task filterExpenses(string searchTerm)
-        {
-
-            await unFilterExpenses();
-
-            foreach (var expense in filteredExpenses.ToList())
-            {
-                if (expense.ExpenseTypes.ToString() != searchTerm)
-                {
-                    filteredExpenses.Remove(expense);
                 }
             }
-            StateHasChanged();
-        }
-        public async Task unFilterExpenses()
-        {
-            filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
-            StateHasChanged();
-        }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2>
+        Fetching Info...
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
+    </h2>
+}
+
+
+
+@code
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    public string currentUser;
+
+    IList<Expenses> filteredExpenses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+        var user = authState.User;
+        currentUser = user.FindFirst(ClaimTypes.Name).Value;
+        filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
     }
+
+    public async Task filterExpenses(string searchTerm)
+    {
+        await unFilterExpenses();
+
+        foreach (var expense in filteredExpenses.ToList())
+        {
+
+            if (expense.ExpenseTypes.ToString() != searchTerm)
+            {
+                filteredExpenses.Remove(expense);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    public async Task unFilterExpenses()
+    {
+        filteredExpenses = await ExpensesScreenUseCases.ViewAllExpenses();
+        StateHasChanged();
+    }
+}

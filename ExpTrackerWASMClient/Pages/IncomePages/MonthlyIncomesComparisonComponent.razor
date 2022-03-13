@@ -7,6 +7,7 @@
 
 @if (totalMonthlyIncomes != 0)
 {
+
     @if (incomeChartData.All(x => x.IncomeAmount == 0))
     {
         <div class="justify-content-center">
@@ -28,30 +29,23 @@
             </div>
         </div>
     }
-
 }
 
 else
 {
     <h2>
         Fetching Info...
-        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-        </div>
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
     </h2>
 }
 
-
-
 @code
 {
-
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
     public string currentUser;
 
-    //10 enum categories
     [Parameter]
     public string targetMonth { get; set; }
 
@@ -59,15 +53,15 @@ else
 
     public float totalMonthlyIncomes;
 
-
     static float TaxReturn;
+
     static float Job;
+
     static float Borrowed;
+
     static float PaidBack;
+
     static float Other;
-
-
-
 
     public class DataItem
     {
@@ -81,18 +75,14 @@ else
     {
         var authState = await AuthState;
         var user = authState.User;
-
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
         TaxReturn = 0;
         Job = 0;
         Borrowed = 0;
         PaidBack = 0;
         Other = 0;
 
-
         incomesbyMonth = await IncomesScreenUseCases.ViewIncomesByMonth(targetMonth);
-
 
         foreach (var income in incomesbyMonth)
         {
@@ -101,40 +91,34 @@ else
                 totalMonthlyIncomes += income.Amount;
 
                 if (income.IncomeTypes.ToString() == "Taxes")
-
                 {
                     TaxReturn += income.Amount;
                 }
 
                 if (income.IncomeTypes.ToString() == "Job")
-
                 {
                     Job += income.Amount;
                 }
 
                 if (income.IncomeTypes.ToString() == "Borrowed")
-
                 {
                     Borrowed += income.Amount;
                 }
 
                 if (income.IncomeTypes.ToString() == "Repaid")
-
                 {
                     PaidBack += income.Amount;
                 }
 
                 if (income.IncomeTypes.ToString() == "Other")
-
                 {
                     Other += income.Amount;
                 }
             }
-
         }
 
-        DataItem[] incomeChartDataContents = {
-
+        DataItem[] incomeChartDataContents = 
+        {
             new DataItem
             {
                 IncomeTypeLabel = "Job",
@@ -159,13 +143,11 @@ else
             {
                 IncomeTypeLabel = "Other",
                 IncomeAmount = Other
-            }};
+            }
+        };
 
         incomeChartData = incomeChartDataContents;
-
-
     }
-
 }
 
 

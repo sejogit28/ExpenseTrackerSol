@@ -27,6 +27,7 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
 
         public async Task<T> InvokeGet<T>(string uri)
         {
+
           return await httpClient.GetFromJsonAsync<T>(GetUrl(uri));
         }
 
@@ -35,13 +36,14 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
             var postResponse = await httpClient.PostAsJsonAsync(GetUrl(uri), obj);
             var postContent = await postResponse.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<OperationResponse>(postContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            //postResponse.EnsureSuccessStatusCode();
+
             return result;
         }
         public async Task<T> InvokePostObjResponse<T>(string uri, T obj)
         {
             var postResponse = await httpClient.PostAsJsonAsync(GetUrl(uri), obj);
             await HandleWebApiExeError(postResponse);
+
             return await postResponse.Content.ReadFromJsonAsync<T>();
         }
 
@@ -61,17 +63,17 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
 
         private string GetUrl(string uri)
         {
+
             return $"{baseUrl}/{uri}";
         }
 
         private async Task HandleWebApiExeError(HttpResponseMessage response)
         {
-            if (!response.IsSuccessStatusCode) 
+            if (!response.IsSuccessStatusCode)
             {
                 var apiError = await response.Content.ReadAsStringAsync();
                 throw new HttpRequestException(apiError);
-            }          
+            }
         }
-
     }
 }

@@ -23,8 +23,7 @@ namespace ExpTrackerAppApplicationLogic
 
         public async Task<IList<UserProfile>> ViewAllUsers()
         {
-            var usersList = await userProfileRepository.GetAllUsers();
-            return usersList;
+            return await userProfileRepository.GetAllUsers();
         }
 
         public async Task<UserProfile> ViewSingleUser(string singleUserName)

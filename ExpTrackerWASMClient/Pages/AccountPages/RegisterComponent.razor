@@ -9,13 +9,16 @@
 @if (ShowRegistrationErrors)
 {
     <div class="alert alert-danger" role="alert">
+
         @foreach (var error in Errors)
         {
             <p>@error</p>
         }
+
     </div>
 }
 <EditForm Model="_userRegistration" OnValidSubmit="RegisterExpUser" class="card card-body bg-light mt-5 mb-3">
+
     <DataAnnotationsValidator />
     <div class="form-group row">
         <label for="email" class="col-md-2 col-form-label">Email:</label>
@@ -43,6 +46,7 @@
             <button type="submit" class="btn btn-info">Register</button>
         </div>
     </div>
+
 </EditForm>
 
 <div class="row my-3">
@@ -50,29 +54,34 @@
     <button type="button" class="btn btn-outline-info mb-3" @onclick="async () => { await LoginDemoUser(); }">1-Click Login as Demo User</button>
 </div>
 
-<br/>
 <br />
+<br />
+
 @if (registerSuccessful == true)
 {
-<div class="alert alert-success" role="alert">
-    <p>@Message</p>
-</div>
+    <div class="alert alert-success" role="alert">
+        <p>@Message</p>
+    </div>
 }
 
-
-@code {
-
+@code
+{
     private UserRegistrationDto _userRegistration = new UserRegistrationDto();
+
     private LoginAuthenticationDto _loginAuthentication = new LoginAuthenticationDto();
+
     public bool ShowRegistrationErrors;
+
     public IEnumerable<string> Errors;
 
     public bool registerSuccessful { get; set; }
+
     public string Message { get; set; }
 
     public async Task RegisterExpUser()
     {
         ShowRegistrationErrors = false;
+
         registerSuccessful = false;
 
         var result = await AuthRepository.RegisterExpUser(_userRegistration);
@@ -87,7 +96,6 @@
             await SetMessage(true, "Registration Successful! Redirecting to login page...");
             RedirectToNextPage("/login");
         }
-
     }
 
     public async Task LoginDemoAdmin()
@@ -98,7 +106,6 @@
         _loginAuthentication.Password = "D8f8nd@DA";
         await AuthRepository.Login(_loginAuthentication);
         RedirectToNextPage("/loginPageReload");
-
     }
 
     public async Task LoginDemoUser()
@@ -108,9 +115,7 @@
         _loginAuthentication.Email = "expenseTrackDemoUser28@mailinator.com";
         _loginAuthentication.Password = "D8f8nd@DU";
         await AuthRepository.Login(_loginAuthentication);
-
         RedirectToNextPage("/loginPageReload");
-
     }
 
     private async Task SetMessage(bool messageStatus, string currentMessage)
@@ -119,7 +124,6 @@
         Message = currentMessage;
         StateHasChanged();
         await Task.Delay(3000);
-
     }
 
     private void RedirectToNextPage(string path)
@@ -128,6 +132,4 @@
         registerSuccessful = false;
         Message = "";
     }
-
-
 }

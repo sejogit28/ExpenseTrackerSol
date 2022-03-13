@@ -28,21 +28,23 @@
 
     <div class="row">
         <div class="card" style="width: 35rem;">
-            @if(userGroupList != null)
+
+            @if (userGroupList != null)
             {
-                if(userGroupList.Count() == 0) 
+
+                if (userGroupList.Count() == 0)
                 {
                     <div class="card-header">
                         No Groups Yet
                     </div>
                 }
-                else if(userGroupList.Count() < 2)
+                else if (userGroupList.Count() < 2)
                 {
                     <div class="card-header">
                         Your Group:
                     </div>
                 }
-                else 
+                else
                 {
                     <div class="card-header">
                         Your Groups:
@@ -50,8 +52,10 @@
                 }
             }
             <ul class="list-group list-group-flush">
+
                 @if (userGroupList != null)
                 {
+
                     foreach (var group in userGroupList)
                     {
                         <li class="list-group-item">
@@ -72,6 +76,7 @@
                 }
             </ul>
             <div class="card-footer">
+
                 @if (showCreateGroupForm == false)
                 {
                     <button type="button" class="btn btn-outline-info" @onclick="() => { toggleGroupForm(); }">
@@ -88,46 +93,47 @@
         </div>
     </div>
 
-    <br/>
-    <br/>
+    <br />
+    <br />
 
-@if (showCreateGroupForm == true)
-{
-<EditForm Model="group" OnValidSubmit="createNewGroupOrEditGroupName">
-    <DataAnnotationsValidator></DataAnnotationsValidator>
-    <ValidationSummary></ValidationSummary>
-    <div class="card w-25 shadow-sm">
-        <h5 class="card-header">Create a New Group</h5>
-        <div class="card-body">
-            <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="group.ExpenseTrackerUserId"></InputText>
-            <InputDate hidden class="form-control" id="DateCreated" @bind-Value="group.DateCreated"></InputDate>
+    @if (showCreateGroupForm == true)
+    {
+        <EditForm Model="group" OnValidSubmit="createNewGroupOrEditGroupName">
 
-            <div class="form-group mx-sm-3 mb-2">
-                <label for="Amount" class="col-form-label">Group Name</label>
-                <InputText class="form-control" id="GroupName" @bind-Value="group.GroupName"></InputText>
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary></ValidationSummary>
+            <div class="card w-25 shadow-sm">
+                <h5 class="card-header">Create a New Group</h5>
+                <div class="card-body">
+                    <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="group.ExpenseTrackerUserId"></InputText>
+                    <InputDate hidden class="form-control" id="DateCreated" @bind-Value="group.DateCreated"></InputDate>
+
+                    <div class="form-group mx-sm-3 mb-2">
+                        <label for="Amount" class="col-form-label">Group Name</label>
+                        <InputText class="form-control" id="GroupName" @bind-Value="group.GroupName"></InputText>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    @if (group.GroupsId > 0)
+                    {
+                        <button class="btn btn-outline-info">
+                            Edit This Groups Name
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-outline-info">
+                            Create Group
+                        </button>
+                    }
+
+                </div>
             </div>
-        </div>
-        <div class="card-footer">
-            @if (group.GroupsId > 0)
-            {
-                <button class="btn btn-outline-info">
-                    Edit This Groups Name
-                </button>
-            }
-            else
-            {
-                <button class="btn btn-outline-info">
-                    Create Group
-                </button>
-            }
+        </EditForm>
 
-        </div>
-    </div>
-</EditForm>
-
-<br/>
-<br />
-}
+        <br />
+        <br />
+    }
 
 }
 else
@@ -146,12 +152,14 @@ else
 @code {
 
     public string currentUser;
+
     UserProfile currentIdentityUser;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
     Groups group;
+
     List<GroupUsers> userGroupList;
 
     public bool showCreateGroupForm { get; set; }
@@ -163,7 +171,6 @@ else
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
 
         currentIdentityUser = await AdminScreenUseCases.ViewSingleUser(currentUser);
-
 
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
 
@@ -184,16 +191,15 @@ else
             var newGroup = await GroupsScreenUseCases.CreateNewGroup(group, currentUser);
 
             var newMemberObj = new AddNewMemberToGroup
-            {
-                GroupId = newGroup.GroupsId,
-                NewMemberUserName = currentUser
-            };
+                {
+                    GroupId = newGroup.GroupsId,
+                    NewMemberUserName = currentUser
+                };
 
             await GroupsScreenUseCases.AddUserToGroup(newMemberObj);
 
             await reRenderPageAfterSubmit();
         }
-
     }
 
 
@@ -207,7 +213,6 @@ else
     {
         await GroupsScreenUseCases.RemoveMemberFromGroup(shrinkingGroupId, leavingMemberName);
         userGroupList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
-
     }
 
 
@@ -229,10 +234,10 @@ else
     public void getFreshGroup()
     {
         group = new Groups
-        {
-            DateCreated = DateTime.Now,
-            ExpenseTrackerUserId = currentIdentityUser.UserId
-        };
+            {
+                DateCreated = DateTime.Now,
+                ExpenseTrackerUserId = currentIdentityUser.UserId
+            };
     }
 
     public void toggleGroupForm()

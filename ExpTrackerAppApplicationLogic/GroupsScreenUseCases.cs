@@ -23,6 +23,7 @@ namespace ExpTrackerAppApplicationLogic
         {
             var groupEnumerable = await _groupRepository.listOfGroups();
             IList<Groups> groupList = (IList<Groups>)groupEnumerable;
+
             return groupList;
         }
 

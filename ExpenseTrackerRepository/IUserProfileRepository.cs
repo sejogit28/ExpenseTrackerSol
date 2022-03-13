@@ -10,8 +10,11 @@ namespace ExpenseTrackerRepository
     public interface IUserProfileRepository
     {
         Task DeleteSingleUser(string deletedUserId);
+
         Task<IList<UserProfile>> GetAllUsers();
+
         Task<UserProfile> GetSingleUser(string singleUserName);
+
         Task UpdateUserPassword(ChangePassword changePassword, string updatedUserId);
     }
 }

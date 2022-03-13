@@ -21,7 +21,9 @@ namespace ExpenseTrackerModels
         public ExpenseTrackerUser ExpenseTrackerUser { get; set; }
 
         public IList<Incomes> Incomes { get; set; }
+
         public IList<Expenses> Expenses { get; set; }
+
         public IList<GroupUsers> GroupUsers {get; set;}
 
     }

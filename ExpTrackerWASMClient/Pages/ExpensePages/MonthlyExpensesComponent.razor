@@ -17,11 +17,10 @@
 
 @if (expensesbyMonth != null)
 {
-
     <table class="table table-striped table-hover table-responsive shadow">
+
         <thead>
             <tr>
-                <th scope="col">Id</th>
                 <th scope="col">User</th>
                 <th scope="col">Type</th>
                 <th scope="col">Amount</th>
@@ -32,20 +31,21 @@
             </tr>
         </thead>
         <tbody>
+
             @foreach (var expense in expensesbyMonth)
             {
+
                 if (expense.UserId == currentUser && expense.GroupsGroupsId == null)
                 {
                     <tr>
-                        <th scope="row">@expense.ExpenseId</th>
                         <th scope="row">@expense.UserId</th>
                         <th scope="row">@expense.ExpenseTypes</th>
                         <th scope="row">@expense.Amount</th>
                         <th scope="row">
                             @expense.Notes
                         </th>
-                        <th scope="row">@expense.DateSpent.UtcDateTime.ToLocalTime().ToString("g")</th>
-                        <th scope="row">@expense.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
+                        <th scope="row">@expense.DateSpent.ToLocalTime().ToString("g")</th>
+                        <th scope="row">@expense.DateSubmitted.ToLocalTime().ToString("g")</th>
                         <th scope="row">
                             <div class="btn-group" role="group" aria-label="Expense Action Options">
                                 <button type="button" class="btn btn-outline-secondary mb-3" @onclick="() => getEditableExpense(expense.ExpenseId)">
@@ -57,18 +57,22 @@
                                         Transfer
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+
                                         @if (groupsList.Count() == 0)
                                         {
                                             <a class="dropdown-item" disabled>No Groups Yet</a>
                                         }
                                         else
                                         {
+
                                             @foreach (var group in groupsList)
                                             {
-                                                <a class="dropdown-item" @onclick="() => moveExpenseToGroup(expense.ExpenseId, group.Groups.GroupsId)">Send to: @group.Groups.GroupName</a>
+                                                <a class="dropdown-item" @onclick="() => moveExpenseToGroup(expense.ExpenseId, group.Groups.GroupsId)">
+                                                    Send to: @group.Groups.GroupName
+                                                </a>
                                             }
                                         }
-                                        </div>
+                                    </div>
                                 </div>
 
 
@@ -78,11 +82,10 @@
                             </div>
                         </th>
                     </tr>
-
-
                 }
             }
         </tbody>
+
     </table>
 
 
@@ -99,27 +102,21 @@
             </li>
         </ul>
     </div>
-
-
-
 }
 else
 {
     <h2>
         Fetching Info...
-        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-        </div>
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
     </h2>
 }
 
-<div>
-    <AlertComponent @ref="alertComponent"></AlertComponent>
-</div>
+ <AlertComponent @ref="alertComponent" />
 
 @if (expense != null)
 {
     <EditForm Model="expense" OnValidSubmit="editOrAddNewExpenseSubmit">
+
         <DataAnnotationsValidator></DataAnnotationsValidator>
         <ValidationSummary></ValidationSummary>
         <div class="container shadow-lg p-3 mb-4">
@@ -133,12 +130,13 @@ else
                 <div class="col-auto">
                     <label for="ExpenseTypes" class="col-form-label">Expense Type</label>
                     <InputSelect class="form-control" id="ExpenseTypes" @bind-Value="expense.ExpenseTypes">
+
                         @foreach (var value in Enum.GetValues(typeof(Expenses.ExpenseCategoriesList)))
-                            {
+                        {
                             <option>
                                 @value
                             </option>
-                            }
+                        }
                     </InputSelect>
                 </div>
 
@@ -154,7 +152,7 @@ else
 
                 <div class="col-auto">
                     <label for="DatePaid" class="col-form-label">Date Spent</label>
-                    <InputDate class="form-control" id="DateSpent" @bind-Value="expense.DateSpent" rows=3></InputDate>
+                    <InputDate class="form-control" id="DateSpent" @bind-Value="expense.DateSpent"></InputDate>
                 </div>
             </div>
 
@@ -163,16 +161,12 @@ else
 
             @if (expense.ExpenseId > 0)
             {
-
                 <button class="btn btn-outline-primary mr-3 mb-3">
                     Submit Edited Values For Expense #@expense.ExpenseId
                 </button>
-
-
                 <button class="btn btn-outline-secondary mr-3 mb-3" @onclick="() => { makeFreshExpense(); }">
                     Create A New Expense Instead(Clear Form)
                 </button>
-
             }
             else
             {
@@ -180,20 +174,15 @@ else
                     Submit A New Expense
                 </button>
             }
-
-
-
         </div>
-    </EditForm>
 
+    </EditForm>
 }
 
 
 
-@code {
-
-
-
+@code 
+{
     //Needs to match the route params but that match isn't case sensitive
     [Parameter]
     public string targetMonth { get; set; }
@@ -202,18 +191,21 @@ else
     public Task<AuthenticationState> AuthState { get; set; }
 
     IEnumerable<Expenses> expensesbyMonth;
+
     List<GroupUsers> groupsList;
 
     Expenses expense;
+
     AlertComponent alertComponent;
+
     UserProfile currentUserObj;
 
     public double? totalMonthlyExpenses;
+
     public string currentUser;
 
     public void makeFreshExpense()
     {
-
         expense = new Expenses
         {
             DateSpent = DateTime.Now.ToUniversalTime(),
@@ -228,16 +220,11 @@ else
     protected override async Task OnParametersSetAsync()
     {
         targetMonth = targetMonth ?? DateTime.Now.ToString("yyyy-MM");
-
         var authState = await AuthState;
         var user = authState.User;
-
-
         currentUser = user.FindFirst(ClaimTypes.Name).Value;
         currentUserObj = await AdminScreenUseCases.ViewSingleUser(currentUser);
         groupsList = await GroupsScreenUseCases.ViewAllGroupsByUser(currentUser);
-
-
         expense = new Expenses
         {
             DateSpent = DateTime.Now.ToUniversalTime(),
@@ -246,11 +233,8 @@ else
             MonthYear = "placeholder"
         };
 
-
         await refreshValues();
-
         makeFreshExpense();
-
     }
 
     async Task deleteExpense(int deletedExpenseId)
@@ -261,16 +245,9 @@ else
         if (confirmedDelete)
         {
             await ExpensesScreenUseCases.DeleteExpense(deletedExpenseId);
-
             await refreshValues();
         }
-
-
     }
-
-
-    /*Populates the form with a chosen expenses values and uses the retrieved expenses primary key
-    to tell the form to edit the retrieved expense instead of creating a new expense*/
 
     async Task getEditableExpense(int ExpenseId)
     {
@@ -282,6 +259,7 @@ else
 
         if (expense.ExpenseId! > 0)
         {
+
             if (expense.DateSpent.ToString("yyyy-MM") != targetMonth)
             {
                 alertComponent.Message = $"Please enter a value for \"Date Spent\" whose year/month matches: {targetMonth} ";
@@ -289,15 +267,12 @@ else
             }
             else
             {
+                expense.DateSpent = expense.DateSpent.ToUniversalTime();
                 await ExpensesScreenUseCases.EditExpense(expense);
-
                 makeFreshExpense();
-
                 await refreshValues();
             }
-
         }
-
         else
         {
 
@@ -308,14 +283,12 @@ else
             }
             else
             {
+                expense.DateSpent = expense.DateSpent.ToUniversalTime();
                 await ExpensesScreenUseCases.CreateNewExpense(expense);
-
                 makeFreshExpense();
-
                 await refreshValues();
             }
         }
-
     }
 
     private async Task refreshValues()
@@ -343,14 +316,10 @@ else
         the beginning of the OnParametersSetAsync function made it so that the amount didn't reset
         and instead just kept increasin, leading to seeing a total number of expenses for all pages visited,
         instead of a total for each month*/
-
-
     }
-
 
     public async Task moveExpenseToGroup(int expenseId, int newGroupId)
     {
-
         bool confirmedTransfer = await JsRuntime.InvokeAsync<bool>("confirm",
             $"Are you sure you want to transfer Expense #{expenseId}? That will send this expense to the selected group," +
             $" removing it from this page and its amount from your personal total expenses for this month");
@@ -360,11 +329,8 @@ else
             await getEditableExpense(expenseId);
             expense.GroupsGroupsId = newGroupId;
             await ExpensesScreenUseCases.EditExpense(expense);
-
             makeFreshExpense();
-
             await refreshValues();
-
             alertComponent.Message = $"Transfer Completed Successfully";
             alertComponent.show("success");
         }
@@ -373,7 +339,5 @@ else
             alertComponent.Message = $"Transfer Cancelled";
             alertComponent.show("secondary");
         }
-
     }
-
 }

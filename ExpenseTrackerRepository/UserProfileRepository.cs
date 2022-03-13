@@ -20,6 +20,7 @@ namespace ExpenseTrackerRepository
         public async Task<IList<UserProfile>> GetAllUsers()
         {
             var usersList = await webApiExecuter.InvokeGet<IList<UserProfile>>("api/accounts/allUsers");
+
             return usersList;
         }
 

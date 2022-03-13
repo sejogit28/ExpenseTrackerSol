@@ -19,23 +19,27 @@ namespace ExpenseTrackerApi.Controllers
         {
             _datExpBase = etDB;
         }
-        [HttpGet("incomeslist")] 
+
+        [HttpGet("incomeslist")]
         public async Task<IActionResult> GetIncomes()
         {
             var incomeList = await _datExpBase.Incomes.ToListAsync();
+
             return Ok(incomeList);
         }
 
-        [HttpGet("incomeslistbymonth/{targetMonth}")] 
+        [HttpGet("incomeslistbymonth/{targetMonth}")]
         public async Task<IActionResult> GetIncomesByMonth(string targetMonth)
         {
 
             var incomesByMonthList = await _datExpBase.Incomes.Where(t => t.MonthYear == targetMonth).ToListAsync();
-            if(incomesByMonthList == null || incomesByMonthList.Count == 0) 
+
+            if (incomesByMonthList == null || incomesByMonthList.Count == 0)
             {
                 incomesByMonthList = new List<Incomes>();
                 return Ok(incomesByMonthList);
             }
+
             return Ok(incomesByMonthList);
         }
 
@@ -43,58 +47,70 @@ namespace ExpenseTrackerApi.Controllers
         public async Task<IActionResult> GetSingleIncome(int singleIncomeId)
         {
             var income = await _datExpBase.Incomes.FindAsync(singleIncomeId);
-            if(income == null) 
+
+            if (income == null)
             {
                 return NotFound();
             }
+
             return Ok(income);
         }
 
         [HttpPost("createincome")]
-        public async Task<IActionResult> createIncome([FromBody]Incomes newIncome)
+        public async Task<IActionResult> CreateIncome([FromBody] Incomes newIncome)
         {
             newIncome.MonthYear = newIncome.DatePaid.ToString("yyyy-MM");
             await _datExpBase.Incomes.AddAsync(newIncome);
             await _datExpBase.SaveChangesAsync();
+
             return Ok(newIncome);
         }
 
         [HttpPut("updateincome/{updatedIncomeId:int}")]
-        public async Task<IActionResult> updateIncome(int updatedIncomeId, [FromBody]Incomes updatedIncome)
+        public async Task<IActionResult> UpdateIncome(int updatedIncomeId, [FromBody] Incomes updatedIncome)
         {
-            if (updatedIncomeId != updatedIncome.IncomeId) return BadRequest();
+
+            if (updatedIncomeId != updatedIncome.IncomeId)
+            {
+
+                return BadRequest();
+            }
             _datExpBase.Entry(updatedIncome).State = EntityState.Modified;
-            try 
+
+            try
             {
                 await _datExpBase.SaveChangesAsync();
+
                 return Ok(updatedIncome);
             }
-            catch 
+            catch
             {
-                if(await _datExpBase.Incomes.FindAsync(updatedIncomeId) == null) 
+
+                if (await _datExpBase.Expenses.FindAsync(updatedIncomeId) == null)
                 {
+
                     return NotFound();
                     throw;
                 }
-                
             }
+
             return NoContent();
         }
-
         [HttpDelete("deleteincome/{deletedIncomeId:int}")]
-        public async Task<IActionResult> deleteIncome(int deletedIncomeId)
+        public async Task<IActionResult> DeleteIncome(int deletedIncomeId)
         {
             var deletedIncome = await _datExpBase.Incomes.FindAsync(deletedIncomeId);
-            if(deletedIncome == null) 
+
+            if (deletedIncome == null)
             {
+
                 return NotFound();
             }
 
             _datExpBase.Incomes.Remove(deletedIncome);
             await _datExpBase.SaveChangesAsync();
+
             return Ok(deletedIncome);
-
         }
-
     }
 }

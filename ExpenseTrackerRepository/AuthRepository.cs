@@ -21,8 +21,8 @@ namespace ExpenseTrackerRepository
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorageService;
-        private string localApiDomain = "https://localhost:5001";
-        private string remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
+        private readonly string localApiDomain = "https://localhost:5001";
+        private readonly string remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
         public AuthRepository(HttpClient client, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService, IWebApiExecuter webApiExecuter)
         {
             _client = client;
@@ -38,14 +38,14 @@ namespace ExpenseTrackerRepository
             var expRegisterResult = await _client.PostAsync(remoteApiDomain + "/api/accounts/Registration", bodyContent);
             var expRegisterContent = await expRegisterResult.Content.ReadAsStringAsync();
 
-            if (!expRegisterResult.IsSuccessStatusCode) 
+            if (!expRegisterResult.IsSuccessStatusCode)
             {
                 var result = JsonSerializer.Deserialize<RegistrationResponseDto>(expRegisterContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
                 return result;
             }
-            
-            return new RegistrationResponseDto { IsSuccessfulRegistration = true };
 
+            return new RegistrationResponseDto { IsSuccessfulRegistration = true };
         }
 
         public async Task<LoginResponseDto> Login(LoginAuthenticationDto loginAuthenticationDto)
@@ -58,7 +58,10 @@ namespace ExpenseTrackerRepository
             var result = JsonSerializer.Deserialize<LoginResponseDto>(loginContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (!loginResult.IsSuccessStatusCode)
+            {
+
                 return result;
+            }
 
             await _localStorageService.SetItemAsync("authToken", result.Token);
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);

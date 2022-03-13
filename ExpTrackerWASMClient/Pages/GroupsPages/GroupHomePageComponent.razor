@@ -9,6 +9,7 @@
     </div>
 
     <div class="row justify-content-center">
+
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <a class="navbar-brand" href="#"><span class="oi oi-people" aria-hidden="true"></span> </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +27,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@($"/groupincomes/{groupId}")">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
+                            <span class="oi oi-list-rich" aria-hidden="true"></span> All Incomes
                         </a>
                     </li>
                     <li class="nav-item dropdown">
@@ -34,6 +35,7 @@
                             <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Charts
                         </NavLink>
                         <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                             @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                             {
                                 <NavLink class="dropdown-item" href="@($"/GroupIncExpComparisonChart/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
@@ -47,6 +49,7 @@
                             <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Expenses
                         </NavLink>
                         <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                             @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                             {
                                 <NavLink class="dropdown-item" href="@($"/groupexpensesbymonth/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
@@ -60,6 +63,7 @@
                             <span class="oi  oi-pie-chart " aria-hidden="true"></span> Monthly Incomes
                         </NavLink>
                         <ul class="dropdown-menu " aria-labelledby="navbarDarkDropdownMenuLink">
+
                             @foreach (DateTime yearMonth in EachMonth(new DateTime(2021, 3, 1), DateTime.Now).Reverse())
                             {
                                 <NavLink class="dropdown-item" href="@($"/groupincomesbymonth/{groupId}/{yearMonth.ToString("yyyy-MM")}")">
@@ -71,12 +75,13 @@
                 </ul>
             </div>
         </nav>
-        
+
     </div>
 
-    <br/>
+    <br />
 
     <div class="row">
+
         <div class="card">
             <div class="card-header">
                 @currentGroup.GroupName's members
@@ -106,6 +111,7 @@
 
             </div>
         </div>
+
     </div>
 
     <br />
@@ -114,48 +120,43 @@
     @if (showMemberInviteForm == true)
     {
         <EditForm Model="possibleMember" OnValidSubmit="sendGroupInvite">
+
             <DataAnnotationsValidator></DataAnnotationsValidator>
             <ValidationSummary></ValidationSummary>
             <div class="card w-25 shadow-sm">
                 <h5 class="card-header">Invite A New Member To This Group</h5>
                 <div class="card-body">
-                    <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="possibleMember.InviterEmail"></InputText>
-                    <InputDate hidden class="form-control" id="DateCreated" @bind-Value="possibleMember.GroupId"></InputDate>
-
+                    <InputText hidden class="form-control" id="ExpenseTrackerUserId" @bind-Value="possibleMember.InviterEmail" />
+                    <InputDate hidden class="form-control" id="DateCreated" @bind-Value="possibleMember.GroupId" />
                     <div class="form-group mx-sm-3 mb-2">
                         <label for="Amount" class="col-form-label">Invitee's Email</label>
-                        <InputText class="form-control" id="GroupName" @bind-Value="possibleMember.InviteeEmail"></InputText>
+                        <InputText class="form-control" id="GroupName" @bind-Value="possibleMember.InviteeEmail" />
                     </div>
                 </div>
                 <div class="card-footer">
-
-
                     <button class="btn btn-outline-info">
                         Send Group Invite
                     </button>
-
-
                 </div>
             </div>
+
         </EditForm>
 
         <AlertComponent @ref="alertComponent"></AlertComponent>
         <br />
         <br />
     }
-
-
 }
 else
 {
     <div class="row justify-content-center">
         <h3>Fetching Any Available Info</h3>
     </div>
-
 }
 
 
-@code {
+@code
+{
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
@@ -164,10 +165,15 @@ else
     public int groupId { get; set; }
 
     Groups currentGroup;
+
     PossibleMemberInvite possibleMember;
+
     AlertComponent alertComponent;
+
     IList<string> currentGroupMembers;
+
     public string currentUser;
+
     public bool showMemberInviteForm;
 
 
@@ -176,12 +182,9 @@ else
 
         currentGroup = await GroupsScreenUseCases.ViewSingleGroup(groupId);
         currentGroupMembers = await GroupsScreenUseCases.ViewAllGroupMemberNames(groupId);
-
         var authState = await AuthState;
         currentUser = authState.User.FindFirst(ClaimTypes.Name).Value;
-
         groupSecurity();
-
         showMemberInviteForm = false;
         possibleMember = new PossibleMemberInvite
         {
@@ -192,12 +195,14 @@ else
 
     private IEnumerable<DateTime> EachMonth(DateTime from, DateTime thru)
     {
+
         for (var day = from.Date; day.Date <= thru.Date; day = day.AddMonths(1))
             yield return day;
     }
 
     public void groupSecurity()
     {
+
         if (!currentGroupMembers.Contains(currentUser))
         {
             NavManager.NavigateTo("/userProfilePage");
@@ -212,11 +217,8 @@ else
         {
             alertComponent.Message = result.OperationMessage;
             alertComponent.show("success");
-
             await Task.Delay(2000);
-
             showMemberInviteForm = false;
-
             possibleMember = new PossibleMemberInvite
             {
                 GroupId = groupId,
@@ -228,6 +230,5 @@ else
             alertComponent.Message = result.OperationMessage;
             alertComponent.show("danger");
         }
-
     }
 }

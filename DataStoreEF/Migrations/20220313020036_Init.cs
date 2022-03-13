@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DataStoreEF.Migrations
 {
-    public partial class reInit : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -255,8 +255,8 @@ namespace DataStoreEF.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "d12a745c-b1a3-4c33-bd66-f76cbb7f8a6a", "0a30958e-8bf3-417d-b7d3-1fe33f442173", "User", "USER" },
-                    { "d8ee6544-b0a5-4a43-ac21-6c6d6f89392c", "ed1d1ec4-dd84-4ab5-9736-00cc1f023079", "Administrator", "ADMINISTRATOR" }
+                    { "059fac89-f513-497e-aae3-87113f25a55b", "3463a2c2-337c-4215-bceb-2af010c70296", "User", "USER" },
+                    { "e103ed90-f6dd-4ae7-b815-e65639ae53b9", "26217de3-142d-45f3-bf35-1bddee1287aa", "Administrator", "ADMINISTRATOR" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -48,7 +48,6 @@ namespace EmailService
                 }
                 catch 
                 {
-
                     throw;
                 }
                 finally 

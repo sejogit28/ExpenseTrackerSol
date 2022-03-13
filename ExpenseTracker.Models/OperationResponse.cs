@@ -9,6 +9,7 @@ namespace ExpenseTrackerModels
     public class OperationResponse
     {
         public bool OperationSuccessful { get; set; }
+
         public string OperationMessage { get; set; }
     }
 }

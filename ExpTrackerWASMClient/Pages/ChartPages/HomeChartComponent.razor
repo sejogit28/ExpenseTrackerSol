@@ -6,7 +6,6 @@
     <h2>Budget Comparison for @targetMonth</h2>
 </div>
 
-@*What follows(the 'if' statement) is VERY IMPORTANT due to the async nature of the way you're getting the data.*@
 @if (totalMonthlyExpenses != 0 && totalMonthlyIncome != 0)
 {
 
@@ -25,7 +24,6 @@
         </div>
     </div>
 
-
     <div class="card shadow" style="width: 18rem;">
         <div class="card-header">
             <h2>Remaining Income for @targetMonth:</h2>
@@ -35,7 +33,7 @@
                 <h4>
                     @whatsLeft$
                 </h4>
-            </li>        
+            </li>
         </ul>
     </div>
 }
@@ -73,6 +71,7 @@ else
     public class DataItem
     {
         public string IncExpComparisonLabel { get; set; }
+
         public float IncExpAmount { get; set; }
     }
 
@@ -81,22 +80,21 @@ else
     {
 
         var authState = await AuthState;
+
         currentUser = authState.User.FindFirst(ClaimTypes.Name).Value;
-
-        //currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
-
 
         incomesbyMonth = await IncomesScreenUseCases.ViewIncomesByMonth(targetMonth);
 
         expensesbyMonth = await ExpensesScreenUseCases.ViewExpensesByMonth(targetMonth);
 
         totalMonthlyExpenses = 0;
+
         totalMonthlyIncome = 0;
 
 
         foreach (var income in incomesbyMonth)
         {
+
             if (currentUser == income.UserId && income.GroupsGroupsId == null)
             {
                 totalMonthlyIncome += income.Amount;
@@ -105,6 +103,7 @@ else
 
         foreach (var expense in expensesbyMonth)
         {
+
             if (currentUser == expense.UserId && expense.GroupsGroupsId == null)
             {
                 totalMonthlyExpenses += expense.Amount;
@@ -129,10 +128,5 @@ else
         IncExpComparisonChartData = incExpChartDataContents;
 
         whatsLeft = totalMonthlyIncome - totalMonthlyExpenses;
-
     }
-
-
-
-
 }

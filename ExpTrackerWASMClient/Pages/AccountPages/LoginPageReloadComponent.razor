@@ -3,12 +3,11 @@
 
 <h1>One Sec....</h1>
 
-@code {      
-
+@code 
+{      
     protected override async void OnInitialized()
     {
         await Task.Delay(200);
         NavManager.NavigateTo("/userProfilePage", forceLoad: true);
     }
-
 }

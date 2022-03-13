@@ -21,6 +21,7 @@ namespace ExpTrackerAppApplicationLogic
 
             var incomesEnumerable =  await incomeRepository.getIncomes();
             IList<Incomes> incomeList = (IList<Incomes>)incomesEnumerable;
+
             return incomeList;
         }
 

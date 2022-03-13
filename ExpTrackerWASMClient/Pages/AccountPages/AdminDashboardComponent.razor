@@ -6,6 +6,7 @@
 
 @if (allUsers != null)
 {
+
     foreach (var user in allUsers)
     {
         <div class="card ">
@@ -14,7 +15,6 @@
             </div>
             <div class="card-body">
                 <h5 class="card-title">User Name: @user.UserName</h5>
-
             </div>
             <div class="card-footer text-muted">
                 <button role="button" class="btn btn-outline-danger" @onclick="() => DeleteUser(user.UserId, user.UserName)">Delete</button>
@@ -24,23 +24,20 @@
 }
 else
 {
-        <h2>
-            Fetching User List...
-            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-            </div>
-        </h2>
+    <h2>
+        Fetching User List...
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
+    </h2>
 }
 
 
-@code {
-
+@code 
+{
     IList<UserProfile> allUsers;
 
     protected override async Task OnInitializedAsync()
     {
         allUsers = await AdminScreenUseCases.ViewAllUsers();
-
     }
 
     async Task DeleteUser(string deletedUserId, string deletedUserName)
@@ -53,6 +50,5 @@ else
             await AdminScreenUseCases.DeleteSingleUser(deletedUserId);
             allUsers = await AdminScreenUseCases.ViewAllUsers();
         }
-
     }
 }

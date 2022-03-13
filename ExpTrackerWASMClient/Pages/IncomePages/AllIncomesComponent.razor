@@ -6,28 +6,31 @@
     </div>
 
     <div class="row justify-content-center">
+
         <div class="btn-group dropright">
             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 Filter By Income Type
             </button>
             <div class="dropdown-menu">
                 <a class="dropdown-item" @onclick="async () => { await unFilterIncomes();  }">All</a>
-                <div class="dropdown-divider"></div>
-                @*<button class="btn btn-outline-info" @onclick="() => { filterIncomes(); }">Paid Back</button>*@
+                <div class="dropdown-divider" />
+
                 @foreach (var value in Enum.GetValues(typeof(Incomes.IncomeCategoriesList)))
                 {
                     <a class="dropdown-item" @onclick="async() => { await filterIncomes(value.ToString()); }">@value.ToString()</a>
                 }
+
             </div>
         </div>
+
     </div>
 
     <br/>
 
     @if (filteredIncomes != null)
     {
-
         <table class="table table-striped table-hover table-responsive-lg shadow">
+
             <thead>
                 <tr>
                     <th scope="col">Income Id</th>
@@ -40,8 +43,10 @@
                 </tr>
             </thead>
             <tbody>
+
                 @foreach (var income in filteredIncomes)
                 {
+
                     if (currentUser == income.UserId && income.GroupsGroupsId == null)
                     {
                         <tr>
@@ -50,65 +55,65 @@
                             <th scope="row">@income.IncomeTypes</th>
                             <th scope="row">@income.Amount</th>
                             <th scope="row">@income.Notes</th>
-                            <th scope="row"><NavLink href="@($"/incomesbymonth/{income.MonthYear}")">@income.DatePaid.UtcDateTime.ToLocalTime().ToString("g")</NavLink></th>
-                            <th scope="row">@income.DateSubmitted.UtcDateTime.ToLocalTime().ToString("g")</th>
+                            <th scope="row">
+                                <NavLink href="@($"/incomesbymonth/{income.MonthYear}")">
+                                    @income.DatePaid.ToLocalTime().ToString("d")
+                                </NavLink>
+                            </th>
+                            <th scope="row">@income.DateSubmitted.ToLocalTime().ToString("d")</th>
                         </tr>
                     }
                 }
             </tbody>
+
         </table>
     }
     else
     {
         <h2>
             Fetching Info...
-            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-
-            </div>
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status" />
         </h2>
     }
-
-
 
     @code
     {
         [CascadingParameter]
         public Task<AuthenticationState> AuthState { get; set; }
+
         public string currentUser;
-        //IList<Incomes> allIncomes;
+
         IList<Incomes> filteredIncomes;
+
         public string SearchTerm;
 
         protected override async Task OnInitializedAsync()
         {
             var authState = await AuthState;
             var user = authState.User;
-
-            currentUser = user.FindFirst(ClaimTypes.Name).Value;
-
-          
+            currentUser = user.FindFirst(ClaimTypes.Name).Value;        
             filteredIncomes = await IncomesScreenUseCases.ViewAllIncomes();
         }
 
         public async Task filterIncomes( string searchTerm)
         {
-            //IList<String> incomeCategories = new[] {"Paid_Back", "Job", "Borrowed", "Tax_Return"};
-
             await unFilterIncomes();
 
             foreach(var income in filteredIncomes.ToList())
             {
+
                 if(income.IncomeTypes.ToString() != searchTerm)
                 {
                     filteredIncomes.Remove(income);
                 }
             }
+
             StateHasChanged();
         }
+
         public async Task unFilterIncomes()
         {
             filteredIncomes = await IncomesScreenUseCases.ViewAllIncomes();
             StateHasChanged();
         }
-
     }

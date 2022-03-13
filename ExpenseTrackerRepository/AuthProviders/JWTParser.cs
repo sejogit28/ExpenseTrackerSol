@@ -32,6 +32,7 @@ namespace ExpenseTrackerRepository.AuthProviders
                 case 2: base64 += "=="; break;
                 case 3: base64 += "="; break;
             }
+
             return Convert.FromBase64String(base64);
         }
 
@@ -45,6 +46,7 @@ namespace ExpenseTrackerRepository.AuthProviders
 
                 if(parsedRoles.Length > 1) 
                 {
+
                     foreach(var parsedRole in parsedRoles)
                     {
                         claims.Add(new Claim(ClaimTypes.Role, parsedRole.Trim('"')));
@@ -54,10 +56,9 @@ namespace ExpenseTrackerRepository.AuthProviders
                 {
                     claims.Add(new Claim(ClaimTypes.Role, parsedRoles[0]));
                 }
+
                 keyValuePairs.Remove(ClaimTypes.Role);
             }
         }
-
-
     }
 }

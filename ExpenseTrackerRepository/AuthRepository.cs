@@ -1,18 +1,13 @@
-﻿using ExpenseTrackerModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json;
-using System.Net.Http;
-using Blazored.LocalStorage;
-using System.Net.Http.Headers;
+﻿using Blazored.LocalStorage;
+using ExpenseTrackerModels;
+using ExpenseTrackerRepository.ApiRouteFetcher;
 using ExpenseTrackerRepository.AuthProviders;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using ExpenseTrackerRepository.ApiRouteFetcher;
-using ExpenseTrackerModels.AuthModels;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace ExpenseTrackerRepository
 {

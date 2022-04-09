@@ -19,14 +19,6 @@ namespace ExpenseTrackerApi.Controllers
 {
     [Route("api/accounts")]//This is called "attribute routing" and can be done on the Controller or the Endpoint Name
 
-    /*If the full route(api/accounts) isn't placed here(at the top of the controller) than the full route must 
-     be placed on every single endpoint individually, instead of just putting the last name of the endpoint right
-     next to the action verb
-     Ex: [Route("api/accounts/Registration")] 
-     If there is a full route on the controller and you put one on an endpoint than the endpoint route takes priority
-     only IF(!!!!!) you start the endpoint route with a slash. Not starting it with a slash just adds whatever you typed
-     to the Route specified in the Controller....which would be an error*/
-
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -110,10 +102,11 @@ namespace ExpenseTrackerApi.Controllers
             }
             else
             {
-                //if(changePassword != updatedUser.)
                 var result = await _userManager.ChangePasswordAsync(updatedUser, changePassword.CurrentPassword, changePassword.NewPassword);
+                
                 if (result.Succeeded)
                 {
+
                     return Ok($"The user {updatedUser.Email} has had their password updated");
                 }
                 else

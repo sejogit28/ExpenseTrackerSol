@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpTrackerWASMClient", "Exp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmailService", "EmailService\EmailService.csproj", "{64D84DF3-8B18-4F15-97CB-0FAA894DC368}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExpenseTrackerApi.UnitTests", "ExpenseTrackerApi.UnitTests\ExpenseTrackerApi.UnitTests.csproj", "{B9BE2AA7-38A8-4953-B360-5169A9B6D8E4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,10 +51,6 @@ Global
 		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64D84DF3-8B18-4F15-97CB-0FAA894DC368}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9BE2AA7-38A8-4953-B360-5169A9B6D8E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9BE2AA7-38A8-4953-B360-5169A9B6D8E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9BE2AA7-38A8-4953-B360-5169A9B6D8E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9BE2AA7-38A8-4953-B360-5169A9B6D8E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

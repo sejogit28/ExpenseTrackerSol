@@ -3,6 +3,7 @@ using EmailService;
 using ExpenseTrackerModels;
 using ExpenseTrackerModels.AuthModels;
 using ExpenseTrackerModels.UserViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +21,7 @@ namespace ExpenseTrackerApi.Controllers
     [Route("api/accounts")]//This is called "attribute routing" and can be done on the Controller or the Endpoint Name
 
     [ApiController]
+    [Authorize]
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<ExpenseTrackerUser> _userManager;
@@ -37,6 +39,7 @@ namespace ExpenseTrackerApi.Controllers
             _emailSender = emailSender;
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet("allUsers")]
         public IActionResult GetAllIdentityUsers()
         {
@@ -60,6 +63,7 @@ namespace ExpenseTrackerApi.Controllers
         }
 
         [HttpGet("getSingleUser/{singleUserName}")]
+        [Authorize]
         public async Task<IActionResult> GetIdentityUser(string singleUserName)
         {
             var singleUser = await _userManager.FindByNameAsync(singleUserName);
@@ -151,6 +155,7 @@ namespace ExpenseTrackerApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("Registration")]
         public async Task<IActionResult> RegisterExpUser([FromBody] UserRegistrationDto userRegistration)
         {
@@ -177,7 +182,7 @@ namespace ExpenseTrackerApi.Controllers
 
             await _userManager.AddToRoleAsync(user, "User");
 
-            if (userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@www.mailinator.com")
+            if (userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@mailinator.com")
             {
                 await _userManager.AddToRoleAsync(user, "Administrator");
             }
@@ -225,7 +230,7 @@ namespace ExpenseTrackerApi.Controllers
             return tokOptions;
         }
 
-
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginAuthenticationDto loginAuthenticationDto)
         {
@@ -246,7 +251,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
         }
 
-
+        [AllowAnonymous]
         [HttpGet("ResetPassword")]
         public async Task ResetPassword([FromBody] ForgotPassword forgotPassword)
         {

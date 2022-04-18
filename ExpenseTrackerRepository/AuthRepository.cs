@@ -21,6 +21,7 @@ namespace ExpenseTrackerRepository
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorageService;
+        private readonly IWebApiExecuter _webApiExecuter;
         private readonly string localApiDomain = "https://localhost:5001";
         private readonly string remoteApiDomain = "https://expense-tracker-api28.herokuapp.com";
         public AuthRepository(HttpClient client, AuthenticationStateProvider authStateProvider, ILocalStorageService localStorageService, IWebApiExecuter webApiExecuter)
@@ -28,6 +29,7 @@ namespace ExpenseTrackerRepository
             _client = client;
             _authStateProvider = authStateProvider;
             _localStorageService = localStorageService;
+            _webApiExecuter = webApiExecuter;                    
         }
 
         public async Task<RegistrationResponseDto> RegisterExpUser(UserRegistrationDto userRegistrationDto)
@@ -65,7 +67,7 @@ namespace ExpenseTrackerRepository
 
             await _localStorageService.SetItemAsync("authToken", result.Token);
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Token);
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", result.Token);
+            _webApiExecuter.AddAuthHeader(result.Token);
 
             return new LoginResponseDto { IsLoginSuccessful = true };
         }
@@ -74,7 +76,7 @@ namespace ExpenseTrackerRepository
         {
             await _localStorageService.RemoveItemAsync("authToken");
             ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
-            _client.DefaultRequestHeaders.Authorization = null;
+            _webApiExecuter.RemoveAuthHeader();
         }
 
     }

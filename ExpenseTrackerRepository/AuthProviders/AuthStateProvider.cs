@@ -7,19 +7,20 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
+using ExpenseTrackerRepository.ApiRouteFetcher;
 
 namespace ExpenseTrackerRepository.AuthProviders
 {
     public class AuthStateProvider : AuthenticationStateProvider
     {
-        private readonly HttpClient _httpClient;
+        private readonly IWebApiExecuter _webApiExecuter;
         private readonly ILocalStorageService _localStorageService;
         private readonly AuthenticationState _anonymous;
 
-        public AuthStateProvider(HttpClient httpClient, ILocalStorageService localStorage) 
+        public AuthStateProvider(ILocalStorageService localStorage, IWebApiExecuter webApiExecuter) 
         {
-            _httpClient = httpClient;
             _localStorageService = localStorage;
+            _webApiExecuter = webApiExecuter;
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
@@ -33,7 +34,24 @@ namespace ExpenseTrackerRepository.AuthProviders
                 return _anonymous;
             }
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+            var claims = JWTParser.ParseClaimsFromJWT(token);
+            var expiry = claims.Where(claim => claim.Type.Equals("exp")).FirstOrDefault();
+
+            if (expiry == null)
+            {
+
+                return _anonymous;
+            }
+
+            var dateTime = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiry.Value));
+
+            if(dateTime.UtcDateTime <= DateTime.UtcNow)
+            {
+
+                return _anonymous;
+            }
+
+            _webApiExecuter.AddAuthHeader(token);
 
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity(JWTParser.ParseClaimsFromJWT(token), "jwtAuthType")));
         }

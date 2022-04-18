@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
@@ -21,7 +22,6 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
             this.baseUrl = baseUrl;
             this.httpClient = httpClient;
 
-            httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -74,6 +74,16 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
                 var apiError = await response.Content.ReadAsStringAsync();
                 throw new HttpRequestException(apiError);
             }
+        }
+
+        public void AddAuthHeader(string token)
+        {
+            httpClient.DefaultRequestHeaders.Authorization =  new AuthenticationHeaderValue("bearer", token);
+        }
+
+        public void RemoveAuthHeader()
+        {
+            httpClient.DefaultRequestHeaders.Authorization = null;
         }
     }
 }

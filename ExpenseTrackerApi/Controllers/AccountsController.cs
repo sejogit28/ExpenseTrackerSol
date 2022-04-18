@@ -3,6 +3,7 @@ using EmailService;
 using ExpenseTrackerModels;
 using ExpenseTrackerModels.AuthModels;
 using ExpenseTrackerModels.UserViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -19,15 +20,8 @@ namespace ExpenseTrackerApi.Controllers
 {
     [Route("api/accounts")]//This is called "attribute routing" and can be done on the Controller or the Endpoint Name
 
-    /*If the full route(api/accounts) isn't placed here(at the top of the controller) than the full route must 
-     be placed on every single endpoint individually, instead of just putting the last name of the endpoint right
-     next to the action verb
-     Ex: [Route("api/accounts/Registration")] 
-     If there is a full route on the controller and you put one on an endpoint than the endpoint route takes priority
-     only IF(!!!!!) you start the endpoint route with a slash. Not starting it with a slash just adds whatever you typed
-     to the Route specified in the Controller....which would be an error*/
-
     [ApiController]
+    [Authorize]
     public class AccountsController : ControllerBase
     {
         private readonly UserManager<ExpenseTrackerUser> _userManager;
@@ -45,6 +39,7 @@ namespace ExpenseTrackerApi.Controllers
             _emailSender = emailSender;
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpGet("allUsers")]
         public IActionResult GetAllIdentityUsers()
         {
@@ -68,6 +63,7 @@ namespace ExpenseTrackerApi.Controllers
         }
 
         [HttpGet("getSingleUser/{singleUserName}")]
+        [Authorize]
         public async Task<IActionResult> GetIdentityUser(string singleUserName)
         {
             var singleUser = await _userManager.FindByNameAsync(singleUserName);
@@ -110,10 +106,11 @@ namespace ExpenseTrackerApi.Controllers
             }
             else
             {
-                //if(changePassword != updatedUser.)
                 var result = await _userManager.ChangePasswordAsync(updatedUser, changePassword.CurrentPassword, changePassword.NewPassword);
+                
                 if (result.Succeeded)
                 {
+
                     return Ok($"The user {updatedUser.Email} has had their password updated");
                 }
                 else
@@ -158,6 +155,7 @@ namespace ExpenseTrackerApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("Registration")]
         public async Task<IActionResult> RegisterExpUser([FromBody] UserRegistrationDto userRegistration)
         {
@@ -184,7 +182,7 @@ namespace ExpenseTrackerApi.Controllers
 
             await _userManager.AddToRoleAsync(user, "User");
 
-            if (userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@www.mailinator.com")
+            if (userRegistration.Email == "sejogoo@gmail.com" || userRegistration.Email == "expenseTrackDemoAdmin28@mailinator.com")
             {
                 await _userManager.AddToRoleAsync(user, "Administrator");
             }
@@ -232,7 +230,7 @@ namespace ExpenseTrackerApi.Controllers
             return tokOptions;
         }
 
-
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginAuthenticationDto loginAuthenticationDto)
         {
@@ -253,7 +251,7 @@ namespace ExpenseTrackerApi.Controllers
             return Ok(new LoginResponseDto { IsLoginSuccessful = true, Token = token });
         }
 
-
+        [AllowAnonymous]
         [HttpGet("ResetPassword")]
         public async Task ResetPassword([FromBody] ForgotPassword forgotPassword)
         {

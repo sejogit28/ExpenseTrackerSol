@@ -6,6 +6,7 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
 {
    public interface IWebApiExecuter
     {
+        void AddAuthHeader(string Token);
         Task InvokeDelete<T>(string uri);
 
         Task<T> InvokeGet<T>(string uri);
@@ -15,5 +16,6 @@ namespace ExpenseTrackerRepository.ApiRouteFetcher
         Task<T> InvokePostObjResponse<T>(string uri, T obj);
 
         Task InvokePut<T>(string uri, T obj);
+        void RemoveAuthHeader();
     }
 }

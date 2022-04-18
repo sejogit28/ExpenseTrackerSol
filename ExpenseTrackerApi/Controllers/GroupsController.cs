@@ -2,6 +2,8 @@
 using EmailService;
 using ExpenseTrackerModels;
 using ExpenseTrackerModels.GroupModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,7 @@ namespace ExpenseTrackerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class GroupsController : ControllerBase
     {
         private readonly ExpenseTrackerDbContext _datExpBase;

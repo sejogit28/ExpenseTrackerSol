@@ -1,5 +1,6 @@
 ﻿using DataStoreEF;
 using ExpenseTrackerModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,6 +12,7 @@ namespace ExpenseTrackerApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Administrator,User")]
     public class IncomesController : ControllerBase
     {
         private readonly ExpenseTrackerDbContext _datExpBase;
